@@ -11,12 +11,42 @@
 // 2026-08-21 (carried over from the landing repo's data.js); schedules and prices
 // drift, so re-check them against the listings periodically.
 
+// The filter bar above the chooser. Each event declares one value per key; a
+// button only appears when at least one event actually carries its value, so
+// Minneapolis shows up the moment there is a Minneapolis table and never sits
+// there as a control that returns nothing.
+//
+// Within a group the picks are OR'd, across groups they are AND'd, and a group
+// with nothing picked does not constrain. The choice is mirrored into the URL,
+// so a filtered view is a link you can print a QR for.
+window.FILTERS = [
+  {
+    key: 'run', label: 'STATUS',
+    options: [['ongoing', 'Ongoing'], ['not-started', 'Not started']],
+  },
+  {
+    key: 'shape', label: 'LENGTH',
+    options: [['one-shot', 'One-shot'], ['multi-session', 'Multi-session']],
+  },
+  {
+    key: 'place', label: 'WHERE',
+    options: [
+      ['online', 'Online'],
+      ['winnipeg', 'In person: Winnipeg'],
+      ['minneapolis', 'In person: Minneapolis'],
+    ],
+  },
+];
+
 // Every table seats this many unless its own entry says otherwise.
 window.DEFAULT_SEATS = 6;
 
 window.EVENTS = {
   sjorseidr: {
     title: 'Sjórseiðr: A Sea-Faring Covenant',
+    run: 'ongoing',
+    shape: 'multi-session',
+    place: 'online',
     system: 'Ars Magica 5th Edition',
     art: 'assets/art/game-sjorseidr.jpg',
     pitch: 'A group of mages have established an independent floating covenant in the North Atlantic, operating from their ships while investigating the mysterious disappearance of their founding magus.',
@@ -48,6 +78,9 @@ window.EVENTS = {
 
   'winter-city': {
     title: 'Journey to the Winter City',
+    run: 'not-started',
+    shape: 'multi-session',
+    place: 'online',
     system: 'City of Winter',
     art: 'assets/art/game-winter-city.jpg',
     // The hero art is multiplied onto the coral panel, which is the right
@@ -68,6 +101,9 @@ window.EVENTS = {
 
   'troika-well': {
     title: "So You've Been Thrown Down a Well",
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'online',
     system: 'Troika!',
     art: 'assets/art/game-troika-well.jpg',
     pitch: 'After falling down a strange well, players explore a surreal dungeon in search of escape and redemption.',
@@ -96,6 +132,9 @@ window.EVENTS = {
 
   'root-hacksaw-dell': {
     title: 'Hacksaw Dell',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'winnipeg',
     system: 'Root: The Roleplaying Game',
     art: 'assets/art/event-root-hacksaw-dell.jpg',
     plainArt: true,
@@ -117,6 +156,9 @@ window.EVENTS = {
 
   'l5r-kyotei-castle': {
     title: 'Wedding at Kyotei Castle',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'winnipeg',
     system: 'Legend of the Five Rings (Edge Studio)',
     art: 'assets/art/event-l5r-kyotei-castle.jpg',
     plainArt: true,
@@ -138,6 +180,9 @@ window.EVENTS = {
 
   'arkham-big-easy': {
     title: 'Three Days to the Big Easy',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'winnipeg',
     system: 'Arkham Horror: The Roleplaying Game',
     art: 'assets/art/event-arkham-big-easy.jpg',
     plainArt: true,

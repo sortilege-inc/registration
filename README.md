@@ -43,6 +43,10 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   payment: 'https://buy.stripe.com/…',                     // OR
   free: true,                                              // one of the three
 
+  run: 'not-started',               // filter facets; see "Filters" below
+  shape: 'one-shot',
+  place: 'winnipeg',
+
   seats: 8,                         // optional; DEFAULT_SEATS (6) otherwise,
                                     // null to not track seats at all
   taken: 0,                         // bump as registrations come in
@@ -55,6 +59,27 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
 ```
 
 Then add the key to `EVENT_ORDER` to place it in the chooser.
+
+### Filters
+
+The chooser carries a filter bar built from `window.FILTERS`, and every event declares
+one value per key:
+
+| key | values |
+|-----|--------|
+| `run` | `ongoing`, `not-started` |
+| `shape` | `one-shot`, `multi-session` |
+| `place` | `online`, `winnipeg`, `minneapolis` |
+
+Picks are **OR'd within a group and AND'd across groups**; a group with nothing picked
+does not constrain. A button only renders when at least one event actually carries its
+value, and a group whose options all collapse to one is dropped entirely — so
+"In person: Minneapolis" is absent today and appears by itself the moment a Minneapolis
+table exists. No event is ever hidden from the chooser by a control that returns nothing.
+
+The picks are mirrored into the URL (`?place=winnipeg&shape=one-shot`) with
+`replaceState`, so a filtered view is a link — and therefore a QR code. Values in the URL
+that are not in the vocabulary are ignored rather than filtering everything away.
 
 ### How the seat gets paid for
 

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 <main class="sheet">
@@ -32,14 +32,23 @@
   </header>
 
   <!-- Shown when no ?event= key is given, or the key is not one we know.
-       Populated from window.EVENTS by app.js. -->
+       Filter bar and tiles are both built from window.EVENTS by app.js. -->
   <section class="chooser" id="chooser" hidden>
     <div class="sec">
       <div class="sec__head">
         <h2>Which Table?</h2>
       </div>
       <p class="lede" id="chooser-lede">Pick the game you are signing up for.</p>
-      <div class="chooser__list" id="chooser-list"></div>
+
+      <div class="filters" id="filters" role="group" aria-label="Filter the tables"></div>
+      <p class="filters__count" id="filters-count" role="status" aria-live="polite"></p>
+
+      <div class="tarots" id="chooser-list"></div>
+
+      <p class="chooser__empty" id="chooser-empty" hidden>
+        Nothing matches that combination.
+        <button type="button" class="linkish" id="filters-clear">Show everything</button>
+      </p>
     </div>
   </section>
 
@@ -138,7 +147,7 @@
   </footer>
 
 </main>
-<script src="data.js?v=2"></script>
-<script src="app.js?v=2"></script>
+<script src="data.js?v=3"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>

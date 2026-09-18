@@ -62,55 +62,193 @@ function fillMeta(dl, ev) {
 }
 
 /* ---------- Chooser ---------- */
-// No key, or a key we do not recognise: list what is open and let them pick.
+// No key, or a key we do not recognise: a filter bar and a grid of tiles.
+//
+// Filtering is faceted: OR within a group, AND across groups, and a group with
+// nothing picked does not constrain. The state lives in the URL so a filtered
+// view can be linked or turned into its own QR.
+
+/** Events in chooser order, deduplicated. */
+function orderedEvents() {
+  const order = [...(window.EVENT_ORDER || []), ...Object.keys(events)];
+  const seen = new Set();
+  const out = [];
+  for (const key of order) {
+    if (seen.has(key) || !events[key]) continue;
+    seen.add(key);
+    out.push([key, events[key]]);
+  }
+  return out;
+}
+
+/** Only the groups and options some event actually carries. */
+function liveFilters(all) {
+  const present = (key, value) => all.some(([, ev]) => ev[key] === value);
+  return (window.FILTERS || [])
+    .map((group) => ({ ...group, options: group.options.filter(([v]) => present(group.key, v)) }))
+    // A single remaining option cannot narrow anything: every event has it.
+    .filter((group) => group.options.length > 1);
+}
 
 function showChooser() {
   const chooser = document.getElementById('chooser');
   const list = document.getElementById('chooser-list');
-  const order = [...(window.EVENT_ORDER || []), ...Object.keys(events)];
-  const seen = new Set();
+  const bar = document.getElementById('filters');
+  const count = document.getElementById('filters-count');
+  const empty = document.getElementById('chooser-empty');
 
-  for (const key of order) {
-    if (seen.has(key) || !events[key]) continue;
-    seen.add(key);
-    const ev = events[key];
+  const all = orderedEvents();
+  const groups = liveFilters(all);
 
+  // Read any filter carried in the URL, keeping only values we know.
+  const picked = new Map();
+  for (const group of groups) {
+    const raw = (params.get(group.key) || '').split(',').map((s) => s.trim()).filter(Boolean);
+    const valid = raw.filter((v) => group.options.some(([value]) => value === v));
+    if (valid.length) picked.set(group.key, new Set(valid));
+  }
+
+  function matches(ev) {
+    for (const [key, values] of picked) {
+      if (!values.size) continue;
+      if (!values.has(ev[key])) return false;
+    }
+    return true;
+  }
+
+  /** Mirror the picks into the URL without adding a history entry per tap. */
+  function syncUrl() {
+    const next = new URLSearchParams(location.search);
+    for (const group of groups) {
+      const values = picked.get(group.key);
+      if (values && values.size) next.set(group.key, [...values].join(','));
+      else next.delete(group.key);
+    }
+    const query = next.toString();
+    history.replaceState(history.state, '', query ? `?${query}` : location.pathname);
+  }
+
+  // ---- filter bar ----
+  for (const group of groups) {
+    const row = document.createElement('div');
+    row.className = 'filters__row';
+
+    const label = document.createElement('span');
+    label.className = 'filters__label';
+    label.id = `filter-${group.key}`;
+    label.textContent = group.label;
+
+    const chips = document.createElement('div');
+    chips.className = 'chips';
+    chips.role = 'group';
+    chips.setAttribute('aria-labelledby', label.id);
+
+    for (const [value, text] of group.options) {
+      const chip = document.createElement('label');
+      chip.className = 'chip';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.checked = Boolean(picked.get(group.key)?.has(value));
+      input.addEventListener('change', () => {
+        const set = picked.get(group.key) || new Set();
+        if (input.checked) set.add(value); else set.delete(value);
+        if (set.size) picked.set(group.key, set); else picked.delete(group.key);
+        syncUrl();
+        render();
+      });
+      const span = document.createElement('span');
+      span.textContent = text;
+      chip.append(input, span);
+      chips.append(chip);
+    }
+
+    row.append(label, chips);
+    bar.append(row);
+  }
+
+  document.getElementById('filters-clear').addEventListener('click', () => {
+    picked.clear();
+    bar.querySelectorAll('input[type="checkbox"]').forEach((i) => { i.checked = false; });
+    syncUrl();
+    render();
+  });
+
+  // ---- tiles ----
+  function tile(key, ev) {
     const a = document.createElement('a');
-    a.className = 'pick';
-    a.href = `?event=${encodeURIComponent(key)}${src ? `&src=${encodeURIComponent(src)}` : ''}`;
+    a.className = 'tarot';
+    const carry = new URLSearchParams();
+    carry.set('event', key);
+    if (src) carry.set('src', src);
+    a.href = `?${carry}`;
+
+    const frame = document.createElement('div');
+    frame.className = 'tarot__frame';
 
     if (ev.art) {
-      const figure = document.createElement('div');
-      figure.className = 'pick__art';
       const img = document.createElement('img');
       img.alt = '';
       img.loading = 'lazy';
-      // A cover that is not in assets/art yet drops the thumbnail and lets the
-      // text take the full width, rather than showing a broken-image icon.
       img.addEventListener('error', () => {
-        console.warn('Event art missing, dropping the thumbnail:', ev.art);
-        figure.remove();
-        a.classList.add('pick--noart');
+        console.warn('Event art missing, falling back to the Sortilege mark:', ev.art);
+        img.src = 'assets/art/sortilege-goliath.png';
+        frame.classList.add('is-fallback');
       }, { once: true });
       img.src = ev.art;
-      figure.append(img);
-      a.append(figure);
+      frame.append(img);
+    } else {
+      frame.classList.add('is-fallback');
+      const img = document.createElement('img');
+      img.alt = '';
+      img.src = 'assets/art/sortilege-goliath.png';
+      frame.append(img);
     }
 
+    // One badge, top-left of the art: the thing worth knowing at a glance. Being
+    // full outranks being free — a free table nobody can join is not a free
+    // table, and hiding that behind "Free" is the wrong way round.
+    const seats = seatState(ev);
+    const badge = seats.full ? 'Waitlist'
+      : ev.free ? 'Free'
+      : seats.cap ? `${seats.left} seats`
+      : '';
+    if (badge) {
+      const flag = document.createElement('span');
+      flag.className = `tarot__badge${seats.full ? ' is-full' : ''}`;
+      flag.textContent = badge;
+      frame.append(flag);
+    }
+    a.append(frame);
+
+    const body = document.createElement('div');
+    body.className = 'tarot__body';
     const make = (cls, text, tag = 'p') => {
       const el = document.createElement(tag);
       el.className = cls;
       el.textContent = text; // textContent: event copy can never inject markup
       return el;
     };
+    if (ev.system) body.append(make('tarot__system', ev.system));
+    body.append(make('tarot__title', ev.title || key, 'h3'));
+    if (ev.when) body.append(make('tarot__when', ev.when));
+    body.append(make('tarot__where', [ev.where, ev.free ? null : ev.price].filter(Boolean).join(' · ')));
+    a.append(body);
 
-    a.append(make('pick__system', ev.system || ''));
-    a.append(make('pick__title', ev.title || key));
-    a.append(make('pick__meta', bookingRows(ev)
-      .filter(([term]) => term !== 'System')
-      .map(([, value]) => value).join(' · ')));
-    list.append(a);
+    return a;
   }
+
+  function render() {
+    const shown = all.filter(([, ev]) => matches(ev));
+    list.textContent = '';
+    for (const [key, ev] of shown) list.append(tile(key, ev));
+
+    empty.hidden = shown.length > 0;
+    count.textContent = shown.length === all.length
+      ? `${all.length} tables`
+      : `${shown.length} of ${all.length} tables`;
+  }
+
+  render();
 
   if (eventKey) {
     document.getElementById('chooser-lede').textContent =

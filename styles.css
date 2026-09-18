@@ -755,54 +755,153 @@ a:hover { color: var(--coral); }
 /* ---------- Table chooser ---------- */
 /* Shown instead of the form when the URL carries no ?event= key. */
 
-.chooser__list { display: flex; flex-direction: column; gap: 0.9rem; }
+/* ---- filter bar ---- */
 
-.pick {
-  display: grid;
-  grid-template-columns: 5.5rem 1fr;
-  gap: 0 0.9rem;
-  align-items: start;
-  padding: 0.75rem;
-  background: #fffdf7;
-  border: 1px solid rgba(88, 83, 108, 0.3);
-  border-radius: 2px;
-  color: inherit;
+.filters {
+  margin: 0 0 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid rgba(88, 83, 108, 0.3);
 }
 
-.pick:hover { border-color: var(--plum); }
+.filters__row + .filters__row { margin-top: 0.8rem; }
 
-/* No thumbnail: the text takes the whole card rather than sitting in the
-   narrow art column. */
-.pick--noart { grid-template-columns: 1fr; }
+.filters__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--label);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  color: var(--lilac);
+}
 
-.pick__art {
-  grid-row: 1 / span 3;
-  aspect-ratio: 1 / 1;
+/* Slightly tighter than the form's chips: there are more of them, and they are
+   a control strip rather than an answer. */
+.filters .chip span {
+  padding: 0.38rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.filters__count {
+  margin: 0 0 1.1rem;
+  font-family: var(--label);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+
+.chooser__empty { margin: 0; color: var(--ink-soft); }
+
+.linkish {
+  padding: 0;
+  font: inherit;
+  color: var(--lilac);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+}
+
+.linkish:hover { color: var(--coral); }
+
+/* ---- tarot tiles ---- */
+/* Two to a row on a phone, three once there is room. Portrait, framed, and
+   stacked like a spread — which is the one visual joke this brand has earned. */
+
+.tarots {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+.tarot {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem;
+  color: inherit;
+  background: #fffdf7;
+  border: 1px solid rgba(88, 83, 108, 0.45);
+  border-radius: 3px;
+  /* The gold hairline inside the border is the tarot frame. */
+  box-shadow: inset 0 0 0 1px var(--paper), inset 0 0 0 2px rgba(253, 213, 165, 0.75);
+  transition: border-color 0.12s, transform 0.12s;
+}
+
+.tarot:hover {
+  border-color: var(--plum);
+  transform: translateY(-2px);
+}
+
+.tarot__frame {
+  position: relative;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   background: var(--surround);
-  border-radius: 2px;
+  border: 1px solid rgba(31, 39, 48, 0.2);
 }
 
-.pick__art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tarot__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-.pick__system {
+/* No cover of its own: the Sortilege mark, sized to sit rather than fill. */
+.tarot__frame.is-fallback { background: var(--coral); }
+.tarot__frame.is-fallback img { object-fit: contain; padding: 0.5rem; mix-blend-mode: multiply; }
+
+.tarot__badge {
+  position: absolute;
+  left: 0;
+  top: 0.6rem;
+  padding: 0.24rem 0.5rem;
+  font-family: var(--label);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--teal);
+}
+
+.tarot__badge.is-full { background: var(--coral); }
+
+.tarot__body { padding: 0.6rem 0.35rem 0.25rem; }
+
+.tarot__system {
   margin: 0 0 0.2rem;
   font-family: var(--label);
-  font-size: 0.74rem;
-  letter-spacing: 0.14em;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
   color: var(--coral);
 }
 
-.pick__title {
-  margin: 0 0 0.3rem;
+.tarot__title {
+  margin: 0 0 0.4rem;
+  padding-bottom: 0.4rem;
   font-family: var(--display);
   font-weight: 600;
-  font-size: 1.02rem;
-  line-height: 1.2;
+  font-size: 0.92rem;
+  line-height: 1.16;
   color: var(--plum);
+  border-bottom: 1px solid var(--gold);
+  text-wrap: balance;
 }
 
-.pick__meta { margin: 0; font-size: 0.88rem; line-height: 1.35; color: var(--ink-soft); }
+.tarot__when {
+  margin: 0 0 0.15rem;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.tarot__where {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.25;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 30rem) {
+  .tarots { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .tarot__system { font-size: 0.68rem; }
+  .tarot__title { font-size: 1rem; }
+}
 
 /* ---------- Payment ---------- */
 
