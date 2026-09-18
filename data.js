@@ -249,7 +249,7 @@ window.EVENTS = {
   'hogmen': {
     title: 'Night of the Hogmen',
     system: 'TEETH',
-    // TEETH house ornament, a pointing hand — "the Hogmen are abroad".
+    // TEETH house ornament, a pointing hand.
     art: 'assets/art/event-hogmen.jpg',
     // An ornament, not a cover: show it whole, on its own white.
     fit: 'contain',
@@ -274,7 +274,7 @@ window.EVENTS = {
   'stranger-and-stranger': {
     title: 'Stranger & Stranger',
     system: 'TEETH',
-    // TEETH house ornament, a tricorn and a blade — "bring a musket".
+    // TEETH house ornament, an apple and worms.
     art: 'assets/art/event-stranger-and-stranger.jpg',
     // An ornament, not a cover: show it whole, on its own white.
     fit: 'contain',
@@ -299,7 +299,7 @@ window.EVENTS = {
   'blood-cotillion': {
     title: 'Blood Cotillion',
     system: 'TEETH',
-    // TEETH house ornament, apple and serpents — temptation at the ball.
+    // TEETH house ornament, a tricorn and a blade.
     art: 'assets/art/event-blood-cotillion.jpg',
     // An ornament, not a cover: show it whole, on its own white.
     fit: 'contain',
