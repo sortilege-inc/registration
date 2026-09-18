@@ -55,10 +55,10 @@ body {
   color: var(--paper);
 }
 
-/* Full bleed: the art runs the full width of the sheet with nothing above or
-   below it, so it meets the coral panel directly. */
+/* A small inset all round — enough that the art sits on the coral rather than
+   being clipped by it, without the letterboxing the old height cap caused. */
 .hero__art {
-  padding: 0;
+  padding: 0.9rem;
   font-size: 0;
 }
 
@@ -77,7 +77,7 @@ body {
    an event whose art is a photo can set plainArt in data.js and keep it. */
 .hero__art.is-plain img { mix-blend-mode: normal; }
 
-.hero__body { padding: 1rem 1.5rem 1.2rem; }
+.hero__body { padding: 0.4rem 1.5rem 1.2rem; }
 
 .hero h1 {
   margin: 0;
@@ -260,7 +260,8 @@ a:hover { color: var(--coral); }
 .tile { width: 3rem; height: auto; display: block; }
 
 @media (min-width: 40rem) {
-  .hero__body { padding: 1.2rem 2.5rem 1.8rem; }
+  .hero__art { padding: 1.5rem 2.5rem; }
+  .hero__body { padding: 0.6rem 2.5rem 1.8rem; }
   .sec, .submit-bar, .foot { padding-left: 2.5rem; padding-right: 2.5rem; }
   .sec { padding-top: 2.5rem; padding-bottom: 2.75rem; }
 }
