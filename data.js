@@ -83,10 +83,6 @@ window.EVENTS = {
     place: 'online',
     system: 'City of Winter',
     art: 'assets/art/game-winter-city.jpg',
-    // The hero art is multiplied onto the coral panel, which is the right
-    // treatment for black line work and the wrong one for a photograph. Set
-    // plainArt to render this one as-is; delete it to go back to the blend.
-    plainArt: true,
     pitch: 'A story-driven exploration game where characters navigate the difficult journey to a new home while deciding which traditions to carry forward from their abandoned homeland.',
     status: 'Not yet started',
     when: 'Bi-weekly, Wednesdays',
@@ -138,7 +134,6 @@ window.EVENTS = {
     place: 'winnipeg',
     system: 'Root: The Roleplaying Game',
     art: 'assets/art/event-root-hacksaw-dell.jpg',
-    plainArt: true,
     pitch: 'A beginner-friendly, free one-shot of the Root RPG.',
     when: 'Tuesday 22 September',
     hours: '6:00–9:00 PM',
@@ -167,7 +162,6 @@ window.EVENTS = {
     place: 'winnipeg',
     system: 'Legend of the Five Rings (Edge Studio)',
     art: 'assets/art/event-l5r-kyotei-castle.jpg',
-    plainArt: true,
     pitch: 'A beginner-friendly, free introduction to the Fantasy Flight/EDGE Studios edition of the Legend of the Five Rings RPG.',
     when: 'Tuesday 29 September',
     hours: '6:00–9:00 PM',
@@ -196,7 +190,6 @@ window.EVENTS = {
     place: 'winnipeg',
     system: 'Arkham Horror: The Roleplaying Game',
     art: 'assets/art/event-arkham-big-easy.jpg',
-    plainArt: true,
     pitch: 'A beginner-friendly, free introduction to the Arkham Horror RPG.',
     when: 'Tuesday 6 October',
     hours: '6:00–9:00 PM',
@@ -222,6 +215,7 @@ window.EVENTS = {
   'terra-antarctica': {
     title: 'Terra Antarctica',
     system: 'Arkham Horror: The Roleplaying Game',
+    art: 'assets/art/event-terra-antarctica.jpg',
     run: 'not-started',
     shape: 'multi-session',
     place: 'winnipeg',
@@ -255,6 +249,10 @@ window.EVENTS = {
   'hogmen': {
     title: 'Night of the Hogmen',
     system: 'TEETH',
+    // TEETH house ornament, a pointing hand — "the Hogmen are abroad".
+    art: 'assets/art/event-hogmen.jpg',
+    // An ornament, not a cover: show it whole, on its own white.
+    fit: 'contain',
     pitch: '“Hogmen!” screams the coachman, fumbling to load a flintlock pistol. “The Hogmen are abroad!” Eighteenth-century England has gone wrong.',
     run: 'not-started',
     shape: 'one-shot',
@@ -276,6 +274,10 @@ window.EVENTS = {
   'stranger-and-stranger': {
     title: 'Stranger & Stranger',
     system: 'TEETH',
+    // TEETH house ornament, a tricorn and a blade — "bring a musket".
+    art: 'assets/art/event-stranger-and-stranger.jpg',
+    // An ornament, not a cover: show it whole, on its own white.
+    fit: 'contain',
     pitch: 'Eighteenth-century England has gone wrong. Bring a musket, a strong stomach, and pray you keep the shape you arrived in.',
     run: 'not-started',
     shape: 'one-shot',
@@ -297,6 +299,10 @@ window.EVENTS = {
   'blood-cotillion': {
     title: 'Blood Cotillion',
     system: 'TEETH',
+    // TEETH house ornament, apple and serpents — temptation at the ball.
+    art: 'assets/art/event-blood-cotillion.jpg',
+    // An ornament, not a cover: show it whole, on its own white.
+    fit: 'contain',
     pitch: 'Eighteenth-century England has gone wrong. Blood-horror Bridgerton.',
     run: 'not-started',
     shape: 'one-shot',

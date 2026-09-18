@@ -31,7 +31,7 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   title: 'A Table With A Name',
   system: 'Troika!',
   art: 'assets/art/my-event.jpg',   // optional; falls back to the house line art
-  plainArt: true,                   // optional; see "Hero art" below
+  fit: 'contain',                   // optional; show art whole, see "Hero art"
   pitch: 'One paragraph.',
   status: 'Two seats left',
   when: 'Sat 3 Oct',                // the date
@@ -275,11 +275,12 @@ log the payload to the console instead of sending.
 
 ### Hero art
 
-The default hero — `assets/art/the-filth.png` — is multiplied onto the coral panel
-(`mix-blend-mode: multiply`), which is the right treatment for **black line work on
-white**: it drops the white out and leaves the ink on coral. A full-colour cover or
-photograph under it collapses to a single coral tone, so those events set
-`plainArt: true` to render the art as-is.
+**Only the house art multiplies.** `assets/art/the-filth.png` is black line work on
+white, and `mix-blend-mode: multiply` drops its white out to leave the ink sitting on the
+coral. Everything an event supplies — a painting, a photograph, a publisher's ornament —
+renders exactly as given, because under multiply all of it collapses towards one coral
+tone. Nothing needs a flag: the hero starts with the house treatment and loses it the
+moment an event provides its own `art`.
 
 **Prefer event art with no title lockup on it.** The page prints the system and the title
 itself, so a cover carrying its own wordmark says everything twice and constrains how the

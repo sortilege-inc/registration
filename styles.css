@@ -69,13 +69,13 @@ body {
      the set is landscape or near-square, so nothing runs away — but a PORTRAIT
      cover would be tall here, which is why the README asks for wide art. */
   height: auto;
-  mix-blend-mode: multiply;
 }
 
-/* multiply is the right technique for black line work on white — it drops the
-   white out. A full-colour photograph under it collapses to one coral tone, so
-   an event whose art is a photo can set plainArt in data.js and keep it. */
-.hero__art.is-plain img { mix-blend-mode: normal; }
+/* multiply is the right technique for the house line art and nothing else: it
+   drops the white out and leaves the ink on coral. Event art — paintings,
+   photographs, a publisher's ornament on white — renders as supplied, because
+   under multiply all of it collapses towards one coral tone. */
+.hero__art.is-house img { mix-blend-mode: multiply; }
 
 .hero__body { padding: 0.4rem 1.5rem 1.2rem; }
 
@@ -884,9 +884,21 @@ a:hover { color: var(--coral); }
 
 .tarot__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-/* No cover of its own: the house line art, sized to sit rather than fill. */
+/* No cover of its own: the house line art, multiplied onto coral and sized to
+   sit rather than fill. */
 .tarot__frame.is-fallback { background: var(--coral); }
-.tarot__frame.is-fallback img { object-fit: contain; padding: 0.5rem; mix-blend-mode: multiply; }
+
+.tarot__frame.is-fallback img {
+  object-fit: contain;
+  padding: 0.5rem;
+  mix-blend-mode: multiply;
+}
+
+/* `fit: 'contain'` for art that must not be cropped — an ornament loses the
+   point of itself if a 3:4 box keeps only its middle. It keeps its own
+   background, which for ink on white means white. */
+.tarot__frame.is-contain { background: #fff; }
+.tarot__frame.is-contain img { object-fit: contain; }
 
  /* A short stack down the top-left of the art: how it stands, where it is,
    what it costs. Colour carries the category — coral for "act now", teal for

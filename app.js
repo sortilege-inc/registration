@@ -275,6 +275,7 @@ function showChooser() {
       }, { once: true });
       img.src = ev.art;
       frame.append(img);
+      if (ev.fit === 'contain') frame.classList.add('is-contain');
     } else {
       frame.classList.add('is-fallback');
       const img = document.createElement('img');
@@ -1175,12 +1176,14 @@ function fillHero() {
     const fallback = heroArt.src;
     heroArt.addEventListener('error', () => {
       console.warn('Event art missing, using the house line art:', event.art);
-      document.querySelector('.hero__art').classList.remove('is-plain');
+      document.querySelector('.hero__art').classList.add('is-house');
       heroArt.src = fallback;
     }, { once: true });
     heroArt.src = event.art;
   }
-  document.querySelector('.hero__art').classList.toggle('is-plain', Boolean(event.plainArt));
+  // The house art is the only thing that should multiply onto the coral; an
+  // event with its own art renders it as supplied.
+  document.querySelector('.hero__art').classList.toggle('is-house', !event.art);
 }
 
 if (!event) {
