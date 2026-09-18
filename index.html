@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=14">
+<link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
 <main class="sheet">
@@ -56,11 +56,29 @@
     </div>
   </section>
 
+  <!-- A table that has already played. Its QR still works and says so. -->
+  <section class="notice" id="past" hidden>
+    <div class="sec">
+      <p class="kicker">ALREADY PLAYED</p>
+      <h2 class="notice__title">This One Has Run</h2>
+
+      <div class="booking">
+        <p class="booking__kicker">THE TABLE</p>
+        <p class="booking__title" id="past-event"></p>
+        <dl class="booking__meta" id="past-meta"></dl>
+      </div>
+
+      <p class="lede" id="past-lede"></p>
+
+      <a class="pay" id="past-browse" href="?">SEE WHAT'S ON NOW →</a>
+    </div>
+  </section>
+
   <!-- StartPlaying tables are booked there, not here: no form, just the handoff. -->
-  <section class="handoff" id="handoff" hidden>
+  <section class="notice handoff" id="handoff" hidden>
     <div class="sec">
       <p class="kicker">BOOKED ELSEWHERE</p>
-      <h2 class="handoff__title">This One Runs On StartPlaying</h2>
+      <h2 class="notice__title">This One Runs On StartPlaying</h2>
 
       <div class="booking" id="handoff-booking">
         <p class="booking__kicker">THE TABLE</p>
@@ -176,7 +194,7 @@
   </footer>
 
 </main>
-<script src="data.js?v=14"></script>
-<script src="app.js?v=14"></script>
+<script src="data.js?v=15"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>

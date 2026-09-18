@@ -88,6 +88,27 @@ function fillMeta(dl, ev) {
 // nothing picked does not constrain. The state lives in the URL so a filtered
 // view can be linked or turned into its own QR.
 
+/**
+ * Has this table already played?
+ *
+ * An explicit `past` in data.js always wins, so a game can be retired early or
+ * kept listed after its date. Otherwise it is derived from `ends`, because a
+ * flag that has to be set by hand the morning after every session is a flag
+ * that gets forgotten — and every printed QR outlives its event.
+ *
+ * Events with no `ends` (the recurring tables) are never past on their own.
+ */
+function isPast(ev) {
+  if (typeof ev.past === 'boolean') return ev.past;
+  if (!ev.ends) return false;
+  // Same reading as the .ics: a zone makes it a real instant, otherwise the
+  // wall-clock is taken as local — which is what an in-person night means.
+  const ended = ev.zone
+    ? Date.parse(`${ev.ends}:00Z`) - zoneOffset(ev.zone, new Date(`${ev.ends}:00Z`)) * 60000
+    : Date.parse(ev.ends);
+  return Number.isFinite(ended) && ended < Date.now();
+}
+
 /** Short markers shown on a tile, in the same vocabulary as the filters. */
 const PLACE_TOKEN = { winnipeg: 'WPG', minneapolis: 'MPLS' };
 
@@ -100,8 +121,10 @@ function orderedEvents() {
     if (seen.has(key) || !events[key]) continue;
     seen.add(key);
     // `hidden` keeps an event out of the chooser while leaving it reachable at
-    // its own ?event= link — drafts, and anything being tested.
-    if (events[key].hidden) continue;
+    // its own ?event= link — drafts, and anything being tested. A table that
+    // has played drops out the same way, but for the opposite reason: its link
+    // still works and says so. A past-events view would filter the other way.
+    if (events[key].hidden || isPast(events[key])) continue;
     out.push([key, events[key]]);
   }
   return out;
@@ -1103,6 +1126,21 @@ function initWizard() {
 
 /* ---------- Start ---------- */
 
+/* ---------- Already played ---------- */
+// The QR on a table tent outlives the night it advertised. Rather than a
+// generic "no such table", the link lands on what it was and what is on now.
+
+function showPast() {
+  document.getElementById('past-event').textContent = event.title || eventKey;
+  fillMeta(document.getElementById('past-meta'), event);
+  document.getElementById('past-lede').textContent = event.when
+    ? `This one played on ${event.when}. I run these often — here is what is open now.`
+    : 'This one has finished. I run these often — here is what is open now.';
+  document.getElementById('past-browse').href = src ? `?src=${encodeURIComponent(src)}` : '?';
+  document.getElementById('past').hidden = false;
+  document.body.classList.add('is-handoff');
+}
+
 /* ---------- Handoff ---------- */
 // A StartPlaying table is sold and scheduled there, so asking for a name and an
 // email here would collect something nobody acts on and put a second, pointless
@@ -1142,6 +1180,11 @@ function fillHero() {
 
 if (!event) {
   showChooser();
+} else if (isPast(event)) {
+  // Checked before everything else: a table that has played neither takes
+  // registrations nor sends anyone to a listing that has closed.
+  fillHero();
+  showPast();
 } else if (event.startplaying) {
   fillHero();
   showHandoff();

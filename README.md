@@ -56,6 +56,8 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   starts: '2026-10-06T18:00',       // optional; enables Add to calendar
   ends: '2026-10-06T21:00',
   zone: 'America/Winnipeg',         // set for ONLINE events; see below
+  hidden: true,                     // keep out of the chooser, link still works
+  past: true,                       // force "already played"; see below
 
   questions: [ /* see below */ ],
 }
@@ -64,6 +66,22 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
 Then add the key to `EVENT_ORDER` to place it in the chooser. An event with `hidden: true`
 stays out of the chooser entirely while remaining reachable at its own `?event=` link —
 for drafts, and for anything being tested.
+
+### Tables that have played
+
+**Do not delete an event once it has run.** Every printed QR outlives the night it
+advertised, and a deleted key lands on a generic "that link did not match a table I have
+open". Leave the entry in place and it lands on the table it named, says it has run, and
+points at what is open now.
+
+An event counts as past when `ends` is in the past, so the common case needs no
+maintenance at all — there is no flag to remember to set the morning after a session.
+Setting `past` explicitly overrides that either way: `past: true` retires a table early,
+`past: false` keeps one listed after its date. Events with no `ends` (the recurring
+tables) are never past on their own.
+
+Past events drop out of the chooser the same way `hidden` ones do. A past-events view
+would filter the other way, on the same `isPast()` predicate in `app.js`.
 
 ### Filters
 

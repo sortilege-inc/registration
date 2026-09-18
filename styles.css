@@ -1030,11 +1030,11 @@ a:hover { color: var(--coral); }
 
 .sec--chooser { padding-top: 1.4rem; border-top: 0; }
 
-/* ---------- StartPlaying handoff ---------- */
+/* ---------- Standing notices: handed off, or already played ---------- */
 
-.handoff .kicker { margin-bottom: 0.4rem; }
+.notice .kicker { margin-bottom: 0.4rem; }
 
-.handoff__title {
+.notice__title {
   margin: 0 0 1.3rem;
   font-family: var(--label);
   font-weight: 400;
@@ -1045,9 +1045,9 @@ a:hover { color: var(--coral); }
   color: var(--plum);
 }
 
-.handoff .booking { margin-bottom: 1.3rem; }
-.handoff .pay { margin-top: 1.3rem; }
-.handoff .booking__swap { margin-top: 1.6rem; }
+.notice .booking { margin-bottom: 1.3rem; }
+.notice .pay { margin-top: 1.3rem; }
+.notice .booking__swap { margin-top: 1.6rem; }
 
 /* The hero is the whole welcome on a handoff; the footer belongs at the end. */
 .is-handoff .hero__body { padding-bottom: 1.4rem; }
