@@ -85,6 +85,23 @@ tables) are never past on their own.
 Past events drop out of the chooser the same way `hidden` ones do. A past-events view
 would filter the other way, on the same `isPast()` predicate in `app.js`.
 
+### Month view
+
+The control opposite FILTER swaps the tiles for a month grid, and `?view=calendar`
+opens straight into it. It renders the **same filtered set** as the tiles, so narrowing
+to Winnipeg narrows the calendar too.
+
+An event lands on the grid only if it has `starts`. A `repeat` is expanded across the
+month, so a fortnightly campaign shows every sitting rather than only its first — the one
+RRULE shape in use, `FREQ=WEEKLY` with an `INTERVAL`, is what `occurrencesIn()`
+understands. The recurring online tables advertise "Bi-weekly Sundays" and never name a
+date, so they cannot be placed; the note under the grid names them rather than letting
+them disappear.
+
+Each game is a chip linking to its page, with the details in a popover shown on hover,
+on keyboard focus, and on tap — a phone has no hover, so the popover sits inside the link
+and a first tap reveals it before a second follows through.
+
 ### Filters
 
 The chooser carries a filter bar built from `window.FILTERS`, and every event declares
@@ -298,6 +315,10 @@ Trim the white margin off line art before adding it. Under `multiply` the white 
 invisible, so any margin baked into the file reads as empty space around the art with no
 way to tell from the page why it is there. `magick in.png -fuzz 2% -trim +repage out.png`
 took The Filth from 2500x2000 to 2413x1240 — the same picture, 107px shorter on a phone.
+
+On an event's page the art is framed — a paper mat and a gold hairline, the same frame
+the tiles use. The house art takes none of that: its white is blended away, so there
+would be nothing for a mat to sit against.
 
 An `art` path that 404s is not fatal: the hero falls back to the house line art and the
 tile falls back to it too, both with a console warning. So an event entry can be added

@@ -58,7 +58,7 @@ body {
 /* A small inset all round — enough that the art sits on the coral rather than
    being clipped by it, without the letterboxing the old height cap caused. */
 .hero__art {
-  padding: 0.9rem;
+  padding: 1.1rem;
   font-size: 0;
 }
 
@@ -76,6 +76,21 @@ body {
    photographs, a publisher's ornament on white — renders as supplied, because
    under multiply all of it collapses towards one coral tone. */
 .hero__art.is-house img { mix-blend-mode: multiply; }
+
+/* An event's own art is a picture hung on the coral: a paper mat and a gold
+   hairline, the same frame the tiles use. The house art takes none of this —
+   its white is blended away, so there would be nothing for a mat to sit
+   against. */
+.hero__art:not(.is-house) img {
+  border: 1px solid rgba(31, 39, 48, 0.35);
+  box-shadow: 0 0 0 4px var(--paper), 0 0 0 5px rgba(253, 213, 165, 0.9);
+}
+
+@media (min-width: 40rem) {
+  .hero__art:not(.is-house) img {
+    box-shadow: 0 0 0 6px var(--paper), 0 0 0 7px rgba(253, 213, 165, 0.9);
+  }
+}
 
 .hero__body { padding: 0.4rem 1.5rem 1.2rem; }
 
@@ -260,7 +275,7 @@ a:hover { color: var(--coral); }
 .tile { width: 3rem; height: auto; display: block; }
 
 @media (min-width: 40rem) {
-  .hero__art { padding: 1.5rem 2.5rem; }
+  .hero__art { padding: 1.7rem 2.5rem; }
   .hero__body { padding: 0.6rem 2.5rem 1.8rem; }
   .sec, .submit-bar, .foot { padding-left: 2.5rem; padding-right: 2.5rem; }
   .sec { padding-top: 2.5rem; padding-bottom: 2.75rem; }
@@ -766,6 +781,37 @@ a:hover { color: var(--coral); }
   border-bottom: 1px solid rgba(88, 83, 108, 0.3);
 }
 
+/* FILTER on the left, the month view on the right. */
+.filterbar__row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+
+.viewtoggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.8rem;
+  font-family: var(--label);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+  background: #fffdf7;
+  border: 1px solid rgba(31, 39, 48, 0.28);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.viewtoggle svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.viewtoggle:hover { color: var(--plum); border-color: var(--plum); }
+.viewtoggle:focus-visible { outline: 2px solid var(--lilac); outline-offset: 2px; }
+.viewtoggle.is-on { color: var(--paper); background: var(--plum); border-color: var(--plum); }
+
 .filters__toggle {
   display: inline-flex;
   align-items: center;
@@ -1019,9 +1065,12 @@ a:hover { color: var(--coral); }
 .booking__seats.is-full { color: var(--coral); }
 
 /* ---------- Add to calendar ---------- */
-/* Quieter than the pay/book control: useful, but not the next thing to do. */
+/* Quieter than the pay/book control: useful, but not the next thing to do.
+   Named for the .ics it hands over, not "calendar" — that belongs to the month
+   view, and when both had it the month grid inherited this button's border,
+   padding and centred text. */
 
-.calendar {
+.ics-link {
   display: block;
   margin-top: 1.1rem;
   padding: 0.7rem 1rem;
@@ -1035,7 +1084,7 @@ a:hover { color: var(--coral); }
   border-radius: 2px;
 }
 
-.calendar:hover { color: var(--paper); background: var(--plum); }
+.ics-link:hover { color: var(--paper); background: var(--plum); }
 
 /* ---------- Chooser section ---------- */
 /* Opens straight on the filters: no heading, no lede, no rule above them. */
@@ -1063,3 +1112,176 @@ a:hover { color: var(--coral); }
 
 /* The hero is the whole welcome on a handoff; the footer belongs at the end. */
 .is-handoff .hero__body { padding-bottom: 1.4rem; }
+
+/* ---------- Month view ---------- */
+
+.calendar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.calendar__month {
+  margin: 0;
+  font-family: var(--label);
+  font-size: 1.15rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plum);
+}
+
+.calendar__nav {
+  width: 2.1rem;
+  height: 2.1rem;
+  font-size: 0.95rem;
+  color: var(--plum);
+  background: transparent;
+  border: 1px solid rgba(88, 83, 108, 0.45);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.calendar__nav:hover { color: var(--paper); background: var(--plum); }
+.calendar__nav:focus-visible { outline: 2px solid var(--lilac); outline-offset: 2px; }
+
+.calendar__grid {
+  display: grid;
+  /* minmax(0,…) not 1fr: 1fr floors at min-content, so a long game title would
+     widen its column and push Saturday off the screen. */
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  background: rgba(88, 83, 108, 0.22);
+  border: 1px solid rgba(88, 83, 108, 0.22);
+}
+
+.calendar__weekday {
+  padding: 0.35rem 0;
+  font-family: var(--label);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  color: var(--lilac);
+  background: var(--paper);
+}
+
+.calendar__cell {
+  position: relative;
+  min-width: 0;
+  min-height: 3.4rem;
+  padding: 0.2rem 0.15rem 0.25rem;
+  background: #fffdf7;
+}
+
+.calendar__cell.is-empty { background: var(--paper); }
+
+.calendar__day {
+  display: block;
+  font-family: var(--label);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.calendar__cell.is-today .calendar__day {
+  color: var(--paper);
+  background: var(--coral);
+  border-radius: 999px;
+}
+
+/* A game on a day. Too narrow for a title at this width, so the bar carries the
+   colour and the popover carries the words. */
+.calendar__event {
+  display: block;
+  min-width: 0;
+  margin-top: 0.15rem;
+  padding: 0.12rem 0.2rem;
+  overflow: hidden;
+  font-family: var(--label);
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--paper);
+  background: var(--plum);
+  border-radius: 2px;
+}
+
+.calendar__event:hover,
+.calendar__event:focus-visible { color: var(--paper); background: var(--coral); }
+
+/* The details. Shown on hover, on keyboard focus, and on tap — a phone has no
+   hover, and a tap on the link reveals it before a second tap follows through. */
+.calendar__pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.3rem);
+  z-index: 30;
+  display: none;
+  width: max-content;
+  max-width: 13rem;
+  padding: 0.6rem 0.7rem;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: 0.82rem;
+  letter-spacing: 0;
+  line-height: 1.35;
+  white-space: normal;
+  text-overflow: clip;
+  color: var(--ink);
+  background: var(--paper-alt);
+  border: 1px solid var(--plum);
+  border-radius: 2px;
+  box-shadow: 0 6px 18px rgba(31, 39, 48, 0.2);
+}
+
+.calendar__pop strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--plum);
+}
+
+.calendar__pop span { display: block; color: var(--ink-soft); }
+
+.calendar__go {
+  margin-top: 0.35rem;
+  font-family: var(--label);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--coral) !important;
+}
+
+.calendar__event:hover .calendar__pop,
+.calendar__event:focus .calendar__pop,
+.calendar__event:focus-within .calendar__pop { display: block; }
+
+/* Near the edges the popover would overflow the sheet, so the first and last
+   columns anchor to their own side instead of centring. */
+.calendar__cell:nth-child(7n + 1) .calendar__pop,
+.calendar__cell:nth-child(7n + 2) .calendar__pop { left: 0; transform: none; }
+
+.calendar__cell:nth-child(7n),
+.calendar__cell:nth-child(7n + 6) { position: relative; }
+
+.calendar__cell:nth-child(7n) .calendar__pop,
+.calendar__cell:nth-child(7n + 6) .calendar__pop { left: auto; right: 0; transform: none; }
+
+.calendar__note {
+  margin: 0.9rem 0 0;
+  font-size: 0.88rem;
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 30rem) {
+  .calendar__cell { min-height: 4.4rem; }
+  .calendar__event { font-size: 0.68rem; padding: 0.18rem 0.3rem; }
+  .calendar__weekday { font-size: 0.76rem; }
+}

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=24">
+<link rel="stylesheet" href="styles.css?v=27">
 </head>
 <body>
 <main class="sheet">
@@ -40,16 +40,38 @@
       <p class="lede" id="chooser-lede" hidden></p>
 
       <div class="filterbar">
-        <button type="button" class="filters__toggle" id="filters-toggle"
-                aria-expanded="false" aria-controls="filters">
-          <span>FILTER</span>
-          <span class="filters__active" id="filters-active" hidden></span>
-          <span class="filters__caret" aria-hidden="true">+</span>
-        </button>
+        <div class="filterbar__row">
+          <button type="button" class="filters__toggle" id="filters-toggle"
+                  aria-expanded="false" aria-controls="filters">
+            <span>FILTER</span>
+            <span class="filters__active" id="filters-active" hidden></span>
+            <span class="filters__caret" aria-hidden="true">+</span>
+          </button>
+
+          <button type="button" class="viewtoggle" id="view-toggle"
+                  aria-pressed="false" aria-controls="calendar">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+              <path d="M3 10h18M8 3v4M16 3v4"></path>
+            </svg>
+            <span class="viewtoggle__label">CALENDAR</span>
+          </button>
+        </div>
         <div class="filters" id="filters" role="group" aria-label="Filter the tables" hidden></div>
       </div>
 
       <div class="tarots" id="chooser-list"></div>
+
+      <!-- Month view. Built from the same filtered set as the tiles. -->
+      <section class="calendar" id="calendar" hidden aria-label="Games by month">
+        <div class="calendar__head">
+          <button type="button" class="calendar__nav" id="cal-prev" aria-label="Previous month">&#8592;</button>
+          <h3 class="calendar__month" id="cal-month" role="status" aria-live="polite"></h3>
+          <button type="button" class="calendar__nav" id="cal-next" aria-label="Next month">&#8594;</button>
+        </div>
+        <div class="calendar__grid" id="cal-grid"></div>
+        <p class="calendar__note" id="cal-note"></p>
+      </section>
 
       <p class="chooser__empty" id="chooser-empty" hidden>
         Nothing matches that combination.
@@ -176,7 +198,7 @@
       <p class="lede" id="pay-lede"></p>
       <a class="pay" id="pay-link" href="#" rel="noopener" hidden></a>
       <p class="hint" id="pay-note"></p>
-      <a class="calendar" id="calendar-link" download hidden>ADD TO CALENDAR</a>
+      <a class="ics-link" id="calendar-link" download hidden>ADD TO CALENDAR</a>
       <p class="ref">YOUR REFERENCE · <span id="ref-shown"></span></p>
     </section>
 
@@ -196,7 +218,7 @@
   </footer>
 
 </main>
-<script src="data.js?v=24"></script>
-<script src="app.js?v=24"></script>
+<script src="data.js?v=27"></script>
+<script src="app.js?v=27"></script>
 </body>
 </html>

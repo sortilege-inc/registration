@@ -175,6 +175,7 @@ function showChooser() {
       if (values && values.size) next.set(group.key, [...values].join(','));
       else next.delete(group.key);
     }
+    // `view` is set by the view toggle; a filter change must not drop it.
     const query = next.toString();
     history.replaceState(history.state, '', query ? `?${query}` : location.pathname);
   }
@@ -328,16 +329,42 @@ function showChooser() {
     return a;
   }
 
+  const shownEvents = () => all.filter(([, ev]) => matches(ev));
+
+  // ---- grid or month ----
+  const viewToggle = document.getElementById('view-toggle');
+  const calendar = initCalendar({ shownEvents });
+  let calendarOpen = params.get('view') === 'calendar';
+
+  function setView(open) {
+    calendarOpen = open;
+    calendar.section.hidden = !open;
+    list.hidden = open;
+    viewToggle.setAttribute('aria-pressed', String(open));
+    viewToggle.classList.toggle('is-on', open);
+    // The empty state belongs to whichever view is showing.
+    empty.hidden = shownEvents().length > 0;
+    if (open) calendar.render();
+    const next = new URLSearchParams(location.search);
+    if (open) next.set('view', 'calendar'); else next.delete('view');
+    const query = next.toString();
+    history.replaceState(history.state, '', query ? `?${query}` : location.pathname);
+  }
+
+  viewToggle.addEventListener('click', () => setView(!calendarOpen));
+
   function render() {
-    const shown = all.filter(([, ev]) => matches(ev));
+    const shown = shownEvents();
     list.textContent = '';
     for (const [key, ev] of shown) list.append(tile(key, ev));
 
     empty.hidden = shown.length > 0;
+    if (calendarOpen) calendar.render();
   }
 
   render();
   syncToggle();
+  setView(calendarOpen);
 
   // A link that named a table we no longer have should say so. The lede is
   // hidden by default — the chooser opens straight on the filters — so it has
@@ -349,6 +376,163 @@ function showChooser() {
     lede.hidden = false;
   }
   chooser.hidden = false;
+}
+
+/* ---------- Calendar ---------- */
+// A month grid over the same filtered set the tiles show. Only events with a
+// `starts` can be placed — the recurring online tables say "Bi-weekly Sundays"
+// and never name a date, so the note under the grid accounts for them rather
+// than letting them vanish silently.
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+/** Local Y/M/D for a wall-clock string, with no timezone in the way. */
+function localDate(stamp) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(stamp || '');
+  return m ? { y: +m[1], m: +m[2] - 1, d: +m[3] } : null;
+}
+
+/**
+ * Which days of `year`/`month` this event falls on.
+ * Handles the one RRULE shape in use — FREQ=WEEKLY with an INTERVAL — so a
+ * fortnightly campaign shows every sitting rather than only its first.
+ */
+function occurrencesIn(ev, year, month) {
+  const start = localDate(ev.starts);
+  if (!start) return [];
+  const first = new Date(start.y, start.m, start.d);
+  const monthStart = new Date(year, month, 1);
+  const monthEnd = new Date(year, month + 1, 0);
+
+  const weekly = /FREQ=WEEKLY/.test(ev.repeat || '');
+  if (!weekly) {
+    return first >= monthStart && first <= monthEnd ? [first.getDate()] : [];
+  }
+
+  const every = Number((/INTERVAL=(\d+)/.exec(ev.repeat) || [])[1]) || 1;
+  const step = every * 7 * 86400000;
+  const days = [];
+  // Walk from the first sitting; stop a month past the one on screen.
+  for (let t = first.getTime(); t <= monthEnd.getTime(); t += step) {
+    const when = new Date(t);
+    if (when >= monthStart && when <= monthEnd) days.push(when.getDate());
+  }
+  return days;
+}
+
+function initCalendar({ shownEvents, onMonthRender }) {
+  const section = document.getElementById('calendar');
+  const grid = document.getElementById('cal-grid');
+  const label = document.getElementById('cal-month');
+  const note = document.getElementById('cal-note');
+  const today = new Date();
+  let year = today.getFullYear();
+  let month = today.getMonth();
+
+  function detailLines(ev) {
+    return [ev.system, ev.hours, ev.where, ev.free ? 'Free' : costLine(ev)]
+      .filter(Boolean);
+  }
+
+  function render() {
+    const events = shownEvents();
+    label.textContent = `${MONTHS[month]} ${year}`;
+    grid.textContent = '';
+
+    for (const day of WEEKDAYS) {
+      const head = document.createElement('span');
+      head.className = 'calendar__weekday';
+      head.setAttribute('aria-hidden', 'true');
+      head.textContent = day;
+      grid.append(head);
+    }
+
+    // Placed by day number, so a day with two games shows both.
+    const byDay = new Map();
+    for (const [key, ev] of events) {
+      for (const day of occurrencesIn(ev, year, month)) {
+        if (!byDay.has(day)) byDay.set(day, []);
+        byDay.get(day).push([key, ev]);
+      }
+    }
+
+    const lead = new Date(year, month, 1).getDay();
+    const total = new Date(year, month + 1, 0).getDate();
+    for (let i = 0; i < lead; i += 1) {
+      const blank = document.createElement('span');
+      blank.className = 'calendar__cell is-empty';
+      grid.append(blank);
+    }
+
+    for (let day = 1; day <= total; day += 1) {
+      const cell = document.createElement('div');
+      cell.className = 'calendar__cell';
+      if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+        cell.classList.add('is-today');
+      }
+
+      const number = document.createElement('span');
+      number.className = 'calendar__day';
+      number.textContent = String(day);
+      cell.append(number);
+
+      for (const [key, ev] of byDay.get(day) || []) {
+        const chip = document.createElement('a');
+        chip.className = 'calendar__event';
+        const carry = new URLSearchParams();
+        carry.set('event', key);
+        if (src) carry.set('src', src);
+        chip.href = `?${carry}`;
+        chip.textContent = ev.title || key;
+
+        // The details on hover, and on tap, since a phone has no hover. The
+        // popover is inside the link so a tap reveals it and a second tap on
+        // the same target follows through.
+        const pop = document.createElement('span');
+        pop.className = 'calendar__pop';
+        const title = document.createElement('strong');
+        title.textContent = ev.title || key;
+        pop.append(title);
+        for (const line of detailLines(ev)) {
+          const row = document.createElement('span');
+          row.textContent = line;
+          pop.append(row);
+        }
+        const go = document.createElement('span');
+        go.className = 'calendar__go';
+        go.textContent = 'Open →';
+        pop.append(go);
+        chip.append(pop);
+        chip.setAttribute('aria-label', `${ev.title || key} — ${detailLines(ev).join(', ')}`);
+
+        cell.append(chip);
+      }
+      grid.append(cell);
+    }
+
+    const undated = events.filter(([, ev]) => !ev.starts);
+    note.textContent = undated.length
+      ? `${undated.length} ${undated.length === 1 ? 'table runs' : 'tables run'} to a recurring schedule with no fixed date, so ${undated.length === 1 ? 'it is' : 'they are'} not on the grid: ${undated.map(([, ev]) => ev.title).join(', ')}.`
+      : '';
+    note.hidden = !note.textContent;
+
+    if (onMonthRender) onMonthRender();
+  }
+
+  document.getElementById('cal-prev').addEventListener('click', () => {
+    month -= 1;
+    if (month < 0) { month = 11; year -= 1; }
+    render();
+  });
+  document.getElementById('cal-next').addEventListener('click', () => {
+    month += 1;
+    if (month > 11) { month = 0; year += 1; }
+    render();
+  });
+
+  return { render, section };
 }
 
 /* ---------- Question building ---------- */
