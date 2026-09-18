@@ -55,20 +55,20 @@ body {
   color: var(--paper);
 }
 
+/* Full bleed: the art runs the full width of the sheet with nothing above or
+   below it, so it meets the coral panel directly. */
 .hero__art {
-  padding: 0.6rem 1rem 0;
+  padding: 0;
+  font-size: 0;
 }
 
 .hero__art img {
   display: block;
   width: 100%;
+  /* Natural height, uncapped: the art is full width and unscaled. Every cover in
+     the set is landscape or near-square, so nothing runs away — but a PORTRAIT
+     cover would be tall here, which is why the README asks for wide art. */
   height: auto;
-  /* Event covers come in every shape — a portrait quickstart cover, a square
-     poster, a landscape plate. Cap the height and letterbox rather than crop,
-     so a cover's own title lockup is never cut off and a tall one does not eat
-     the screen before the reader reaches the form. The coral shows through. */
-  max-height: 22vh;
-  object-fit: contain;
   mix-blend-mode: multiply;
 }
 
@@ -77,7 +77,7 @@ body {
    an event whose art is a photo can set plainArt in data.js and keep it. */
 .hero__art.is-plain img { mix-blend-mode: normal; }
 
-.hero__body { padding: 0.6rem 1.5rem 1.2rem; }
+.hero__body { padding: 1rem 1.5rem 1.2rem; }
 
 .hero h1 {
   margin: 0;
@@ -260,8 +260,7 @@ a:hover { color: var(--coral); }
 .tile { width: 3rem; height: auto; display: block; }
 
 @media (min-width: 40rem) {
-  .hero__art { padding: 1.1rem 2.5rem 0; }
-  .hero__body { padding: 0.8rem 2.5rem 1.8rem; }
+  .hero__body { padding: 1.2rem 2.5rem 1.8rem; }
   .sec, .submit-bar, .foot { padding-left: 2.5rem; padding-right: 2.5rem; }
   .sec { padding-top: 2.5rem; padding-bottom: 2.75rem; }
 }
@@ -758,6 +757,49 @@ a:hover { color: var(--coral); }
 /* ---- filter bar ---- */
 
 
+/* ---- collapse control ---- */
+
+.filterbar {
+  margin: 0 0 1.3rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid rgba(88, 83, 108, 0.3);
+}
+
+.filters__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  font-family: var(--label);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+  background: #fffdf7;
+  border: 1px solid rgba(31, 39, 48, 0.28);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.filters__toggle:hover { color: var(--plum); border-color: var(--plum); }
+.filters__toggle:focus-visible { outline: 2px solid var(--lilac); outline-offset: 2px; }
+
+/* Something is filtering while the bar is shut, so say how many. */
+.filters__toggle.is-active { color: var(--paper); background: var(--plum); border-color: var(--plum); }
+
+.filters__active {
+  display: grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  font-size: 0.72rem;
+  color: var(--paper);
+  background: var(--coral);
+  border-radius: 999px;
+}
+
+.filters__caret { font-size: 1rem; line-height: 1; }
+
 /* Two rows: every heading, then every set of choices. The grid fills row by
    row, so app.js appends all the labels and then all the chip groups. */
 .filters {
@@ -765,9 +807,7 @@ a:hover { color: var(--coral); }
   grid-template-columns: repeat(var(--filter-cols, 3), 1fr);
   align-items: start;
   gap: 0.4rem 0.6rem;
-  margin: 0 0 1.3rem;
-  padding-bottom: 1.2rem;
-  border-bottom: 1px solid rgba(88, 83, 108, 0.3);
+  margin: 1rem 0 0;
 }
 
 /* Stacked inside each column: three side-by-side chip sets do not fit a phone,

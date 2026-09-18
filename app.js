@@ -179,6 +179,7 @@ function showChooser() {
         if (input.checked) set.add(value); else set.delete(value);
         if (set.size) picked.set(group.key, set); else picked.delete(group.key);
         syncUrl();
+        syncToggle();
         render();
       });
       const span = document.createElement('span');
@@ -191,10 +192,34 @@ function showChooser() {
   // Headings first, then the choices: grid fills row by row.
   for (const chips of chipSets) bar.append(chips);
 
+  // ---- collapse ----
+  // Shut by default: most people want the tables, not the controls. It opens
+  // itself when the URL arrives with a filter already applied, since otherwise
+  // a short list would have no visible explanation.
+  const toggle = document.getElementById('filters-toggle');
+  const active = document.getElementById('filters-active');
+
+  function setOpen(open) {
+    bar.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.filters__caret').textContent = open ? '–' : '+';
+  }
+
+  function syncToggle() {
+    const chosen = [...picked.values()].reduce((n, set) => n + set.size, 0);
+    active.hidden = chosen === 0;
+    active.textContent = String(chosen);
+    toggle.classList.toggle('is-active', chosen > 0);
+  }
+
+  toggle.addEventListener('click', () => setOpen(bar.hidden));
+  setOpen(picked.size > 0);
+
   document.getElementById('filters-clear').addEventListener('click', () => {
     picked.clear();
     bar.querySelectorAll('input[type="checkbox"]').forEach((i) => { i.checked = false; });
     syncUrl();
+    syncToggle();
     render();
   });
 
@@ -282,6 +307,7 @@ function showChooser() {
   }
 
   render();
+  syncToggle();
 
   if (eventKey) {
     document.getElementById('chooser-lede').textContent =

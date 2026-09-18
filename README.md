@@ -259,11 +259,15 @@ photograph under it collapses to a single coral tone, so those events set
 itself, so a cover carrying its own wordmark says everything twice and constrains how the
 image can be cropped.
 
-Covers still come in every shape — wide plates, squares, the occasional portrait — so the
-hero is capped at `52vh` and `object-fit: contain`ed rather than cropped: nothing is cut,
-the coral shows through the letterbox, and a tall image cannot eat the screen before the
-reader reaches the form. Tarot tiles crop to a 3:4 window with `object-fit: cover`, so
+The hero image is **full bleed**: the full width of the sheet, its natural height, and no
+padding above or below. There is no height cap, so **prefer wide art** — a portrait cover
+would be very tall here. Tarot tiles crop to a 3:4 window with `object-fit: cover`, so
 centre-weighted art works best there.
+
+Trim the white margin off line art before adding it. Under `multiply` the white is
+invisible, so any margin baked into the file reads as empty space around the art with no
+way to tell from the page why it is there. `magick in.png -fuzz 2% -trim +repage out.png`
+took The Filth from 2500x2000 to 2413x1240 — the same picture, 107px shorter on a phone.
 
 An `art` path that 404s is not fatal: the hero falls back to the house line art and the
 tile falls back to it too, both with a console warning. So an event entry can be added
