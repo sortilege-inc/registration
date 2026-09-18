@@ -34,10 +34,13 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   plainArt: true,                   // optional; see "Hero art" below
   pitch: 'One paragraph.',
   status: 'Two seats left',
-  when: 'Sat 3 Oct, 7pm',
+  when: 'Sat 3 Oct',                // the date
+  hours: '7:00-10:00 PM',           // the time, on its own line
   length: '3 hours',
-  where: 'Online (Discord)',
-  price: '$35 / session',
+  where: 'Belgian Club',            // short name; use the map link for the rest
+  whereUrl: 'https://www.google.com/maps/search/?api=1&query=...',
+  address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',  // for the .ics
+  price: { amount: '35 USD', per: 'session' },
 
   startplaying: 'https://startplaying.games/adventure/…',  // OR
   payment: 'https://buy.stripe.com/…',                     // OR
@@ -71,6 +74,9 @@ one value per key:
 | `shape` | `one-shot`, `multi-session` |
 | `place` | `online`, `winnipeg`, `minneapolis` |
 
+The bar renders as two rows — every heading, then every set of choices — with the chips
+stacked inside each column, because three side-by-side chip sets do not fit a phone.
+
 Picks are **OR'd within a group and AND'd across groups**; a group with nothing picked
 does not constrain. A button only renders when at least one event actually carries its
 value, and a group whose options all collapse to one is dropped entirely — so
@@ -85,10 +91,13 @@ that are not in the vocabulary are ignored rather than filtering everything away
 
 Exactly one of these, or none:
 
+- **`startplaying`** — the listing URL. A table sold through StartPlaying.games is booked
+  and scheduled there, so **it never shows the form at all**: the page becomes a handoff
+  explaining that a free StartPlaying account is needed, with the listing's details and a
+  button through to it. Asking for a name and an email here would collect something
+  nobody acts on and put a pointless step in front of the listing.
 - **`free: true`** — no charge. The confirmation says there is nothing to pay, and the
-  Cost row reads "Free" with no `price` needed. Wins over everything else.
-- **`startplaying`** — the listing URL. Anything sold through StartPlaying.games is
-  booked and paid for there, so the confirmation hands them straight over.
+  Cost row reads "Free" with no `price` needed.
 - **`payment`** — a Stripe Payment Link, for paid events **not** on StartPlaying. A
   Payment Link is a plain URL, so this site needs no server and holds no Stripe key of
   any kind. The registration's reference and email are appended as `client_reference_id`
@@ -98,6 +107,9 @@ Exactly one of these, or none:
 
 Ticking the cost-assistance switch suppresses the button on the paid paths: nobody who
 just asked about affording it should be handed a bill. Free events have no such switch.
+
+`price` is an object so the tile token and the summary line cannot drift: the tile shows
+`amount` alone ("35 USD") and the summary builds "35 USD / session" from both halves.
 
 ### Seats and the waitlist
 
@@ -165,6 +177,13 @@ progress bar appears only once there is more than one step.
 
 A `chips` field with `writeIn` also emits `<name>-other`. A `tags` field emits one
 hidden input per tag under the same name, so `FormData.getAll` picks up the whole set.
+
+### Tile tokens
+
+Each tile carries a short stack of tokens down the top-left of its art, colour-coded by
+category: coral for "act now" (Waitlist), teal for Free, plum for place (`WPG`, `MPLS`,
+`SP.G`), gold for money (the price `amount`). Being full outranks being free — a free
+table nobody can join is not a free table.
 
 ## Email backend — SHARED, DO NOT DEPLOY FROM HERE
 

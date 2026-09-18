@@ -32,8 +32,8 @@ window.FILTERS = [
     key: 'place', label: 'WHERE',
     options: [
       ['online', 'Online'],
-      ['winnipeg', 'In person: Winnipeg'],
-      ['minneapolis', 'In person: Minneapolis'],
+      ['winnipeg', 'WPG'],
+      ['minneapolis', 'MPLS'],
     ],
   },
 ];
@@ -53,8 +53,8 @@ window.EVENTS = {
     status: 'One seat left',
     when: 'Bi-weekly, Sundays',
     length: '3–4 hours',
-    where: 'Online (Foundry VTT + Discord)',
-    price: '$32 / session',
+    where: 'Online',
+    price: { amount: '32 USD', per: 'session' },
 
     // HOW THE SEAT GETS PAID FOR. Exactly one of these two, or neither:
     //
@@ -91,8 +91,8 @@ window.EVENTS = {
     status: 'Not yet started',
     when: 'Bi-weekly, Wednesdays',
     length: '3 hours',
-    where: 'Online (Discord)',
-    price: '$35 / session',
+    where: 'Online',
+    price: { amount: '35 USD', per: 'session' },
     startplaying: 'https://startplaying.games/adventure/cmsukcr0l00lplf04l20padwp',
     payment: null,
     seats: null,
@@ -108,16 +108,17 @@ window.EVENTS = {
     art: 'assets/art/game-troika-well.jpg',
     pitch: 'After falling down a strange well, players explore a surreal dungeon in search of escape and redemption.',
     status: 'One-shot',
-    when: 'Friday 2 October · 4:00–7:00 PM (Winnipeg)',
+    when: 'Friday 2 October',
+    hours: '4:00–7:00 PM (Winnipeg)',
     length: '3 hours',
-    where: 'Online (Discord)',
+    where: 'Online',
     // Online, so the .ics needs a real instant rather than floating local time:
     // `zone` is the zone the wall-clock above is written in, and the builder
     // converts to UTC so a player in another city gets the right hour.
     starts: '2026-10-02T16:00',
     ends: '2026-10-02T19:00',
     zone: 'America/Winnipeg',
-    price: '$35 / session',
+    price: { amount: '35 USD', per: 'session' },
     startplaying: 'https://startplaying.games/adventure/cmsuncli60006l404ybpsvxxn',
     payment: null,
     seats: null,
@@ -139,9 +140,14 @@ window.EVENTS = {
     art: 'assets/art/event-root-hacksaw-dell.jpg',
     plainArt: true,
     pitch: 'A beginner-friendly, free one-shot of the Root RPG.',
-    when: 'Tuesday 22 September · 6:00–9:00 PM',
+    when: 'Tuesday 22 September',
+    hours: '6:00–9:00 PM',
     length: '3 hours',
-    where: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
+    where: 'Belgian Club',
+    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Belgian+Club%2C+407+Provencher+Blvd%2C+Winnipeg',
+    // The page shows `where` and links it to the map; a calendar entry wants the
+    // street, since that is what a phone navigates from.
+    address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
     free: true,
     // Local wall-clock with no `zone`: the .ics carries floating time, which is
     // what you want for an in-person event where everyone is in the same city.
@@ -163,9 +169,14 @@ window.EVENTS = {
     art: 'assets/art/event-l5r-kyotei-castle.jpg',
     plainArt: true,
     pitch: 'A beginner-friendly, free introduction to the Fantasy Flight/EDGE Studios edition of the Legend of the Five Rings RPG.',
-    when: 'Tuesday 29 September · 6:00–9:00 PM',
+    when: 'Tuesday 29 September',
+    hours: '6:00–9:00 PM',
     length: '3 hours',
-    where: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
+    where: 'Belgian Club',
+    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Belgian+Club%2C+407+Provencher+Blvd%2C+Winnipeg',
+    // The page shows `where` and links it to the map; a calendar entry wants the
+    // street, since that is what a phone navigates from.
+    address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
     free: true,
     // Local wall-clock with no `zone`: the .ics carries floating time, which is
     // what you want for an in-person event where everyone is in the same city.
@@ -187,9 +198,14 @@ window.EVENTS = {
     art: 'assets/art/event-arkham-big-easy.jpg',
     plainArt: true,
     pitch: 'A beginner-friendly, free introduction to the Arkham Horror RPG.',
-    when: 'Tuesday 6 October · 6:00–9:00 PM',
+    when: 'Tuesday 6 October',
+    hours: '6:00–9:00 PM',
     length: '3 hours',
-    where: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
+    where: 'Belgian Club',
+    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Belgian+Club%2C+407+Provencher+Blvd%2C+Winnipeg',
+    // The page shows `where` and links it to the map; a calendar entry wants the
+    // street, since that is what a phone navigates from.
+    address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
     free: true,
     // Local wall-clock with no `zone`: the .ics carries floating time, which is
     // what you want for an in-person event where everyone is in the same city.

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
 <main class="sheet">
@@ -34,14 +34,10 @@
   <!-- Shown when no ?event= key is given, or the key is not one we know.
        Filter bar and tiles are both built from window.EVENTS by app.js. -->
   <section class="chooser" id="chooser" hidden>
-    <div class="sec">
-      <div class="sec__head">
-        <h2>Which Table?</h2>
-      </div>
-      <p class="lede" id="chooser-lede">Pick the game you are signing up for.</p>
+    <div class="sec sec--chooser">
+      <p class="lede" id="chooser-lede" hidden></p>
 
       <div class="filters" id="filters" role="group" aria-label="Filter the tables"></div>
-      <p class="filters__count" id="filters-count" role="status" aria-live="polite"></p>
 
       <div class="tarots" id="chooser-list"></div>
 
@@ -49,6 +45,31 @@
         Nothing matches that combination.
         <button type="button" class="linkish" id="filters-clear">Show everything</button>
       </p>
+    </div>
+  </section>
+
+  <!-- StartPlaying tables are booked there, not here: no form, just the handoff. -->
+  <section class="handoff" id="handoff" hidden>
+    <div class="sec">
+      <p class="kicker">BOOKED ELSEWHERE</p>
+      <h2 class="handoff__title">This One Runs On StartPlaying</h2>
+
+      <div class="booking" id="handoff-booking">
+        <p class="booking__kicker">THE TABLE</p>
+        <p class="booking__title" id="handoff-event"></p>
+        <dl class="booking__meta" id="handoff-meta"></dl>
+      </div>
+
+      <p class="lede">
+        Seats for this game are sold and scheduled through StartPlaying.games, so
+        there is nothing to fill in here. You will need a StartPlaying account —
+        they are free — and then you can claim your seat on the listing.
+      </p>
+
+      <a class="pay" id="handoff-link" href="#" target="_blank" rel="noopener">BOOK ON STARTPLAYING →</a>
+      <p class="hint">Opens StartPlaying in a new tab.</p>
+
+      <a class="booking__swap" id="handoff-swap" href="?">Not this one? Pick another table</a>
     </div>
   </section>
 
@@ -147,7 +168,7 @@
   </footer>
 
 </main>
-<script src="data.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="data.js?v=8"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

@@ -56,7 +56,7 @@ body {
 }
 
 .hero__art {
-  padding: 1.25rem 1rem 0;
+  padding: 0.6rem 1rem 0;
 }
 
 .hero__art img {
@@ -67,7 +67,7 @@ body {
      poster, a landscape plate. Cap the height and letterbox rather than crop,
      so a cover's own title lockup is never cut off and a tall one does not eat
      the screen before the reader reaches the form. The coral shows through. */
-  max-height: 52vh;
+  max-height: 22vh;
   object-fit: contain;
   mix-blend-mode: multiply;
 }
@@ -77,22 +77,22 @@ body {
    an event whose art is a photo can set plainArt in data.js and keep it. */
 .hero__art.is-plain img { mix-blend-mode: normal; }
 
-.hero__body { padding: 0.75rem 1.5rem 2.5rem; }
+.hero__body { padding: 0.6rem 1.5rem 1.2rem; }
 
 .hero h1 {
   margin: 0;
   font-family: var(--display);
   font-weight: 900;
-  font-size: clamp(2rem, 8.5vw, 2.9rem);
-  line-height: 1.08;
+  font-size: clamp(1.7rem, 7vw, 2.4rem);
+  line-height: 1.06;
   letter-spacing: 0.005em;
   text-wrap: balance;
 }
 
 .hero p {
-  margin: 1.25rem 0 0;
-  font-size: 1.05rem;
-  line-height: 1.4;
+  margin: 0.7rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.32;
   color: rgba(240, 235, 221, 0.95);
 }
 
@@ -100,7 +100,7 @@ body {
   width: 4.5rem;
   height: 3px;
   background: var(--gold);
-  margin: 1.35rem 0 0;
+  margin: 0.7rem 0 0;
 }
 
 /* ---------- Shared type ---------- */
@@ -260,8 +260,8 @@ a:hover { color: var(--coral); }
 .tile { width: 3rem; height: auto; display: block; }
 
 @media (min-width: 40rem) {
-  .hero__art { padding: 2rem 2.5rem 0; }
-  .hero__body { padding: 1rem 2.5rem 3rem; }
+  .hero__art { padding: 1.1rem 2.5rem 0; }
+  .hero__body { padding: 0.8rem 2.5rem 1.8rem; }
   .sec, .submit-bar, .foot { padding-left: 2.5rem; padding-right: 2.5rem; }
   .sec { padding-top: 2.5rem; padding-bottom: 2.75rem; }
 }
@@ -757,13 +757,23 @@ a:hover { color: var(--coral); }
 
 /* ---- filter bar ---- */
 
+
+/* Two rows: every heading, then every set of choices. The grid fills row by
+   row, so app.js appends all the labels and then all the chip groups. */
 .filters {
-  margin: 0 0 1.1rem;
-  padding-bottom: 1.1rem;
+  display: grid;
+  grid-template-columns: repeat(var(--filter-cols, 3), 1fr);
+  align-items: start;
+  gap: 0.4rem 0.6rem;
+  margin: 0 0 1.3rem;
+  padding-bottom: 1.2rem;
   border-bottom: 1px solid rgba(88, 83, 108, 0.3);
 }
 
-.filters__row + .filters__row { margin-top: 0.8rem; }
+/* Stacked inside each column: three side-by-side chip sets do not fit a phone,
+   and stacking keeps the whole bar to the two rows asked for. */
+.filters .chips { flex-direction: column; align-items: stretch; gap: 0.35rem; }
+.filters .chip span { display: block; text-align: center; }
 
 .filters__label {
   display: block;
@@ -779,14 +789,6 @@ a:hover { color: var(--coral); }
 .filters .chip span {
   padding: 0.38rem 0.7rem;
   font-size: 0.85rem;
-}
-
-.filters__count {
-  margin: 0 0 1.1rem;
-  font-family: var(--label);
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  color: var(--ink-soft);
 }
 
 .chooser__empty { margin: 0; color: var(--ink-soft); }
@@ -845,20 +847,33 @@ a:hover { color: var(--coral); }
 .tarot__frame.is-fallback { background: var(--coral); }
 .tarot__frame.is-fallback img { object-fit: contain; padding: 0.5rem; mix-blend-mode: multiply; }
 
-.tarot__badge {
+ /* A short stack down the top-left of the art: how it stands, where it is,
+   what it costs. Colour carries the category — coral for "act now", teal for
+   free, plum for place, gold for money. */
+.tarot__tokens {
   position: absolute;
   left: 0;
-  top: 0.6rem;
-  padding: 0.24rem 0.5rem;
+  top: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.tarot__token {
+  padding: 0.2rem 0.45rem;
   font-family: var(--label);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--paper);
-  background: var(--teal);
+  background: var(--plum);
 }
 
-.tarot__badge.is-full { background: var(--coral); }
+.tarot__token.is-free { background: var(--teal); }
+.tarot__token.is-full { background: var(--coral); }
+.tarot__token.is-place { background: var(--plum); }
+.tarot__token.is-cost { color: var(--ink); background: var(--gold); }
 
 .tarot__body { padding: 0.6rem 0.35rem 0.25rem; }
 
@@ -884,14 +899,21 @@ a:hover { color: var(--coral); }
 }
 
 .tarot__when {
-  margin: 0 0 0.15rem;
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.tarot__hours {
+  margin: 0;
   font-size: 0.78rem;
   line-height: 1.25;
   color: var(--ink);
 }
 
 .tarot__where {
-  margin: 0;
+  margin: 0.15rem 0 0;
   font-size: 0.76rem;
   line-height: 1.25;
   color: var(--ink-soft);
@@ -961,3 +983,30 @@ a:hover { color: var(--coral); }
 }
 
 .calendar:hover { color: var(--paper); background: var(--plum); }
+
+/* ---------- Chooser section ---------- */
+/* Opens straight on the filters: no heading, no lede, no rule above them. */
+
+.sec--chooser { padding-top: 1.4rem; border-top: 0; }
+
+/* ---------- StartPlaying handoff ---------- */
+
+.handoff .kicker { margin-bottom: 0.4rem; }
+
+.handoff__title {
+  margin: 0 0 1.3rem;
+  font-family: var(--label);
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--plum);
+}
+
+.handoff .booking { margin-bottom: 1.3rem; }
+.handoff .pay { margin-top: 1.3rem; }
+.handoff .booking__swap { margin-top: 1.6rem; }
+
+/* The hero is the whole welcome on a handoff; the footer belongs at the end. */
+.is-handoff .hero__body { padding-bottom: 1.4rem; }

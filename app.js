@@ -43,10 +43,20 @@ function makeRef(key) {
 
 const ref = event ? makeRef(eventKey) : '';
 
+/** "32 USD / session", or "Free". The token on a tile is the amount alone. */
+function costLine(ev) {
+  if (ev.free) return 'Free';
+  const price = ev.price;
+  if (!price) return '';
+  if (typeof price === 'string') return price;
+  return [price.amount, price.per].filter(Boolean).join(' / ');
+}
+
 /** The [term, value] rows shown in a booking summary. Blank entries drop out. */
 function bookingRows(ev) {
-  return [['System', ev.system], ['When', ev.when], ['Length', ev.length],
-          ['Where', ev.where], ['Cost', ev.free ? 'Free' : ev.price], ['Status', ev.status]]
+  return [['System', ev.system], ['When', ev.when], ['Time', ev.hours],
+          ['Length', ev.length], ['Where', ev.where], ['Cost', costLine(ev)],
+          ['Status', ev.status]]
     .filter(([, value]) => value);
 }
 
@@ -56,7 +66,17 @@ function fillMeta(dl, ev) {
     const dt = document.createElement('dt');
     dt.textContent = term;
     const dd = document.createElement('dd');
-    dd.textContent = value;
+    // A venue with a map link is worth one tap rather than a copied address.
+    if (term === 'Where' && ev.whereUrl) {
+      const link = document.createElement('a');
+      link.href = ev.whereUrl;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = value;
+      dd.append(link);
+    } else {
+      dd.textContent = value;
+    }
     dl.append(dt, dd);
   }
 }
@@ -67,6 +87,9 @@ function fillMeta(dl, ev) {
 // Filtering is faceted: OR within a group, AND across groups, and a group with
 // nothing picked does not constrain. The state lives in the URL so a filtered
 // view can be linked or turned into its own QR.
+
+/** Short markers shown on a tile, in the same vocabulary as the filters. */
+const PLACE_TOKEN = { winnipeg: 'WPG', minneapolis: 'MPLS' };
 
 /** Events in chooser order, deduplicated. */
 function orderedEvents() {
@@ -94,7 +117,6 @@ function showChooser() {
   const chooser = document.getElementById('chooser');
   const list = document.getElementById('chooser-list');
   const bar = document.getElementById('filters');
-  const count = document.getElementById('filters-count');
   const empty = document.getElementById('chooser-empty');
 
   const all = orderedEvents();
@@ -129,14 +151,17 @@ function showChooser() {
   }
 
   // ---- filter bar ----
-  for (const group of groups) {
-    const row = document.createElement('div');
-    row.className = 'filters__row';
+  // Laid out as a grid so it reads as two rows — every heading, then every set
+  // of choices — rather than three label-and-chips stacks one after another.
+  bar.style.setProperty('--filter-cols', String(groups.length));
+  const chipSets = [];
 
+  for (const group of groups) {
     const label = document.createElement('span');
     label.className = 'filters__label';
     label.id = `filter-${group.key}`;
     label.textContent = group.label;
+    bar.append(label);
 
     const chips = document.createElement('div');
     chips.className = 'chips';
@@ -161,10 +186,10 @@ function showChooser() {
       chip.append(input, span);
       chips.append(chip);
     }
-
-    row.append(label, chips);
-    bar.append(row);
+    chipSets.push(chips);
   }
+  // Headings first, then the choices: grid fills row by row.
+  for (const chips of chipSets) bar.append(chips);
 
   document.getElementById('filters-clear').addEventListener('click', () => {
     picked.clear();
@@ -204,19 +229,28 @@ function showChooser() {
       frame.append(img);
     }
 
-    // One badge, top-left of the art: the thing worth knowing at a glance. Being
-    // full outranks being free — a free table nobody can join is not a free
-    // table, and hiding that behind "Free" is the wrong way round.
+    // Tokens down the top-left of the art: how it stands, where it is, what it
+    // costs. Being full outranks being free — a free table nobody can join is
+    // not a free table, and hiding that behind "Free" is the wrong way round.
     const seats = seatState(ev);
-    const badge = seats.full ? 'Waitlist'
-      : ev.free ? 'Free'
-      : seats.cap ? `${seats.left} seats`
-      : '';
-    if (badge) {
-      const flag = document.createElement('span');
-      flag.className = `tarot__badge${seats.full ? ' is-full' : ''}`;
-      flag.textContent = badge;
-      frame.append(flag);
+    const tokens = [];
+    if (seats.full) tokens.push(['Waitlist', 'is-full']);
+    else if (ev.free) tokens.push(['Free', 'is-free']);
+    else if (seats.cap) tokens.push([`${seats.left} seats`, '']);
+    if (PLACE_TOKEN[ev.place]) tokens.push([PLACE_TOKEN[ev.place], 'is-place']);
+    if (ev.startplaying) tokens.push(['SP.G', 'is-place']);
+    if (!ev.free && ev.price?.amount) tokens.push([ev.price.amount, 'is-cost']);
+
+    if (tokens.length) {
+      const strip = document.createElement('span');
+      strip.className = 'tarot__tokens';
+      for (const [text, mod] of tokens) {
+        const flag = document.createElement('span');
+        flag.className = `tarot__token ${mod}`.trim();
+        flag.textContent = text;
+        strip.append(flag);
+      }
+      frame.append(strip);
     }
     a.append(frame);
 
@@ -231,7 +265,9 @@ function showChooser() {
     if (ev.system) body.append(make('tarot__system', ev.system));
     body.append(make('tarot__title', ev.title || key, 'h3'));
     if (ev.when) body.append(make('tarot__when', ev.when));
-    body.append(make('tarot__where', [ev.where, ev.free ? null : ev.price].filter(Boolean).join(' · ')));
+    // Hours sit under the date rather than trailing it on the same line.
+    if (ev.hours) body.append(make('tarot__hours', ev.hours));
+    if (ev.where) body.append(make('tarot__where', ev.where));
     a.append(body);
 
     return a;
@@ -243,9 +279,6 @@ function showChooser() {
     for (const [key, ev] of shown) list.append(tile(key, ev));
 
     empty.hidden = shown.length > 0;
-    count.textContent = shown.length === all.length
-      ? `${all.length} tables`
-      : `${shown.length} of ${all.length} tables`;
   }
 
   render();
@@ -708,12 +741,11 @@ form.addEventListener('submit', async (submitEvent) => {
 
 /* ---------- Confirmation ---------- */
 // Replaces the form with what they just booked, the way to pay for it, and the
-// Discord invite. How they pay depends on where the event is sold: a table
-// listed on StartPlaying is booked and paid for there, and everything else gets
-// a Stripe Payment Link — a plain URL per event, so this static site holds no
-// Stripe key and needs no server of its own. On the Stripe path the
-// registration's reference rides along as client_reference_id, which is what
-// lets a payment in the dashboard be matched back to its registration.
+// Discord invite. A paid table that is not on StartPlaying gets a Stripe Payment
+// Link — a plain URL per event, so this static site holds no Stripe key and
+// needs no server of its own — with the registration's reference riding along as
+// client_reference_id, which is what lets a payment in the dashboard be matched
+// back to its registration.
 
 function payUrl(base) {
   try {
@@ -757,22 +789,11 @@ function showConfirmation() {
   const lede = document.getElementById('pay-lede');
   const note = document.getElementById('pay-note');
 
-  // Someone who asked about cost assistance should not be handed a bill first.
+  // Someone who asked about cost assistance should not be handed a bill.
   const wantsHelp = Boolean(lastSubmission['cost-assistance']);
-  // A table listed on StartPlaying is booked and paid for there; Stripe is for
-  // the ones that are not listed. An event should carry one or the other.
-  const listing = typeof event.startplaying === 'string' ? event.startplaying : '';
-  const stripe = !listing && event.payment ? payUrl(event.payment) : null;
-  if (listing && event.payment) {
-    console.warn('Event has both a StartPlaying listing and a Stripe link; using the listing.');
-  }
-
-  const show = (label, href) => {
-    link.textContent = label;
-    link.href = href;
-    link.target = '_blank';
-    link.hidden = false;
-  };
+  // StartPlaying tables never reach this screen — they are handed off before the
+  // form — so the only paths left are free, a Stripe link, or neither yet.
+  const stripe = event.payment ? payUrl(event.payment) : null;
 
   if (event.free) {
     heading.textContent = 'Nothing To Pay';
@@ -782,15 +803,13 @@ function showConfirmation() {
     heading.textContent = 'Your Seat';
     lede.textContent = 'You asked about cost assistance, so nothing is due yet — I will write to you about that before anything is payable.';
     note.textContent = '';
-  } else if (listing) {
-    heading.textContent = 'Book Your Seat';
-    lede.textContent = `This table books through StartPlaying — claim the seat there and you are set. ${event.price || ''}`.trim();
-    show('BOOK ON STARTPLAYING →', listing);
-    note.textContent = 'Opens StartPlaying in a new tab.';
   } else if (stripe) {
     heading.textContent = 'Pay For Your Seat';
-    lede.textContent = `Your seat is held when payment clears. ${event.price || ''}`.trim();
-    show('PAY WITH CARD', stripe);
+    lede.textContent = `Your seat is held when payment clears. ${costLine(event)}`.trim();
+    link.textContent = 'PAY WITH CARD';
+    link.href = stripe;
+    link.target = '_blank';
+    link.hidden = false;
     note.textContent = 'Opens Stripe in a new tab. Your reference goes with it, so I can match the payment to this registration.';
   } else {
     heading.textContent = 'Your Seat';
@@ -869,7 +888,8 @@ function buildIcs(ev, uid) {
   ];
   if (ev.ends) lines.push(`DTEND:${stamp(ev.ends)}`);
   lines.push(`SUMMARY:${icsEscape(ev.title || 'A Sortilege table')}`);
-  if (ev.where) lines.push(`LOCATION:${icsEscape(ev.where)}`);
+  const where = ev.address || ev.where;
+  if (where) lines.push(`LOCATION:${icsEscape(where)}`);
   const description = [ev.pitch, ev.system && `System: ${ev.system}`, `Reference: ${uid}`]
     .filter(Boolean).join('\n');
   if (description) lines.push(`DESCRIPTION:${icsEscape(description)}`);
@@ -1049,9 +1069,24 @@ function initWizard() {
 
 /* ---------- Start ---------- */
 
-if (!event) {
-  showChooser();
-} else {
+/* ---------- Handoff ---------- */
+// A StartPlaying table is sold and scheduled there, so asking for a name and an
+// email here would collect something nobody acts on and put a second, pointless
+// step in front of the listing. Show what it is and send them over.
+
+function showHandoff() {
+  const handoff = document.getElementById('handoff');
+  document.getElementById('handoff-event').textContent = event.title || eventKey;
+  fillMeta(document.getElementById('handoff-meta'), event);
+  document.getElementById('handoff-link').href = event.startplaying;
+  document.getElementById('handoff-swap').href = src ? `?src=${encodeURIComponent(src)}` : '?';
+  handoff.hidden = false;
+  document.body.classList.add('is-handoff');
+}
+
+/* ---------- Start ---------- */
+
+function fillHero() {
   document.getElementById('hero-title').textContent = event.title || 'Take Your Seat';
   const system = document.getElementById('hero-system');
   if (event.system) { system.textContent = event.system; system.hidden = false; }
@@ -1069,6 +1104,15 @@ if (!event) {
     heroArt.src = event.art;
   }
   document.querySelector('.hero__art').classList.toggle('is-plain', Boolean(event.plainArt));
+}
+
+if (!event) {
+  showChooser();
+} else if (event.startplaying) {
+  fillHero();
+  showHandoff();
+} else {
+  fillHero();
 
   document.getElementById('booking-title').textContent = event.title || '';
   fillMeta(document.getElementById('booking-meta'), event);
@@ -1098,6 +1142,7 @@ if (!event) {
 
   buildQuestions(event.questions, 1);
   document.querySelectorAll('.tagselect').forEach(createTagSelect);
+
   form.hidden = false;
   initWizard();
 }
