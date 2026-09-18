@@ -841,7 +841,7 @@ a:hover { color: var(--coral); }
 
 .tarot__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-/* No cover of its own: the Sortilege mark, sized to sit rather than fill. */
+/* No cover of its own: the house line art, sized to sit rather than fill. */
 .tarot__frame.is-fallback { background: var(--coral); }
 .tarot__frame.is-fallback img { object-fit: contain; padding: 0.5rem; mix-blend-mode: multiply; }
 

@@ -30,7 +30,7 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   // never "Arkham Horror: Three Days to the Big Easy".
   title: 'A Table With A Name',
   system: 'Troika!',
-  art: 'assets/art/my-event.jpg',   // optional; falls back to the Sortilege line art
+  art: 'assets/art/my-event.jpg',   // optional; falls back to the house line art
   plainArt: true,                   // optional; see "Hero art" below
   pitch: 'One paragraph.',
   status: 'Two seats left',
@@ -230,19 +230,25 @@ log the payload to the console instead of sending.
 
 ### Hero art
 
-The hero art is multiplied onto the coral panel (`mix-blend-mode: multiply`), which is
-the right treatment for **black line work on white** — it drops the white out. A
-full-colour cover or photograph under it collapses to a single coral tone, so those
-events set `plainArt: true` to render the art as-is.
+The default hero — `assets/art/the-filth.png` — is multiplied onto the coral panel
+(`mix-blend-mode: multiply`), which is the right treatment for **black line work on
+white**: it drops the white out and leaves the ink on coral. A full-colour cover or
+photograph under it collapses to a single coral tone, so those events set
+`plainArt: true` to render the art as-is.
 
-Covers come in every shape — portrait quickstarts, square posters, landscape plates — so
-the hero image is capped at `52vh` and `object-fit: contain`ed rather than cropped. The
-whole cover stays visible, its own title lockup is never cut, the coral shows through the
-letterbox, and a tall cover cannot eat the screen before the reader reaches the form.
+**Prefer event art with no title lockup on it.** The page prints the system and the title
+itself, so a cover carrying its own wordmark says everything twice and constrains how the
+image can be cropped.
 
-An `art` path that 404s is not fatal: the hero falls back to the Sortilege line art and
-the chooser drops that card's thumbnail, both with a console warning. So an event entry
-can be added before its cover is.
+Covers still come in every shape — wide plates, squares, the occasional portrait — so the
+hero is capped at `52vh` and `object-fit: contain`ed rather than cropped: nothing is cut,
+the coral shows through the letterbox, and a tall image cannot eat the screen before the
+reader reaches the form. Tarot tiles crop to a 3:4 window with `object-fit: cover`, so
+centre-weighted art works best there.
+
+An `art` path that 404s is not fatal: the hero falls back to the house line art and the
+tile falls back to it too, both with a console warning. So an event entry can be added
+before its cover is.
 
 ### Progressive enhancement
 

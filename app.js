@@ -190,8 +190,8 @@ function showChooser() {
       img.alt = '';
       img.loading = 'lazy';
       img.addEventListener('error', () => {
-        console.warn('Event art missing, falling back to the Sortilege mark:', ev.art);
-        img.src = 'assets/art/sortilege-goliath.png';
+        console.warn('Event art missing, falling back to the house line art:', ev.art);
+        img.src = 'assets/art/the-filth.png';
         frame.classList.add('is-fallback');
       }, { once: true });
       img.src = ev.art;
@@ -200,7 +200,7 @@ function showChooser() {
       frame.classList.add('is-fallback');
       const img = document.createElement('img');
       img.alt = '';
-      img.src = 'assets/art/sortilege-goliath.png';
+      img.src = 'assets/art/the-filth.png';
       frame.append(img);
     }
 
@@ -1058,11 +1058,11 @@ if (!event) {
   document.getElementById('hero-pitch').textContent = event.pitch || '';
   const heroArt = document.getElementById('hero-art');
   if (event.art) {
-    // Fall back to the Sortilege line art rather than showing a broken image if
-    // the event's cover has not been added to assets/art yet.
+    // Fall back to the house line art rather than showing a broken image if the
+    // event's cover has not been added to assets/art yet.
     const fallback = heroArt.src;
     heroArt.addEventListener('error', () => {
-      console.warn('Event art missing, using the Sortilege line art:', event.art);
+      console.warn('Event art missing, using the house line art:', event.art);
       document.querySelector('.hero__art').classList.remove('is-plain');
       heroArt.src = fallback;
     }, { once: true });
