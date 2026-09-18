@@ -312,9 +312,14 @@ function showChooser() {
   render();
   syncToggle();
 
+  // A link that named a table we no longer have should say so. The lede is
+  // hidden by default — the chooser opens straight on the filters — so it has
+  // to be un-hidden here, not merely written to.
   if (eventKey) {
-    document.getElementById('chooser-lede').textContent =
-      'That link did not match a table I have open. Pick the game you are signing up for.';
+    const lede = document.getElementById('chooser-lede');
+    lede.textContent =
+      'That link did not match a table I have open — it may have finished, or filled. Here is everything running now.';
+    lede.hidden = false;
   }
   chooser.hidden = false;
 }
