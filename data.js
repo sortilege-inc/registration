@@ -213,6 +213,10 @@ window.EVENTS = {
   // ---- Paid campaigns at the Belgian Club ---------------------------------
 
   'terra-antarctica': {
+    // Set up and sellable, but not yet announced. `hidden` keeps it off the chooser and the calendar
+    // without touching a word of its content — the ?event= link still works,
+    // so it can be handed out directly. Delete this line to list it.
+    hidden: true,
     title: 'Terra Antarctica',
     system: 'Arkham Horror: The Roleplaying Game',
     art: 'assets/art/event-terra-antarctica.jpg',
@@ -323,6 +327,10 @@ window.EVENTS = {
     questions: [],
   },
   'motherload': {
+    // Set up and sellable, but not yet announced. `hidden` keeps it off the chooser and the calendar
+    // without touching a word of its content — the ?event= link still works,
+    // so it can be handed out directly. Delete this line to list it.
+    hidden: true,
     title: 'Once More Into the Motherload',
     system: 'Daggerheart',
     art: 'assets/art/event-motherload.jpg',

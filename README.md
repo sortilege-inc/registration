@@ -65,9 +65,19 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
 }
 ```
 
-Then add the key to `EVENT_ORDER` to place it in the chooser. An event with `hidden: true`
-stays out of the chooser entirely while remaining reachable at its own `?event=` link —
-for drafts, and for anything being tested.
+Then add the key to `EVENT_ORDER` to place it in the chooser.
+
+### Suppressing an event
+
+`hidden: true` takes an event out of **both** browsing surfaces — the tiles and the month
+view — and out of the filter options, without touching a word of its content. Its
+`?event=` link still works in full: art, details, form, payment, calendar file. So a table
+can be set up and sellable while being handed out directly rather than listed, which is
+what a game gets before it is announced. Delete the line to list it.
+
+That is different from `past: true`, which says a table has **run**: a past event also
+drops out of both surfaces, but its link lands on "this one has run" instead of taking
+registrations.
 
 ### Tables that have played
 
