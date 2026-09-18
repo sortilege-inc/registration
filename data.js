@@ -247,6 +247,73 @@ window.EVENTS = {
     taken: 0,
     questions: [],
   },
+  // ---- TEETH one-shots, online, sold on StartPlaying ----------------------
+  // Details taken from the StartPlaying listings on 2026-09-18; the listing is
+  // the source of truth for seats and scheduling, which is why `seats` is null
+  // here. Pitches are the listings' own wording.
+
+  'hogmen': {
+    title: 'Night of the Hogmen',
+    system: 'TEETH',
+    pitch: '“Hogmen!” screams the coachman, fumbling to load a flintlock pistol. “The Hogmen are abroad!” Eighteenth-century England has gone wrong.',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'online',
+    status: 'One-shot · 18+',
+    when: 'Thursday 8 October',
+    hours: '7:00 PM CDT',
+    length: '3–4 hours',
+    where: 'Online',
+    price: { amount: '35 USD', per: 'session' },
+    startplaying: 'https://startplaying.games/adventure/cmu77i6f10073l704zhphx9ul',
+    seats: null,
+    starts: '2026-10-08T19:00',
+    ends: '2026-10-08T23:00',
+    zone: 'America/Winnipeg',
+    questions: [],
+  },
+
+  'stranger-and-stranger': {
+    title: 'Stranger & Stranger',
+    system: 'TEETH',
+    pitch: 'Eighteenth-century England has gone wrong. Bring a musket, a strong stomach, and pray you keep the shape you arrived in.',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'online',
+    status: 'One-shot · 18+',
+    when: 'Thursday 15 October',
+    hours: '7:00 PM CDT',
+    length: '3–4 hours',
+    where: 'Online',
+    price: { amount: '35 USD', per: 'session' },
+    startplaying: 'https://startplaying.games/adventure/cmu77j11r00a2i704rkqo29fq',
+    seats: null,
+    starts: '2026-10-15T19:00',
+    ends: '2026-10-15T23:00',
+    zone: 'America/Winnipeg',
+    questions: [],
+  },
+
+  'blood-cotillion': {
+    title: 'Blood Cotillion',
+    system: 'TEETH',
+    pitch: 'Eighteenth-century England has gone wrong. Blood-horror Bridgerton.',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'online',
+    status: 'One-shot · 18+',
+    when: 'Thursday 22 October',
+    hours: '7:00 PM CDT',
+    length: '3–4 hours',
+    where: 'Online',
+    price: { amount: '35 USD', per: 'session' },
+    startplaying: 'https://startplaying.games/adventure/cmu77jojn000wl5043ztuh5of',
+    seats: null,
+    starts: '2026-10-22T19:00',
+    ends: '2026-10-22T23:00',
+    zone: 'America/Winnipeg',
+    questions: [],
+  },
 };
 
 // Order of the chooser shown when no ?event= key is given. Keys not listed are
@@ -254,6 +321,7 @@ window.EVENTS = {
 window.EVENT_ORDER = [
   'root-hacksaw-dell', 'l5r-kyotei-castle', 'arkham-big-easy', 'terra-antarctica',
   'sjorseidr', 'winter-city', 'troika-well',
+  'hogmen', 'stranger-and-stranger', 'blood-cotillion',
 ];
 
 window.DISCORD_INVITE = 'https://discord.gg/KNcPMrQuSW';
