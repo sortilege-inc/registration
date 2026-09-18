@@ -71,10 +71,16 @@ window.EVENTS = {
     system: 'Troika!',
     art: 'assets/art/game-troika-well.jpg',
     pitch: 'After falling down a strange well, players explore a surreal dungeon in search of escape and redemption.',
-    status: 'One-shot · Not yet scheduled',
-    when: 'Date to be arranged',
+    status: 'One-shot',
+    when: 'Friday 2 October · 4:00–7:00 PM (Winnipeg)',
     length: '3 hours',
     where: 'Online (Discord)',
+    // Online, so the .ics needs a real instant rather than floating local time:
+    // `zone` is the zone the wall-clock above is written in, and the builder
+    // converts to UTC so a player in another city gets the right hour.
+    starts: '2026-10-02T16:00',
+    ends: '2026-10-02T19:00',
+    zone: 'America/Winnipeg',
     price: '$35 / session',
     startplaying: 'https://startplaying.games/adventure/cmsuncli60006l404ybpsvxxn',
     payment: null,
@@ -89,7 +95,7 @@ window.EVENTS = {
   // invoice. Blurbs are the event listings' own wording, verbatim.
 
   'root-hacksaw-dell': {
-    title: 'Root: Hacksaw Dell',
+    title: 'Hacksaw Dell',
     system: 'Root: The Roleplaying Game',
     art: 'assets/art/event-root-hacksaw-dell.jpg',
     plainArt: true,
@@ -98,8 +104,8 @@ window.EVENTS = {
     length: '3 hours',
     where: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
     free: true,
-    // Local wall-clock, no zone: the .ics carries floating time, which is what
-    // you want for an in-person event where everyone is in the same city.
+    // Local wall-clock with no `zone`: the .ics carries floating time, which is
+    // what you want for an in-person event where everyone is in the same city.
     starts: '2026-09-22T18:00',
     ends: '2026-09-22T21:00',
     // How many of the seats are spoken for. Bump this as registrations come in;
@@ -110,7 +116,7 @@ window.EVENTS = {
   },
 
   'l5r-kyotei-castle': {
-    title: 'Legend of the Five Rings: Wedding at Kyotei Castle',
+    title: 'Wedding at Kyotei Castle',
     system: 'Legend of the Five Rings (Edge Studio)',
     art: 'assets/art/event-l5r-kyotei-castle.jpg',
     plainArt: true,
@@ -119,8 +125,8 @@ window.EVENTS = {
     length: '3 hours',
     where: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
     free: true,
-    // Local wall-clock, no zone: the .ics carries floating time, which is what
-    // you want for an in-person event where everyone is in the same city.
+    // Local wall-clock with no `zone`: the .ics carries floating time, which is
+    // what you want for an in-person event where everyone is in the same city.
     starts: '2026-09-29T18:00',
     ends: '2026-09-29T21:00',
     // How many of the seats are spoken for. Bump this as registrations come in;
@@ -131,7 +137,7 @@ window.EVENTS = {
   },
 
   'arkham-big-easy': {
-    title: 'Arkham Horror: Three Days to the Big Easy',
+    title: 'Three Days to the Big Easy',
     system: 'Arkham Horror: The Roleplaying Game',
     art: 'assets/art/event-arkham-big-easy.jpg',
     plainArt: true,
@@ -140,8 +146,8 @@ window.EVENTS = {
     length: '3 hours',
     where: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
     free: true,
-    // Local wall-clock, no zone: the .ics carries floating time, which is what
-    // you want for an in-person event where everyone is in the same city.
+    // Local wall-clock with no `zone`: the .ics carries floating time, which is
+    // what you want for an in-person event where everyone is in the same city.
     starts: '2026-10-06T18:00',
     ends: '2026-10-06T21:00',
     // How many of the seats are spoken for. Bump this as registrations come in;

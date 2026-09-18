@@ -676,6 +676,27 @@ function showConfirmation() {
 // Times are FLOATING (no zone, no Z): an in-person night at the Belgian Club is
 // 6pm for everyone who can attend it, and floating time is exactly that.
 
+/** Minutes a zone is offset from UTC at a given instant. */
+function zoneOffset(timeZone, date) {
+  // Floor to a whole minute first: Date.UTC below has no seconds field, so any
+  // seconds on the input would come back as a spurious minute of offset.
+  const at = new Date(Math.floor(date.getTime() / 60000) * 60000);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone, hour12: false, year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit',
+  }).formatToParts(at).map((p) => [p.type, p.value]));
+  const asUTC = Date.UTC(+parts.year, parts.month - 1, +parts.day, +parts.hour % 24, +parts.minute);
+  return Math.round((asUTC - at.getTime()) / 60000);
+}
+
+/** A wall-clock written in `zone`, as a UTC iCalendar stamp. */
+function utcStamp(local, zone) {
+  // Read the wall-clock as if it were UTC, then correct it into a real instant.
+  const guess = Date.parse(`${local}:00Z`);
+  const instant = new Date(guess - zoneOffset(zone, new Date(guess)) * 60000);
+  return instant.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+}
+
 const icsEscape = (s) => String(s).replace(/\\/g, '\\\\').replace(/[;,]/g, (c) => `\\${c}`).replace(/\n/g, '\\n');
 const icsStamp = (local) => `${local}`.replace(/[-:]/g, '').replace(/\..*$/, '') + '00';
 
@@ -692,6 +713,11 @@ function icsFold(line) {
 function buildIcs(ev, uid) {
   if (!ev.starts) return null;
   const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  // An event with a `zone` is online: its time must be a real instant, or a
+  // player in another city gets the wrong hour. Without one it is in-person and
+  // stays floating — 6pm at the Belgian Club is 6pm for everyone who can go.
+  const stamp = (local) => (ev.zone ? utcStamp(local, ev.zone) : icsStamp(local));
+
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -701,9 +727,9 @@ function buildIcs(ev, uid) {
     'BEGIN:VEVENT',
     `UID:${uid}@rsvp.sortilege.online`,
     `DTSTAMP:${now}`,
-    `DTSTART:${icsStamp(ev.starts)}`,
+    `DTSTART:${stamp(ev.starts)}`,
   ];
-  if (ev.ends) lines.push(`DTEND:${icsStamp(ev.ends)}`);
+  if (ev.ends) lines.push(`DTEND:${stamp(ev.ends)}`);
   lines.push(`SUMMARY:${icsEscape(ev.title || 'A Sortilege table')}`);
   if (ev.where) lines.push(`LOCATION:${icsEscape(ev.where)}`);
   const description = [ev.pitch, ev.system && `System: ${ev.system}`, `Reference: ${uid}`]
@@ -911,6 +937,7 @@ if (!event) {
   document.getElementById('booking-swap').href = src ? `?src=${encodeURIComponent(src)}` : '?';
 
   document.getElementById('event-field').value = event.title || eventKey;
+  document.getElementById('system-field').value = event.system || '';
   document.getElementById('ref-field').value = ref;
   // The Worker puts this in the subject line, so registrations are separable
   // from the landing form's seat requests at a glance in the inbox.

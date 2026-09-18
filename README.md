@@ -25,6 +25,9 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
 
 ```js
 'my-event': {
+  // The system prints directly above the title, so the title should not repeat
+  // it: "Arkham Horror: The Roleplaying Game" / "Three Days to the Big Easy",
+  // never "Arkham Horror: Three Days to the Big Easy".
   title: 'A Table With A Name',
   system: 'Troika!',
   art: 'assets/art/my-event.jpg',   // optional; falls back to the Sortilege line art
@@ -45,6 +48,7 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   taken: 0,                         // bump as registrations come in
   starts: '2026-10-06T18:00',       // optional; enables Add to calendar
   ends: '2026-10-06T21:00',
+  zone: 'America/Winnipeg',         // set for ONLINE events; see below
 
   questions: [ /* see below */ ],
 }
@@ -93,9 +97,15 @@ An event with `starts` (and ideally `ends`) shows an **Add to calendar** button 
 confirmation. The `.ics` is built in the browser and handed over as a blob — no server,
 no library.
 
-Times are **floating**: written as local wall-clock with no zone, which is exactly right
-for an in-person night where everyone attending is in the same city. Do not use `starts`
-for an online game across time zones without switching the builder to emit UTC.
+`starts` and `ends` are written as local wall-clock. What happens to them depends on
+whether the event has a `zone`:
+
+- **No `zone`** — the times stay **floating** (`DTSTART:20261006T180000`), which is
+  exactly right for an in-person night: 6pm at the Belgian Club is 6pm for everyone who
+  can get there, whatever their laptop thinks its timezone is.
+- **With `zone`** — the wall-clock is read as being in that zone and converted to UTC
+  (`DTSTART:20261002T210000Z`), which is what an online game needs so a player in another
+  city gets the right hour. Set it for anything played over Discord or a VTT.
 
 ### Questions
 
