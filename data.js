@@ -216,12 +216,14 @@ window.EVENTS = {
     title: 'Terra Antarctica',
     system: 'Arkham Horror: The Roleplaying Game',
     art: 'assets/art/event-terra-antarctica.jpg',
+    pitch: 'In 1930, the great Miskatonic Expedition to the Antarctic ended in tragedy. Twelve of its members died in the shadows of the largest mountain range ever discovered, and several more suffered deep mental scars from the experience. Two years later, a new team of scientists announced their own expedition. But as they suddenly vanish too, the world is left in shock. Only a team of skilled investigators can be brave enough to return to those mountains of madness. But will they save the lost explorers? Or are they also fated never to return?',
     run: 'not-started',
     shape: 'multi-session',
     place: 'winnipeg',
     when: 'Bi-weekly Tuesdays from 1 December',
     hours: '6:00–9:00 PM',
     length: '3 hours',
+    sessions: '8–12',
     where: 'Belgian Club',
     whereUrl: 'https://www.google.com/maps/search/?api=1&query=Belgian+Club%2C+407+Provencher+Blvd%2C+Winnipeg',
     address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
@@ -231,13 +233,13 @@ window.EVENTS = {
     starts: '2026-12-01T18:00',
     ends: '2026-12-01T21:00',
     repeat: 'FREQ=WEEKLY;INTERVAL=2',
-    // Stripe product prod_VHeQF88UAMW2gX, price price_1UH57SPvhIvMp2JYGAaSxJCR
-    // (CA$35.00 every 2 weeks, LIVE). No Payment Link exists yet, deliberately:
-    // a link is payable the moment it is created, and billing starts when
-    // someone pays, not on 1 December. Create the link in late November with
-    //   ./scripts/stripe-event.sh --price price_1UH57SPvhIvMp2JYGAaSxJCR --live
-    // and add its URL here as `payment`. Until then the confirmation correctly
-    // says a payment link is coming.
+    // Stripe: product prod_VHeQF88UAMW2gX, price price_1UH57SPvhIvMp2JYGAaSxJCR,
+    // CA$35.00 every 2 weeks, LIVE. Billing starts when somebody pays rather
+    // than on 1 December, so a subscription bought early runs ahead of the
+    // campaign; the owner pauses those in the Stripe dashboard. Every
+    // subscription also needs cancelling by hand when the campaign ends —
+    // nothing here does that, and nothing will remind anyone.
+    payment: 'https://buy.stripe.com/cNi5kF7NP9KkeFKeXI08g02',
     taken: 0,
     questions: [],
   },
@@ -320,12 +322,38 @@ window.EVENTS = {
     zone: 'America/Winnipeg',
     questions: [],
   },
+  'motherload': {
+    title: 'Once More Into the Motherload',
+    system: 'Daggerheart',
+    art: 'assets/art/event-motherload.jpg',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'winnipeg',
+    status: 'One-shot',
+    when: 'Friday 27 November',
+    hours: '6:00–9:00 PM',
+    length: '3 hours',
+    // Venue as given. No street address on file, so the map link searches by
+    // name and the .ics carries the same; add `address` when it is to hand.
+    where: 'Kilter Brewing',
+    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Kilter+Brewing%2C+Winnipeg',
+    // One sitting, so no per-unit: "35 CAD / session" would invite the question
+    // of how many sessions there are.
+    price: { amount: '35 CAD' },
+    // Stripe: product prod_VHetsMy1cRfQxY, price price_1UH5ZFPvhIvMp2JY43vsHE1Y,
+    // CA$35.00 one-time, LIVE.
+    payment: 'https://buy.stripe.com/4gM14p6JL1dObty8zk08g03',
+    starts: '2026-11-27T18:00',
+    ends: '2026-11-27T21:00',
+    taken: 0,
+    questions: [],
+  },
 };
 
 // Order of the chooser shown when no ?event= key is given. Keys not listed are
 // appended in the order they appear above.
 window.EVENT_ORDER = [
-  'root-hacksaw-dell', 'l5r-kyotei-castle', 'arkham-big-easy', 'terra-antarctica',
+  'root-hacksaw-dell', 'l5r-kyotei-castle', 'arkham-big-easy', 'motherload', 'terra-antarctica',
   'sjorseidr', 'winter-city', 'troika-well',
   'hogmen', 'stranger-and-stranger', 'blood-cotillion',
 ];

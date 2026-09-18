@@ -36,7 +36,8 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   status: 'Two seats left',
   when: 'Sat 3 Oct',                // the date
   hours: '7:00-10:00 PM',           // the time, on its own line
-  length: '3 hours',
+  length: '3 hours',                // one sitting
+  sessions: '8-12',                 // optional; how many sittings in all
   where: 'Belgian Club',            // short name; use the map link for the rest
   whereUrl: 'https://www.google.com/maps/search/?api=1&query=...',
   address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',  // for the .ics
@@ -131,6 +132,8 @@ just asked about affording it should be handed a bill. Free events have no such 
 
 `price` is an object so the tile token and the summary line cannot drift: the tile shows
 `amount` alone ("35 USD") and the summary builds "35 USD / session" from both halves.
+Leave `per` out for a one-shot — "35 CAD / session" invites the question of how many
+sessions there are.
 
 ### Seats and the waitlist
 

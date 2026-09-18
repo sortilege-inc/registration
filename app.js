@@ -55,8 +55,8 @@ function costLine(ev) {
 /** The [term, value] rows shown in a booking summary. Blank entries drop out. */
 function bookingRows(ev) {
   return [['System', ev.system], ['When', ev.when], ['Time', ev.hours],
-          ['Length', ev.length], ['Where', ev.where], ['Cost', costLine(ev)],
-          ['Status', ev.status]]
+          ['Length', ev.length], ['Sessions', ev.sessions],
+          ['Where', ev.where], ['Cost', costLine(ev)], ['Status', ev.status]]
     .filter(([, value]) => value);
 }
 
