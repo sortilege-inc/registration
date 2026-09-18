@@ -333,10 +333,9 @@ window.EVENTS = {
     when: 'Friday 27 November',
     hours: '6:00–9:00 PM',
     length: '3 hours',
-    // Venue as given. No street address on file, so the map link searches by
-    // name and the .ics carries the same; add `address` when it is to hand.
     where: 'Kilter Brewing',
-    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Kilter+Brewing%2C+Winnipeg',
+    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Kilter+Brewing%2C+450+Rue+Deschambault%2C+Winnipeg',
+    address: 'Kilter Brewing, 450 Rue Deschambault, Winnipeg',
     // One sitting, so no per-unit: "35 CAD / session" would invite the question
     // of how many sessions there are.
     price: { amount: '35 CAD' },
