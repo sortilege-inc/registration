@@ -302,10 +302,11 @@ its reference. That is a deliberate consequence of having no backend, not an ove
 
 ### Testing
 
-`?event=stripe-test` is a hidden event wired to a **test-mode** Payment Link. Register
-against it and the confirmation offers a card payment that takes `4242 4242 4242 4242`
-with any future expiry and any CVC; no money moves. Delete the entry once real paid
-tables exist.
+To exercise the payment path without taking money, create the product and link with a
+**test-mode** key (`rk_test_…`) and point a `hidden: true` event at the resulting link.
+Stripe's test checkout takes `4242 4242 4242 4242` with any future expiry and any CVC.
+Archive the product and delete the event when you are done — a stale test product in the
+catalog is the kind of thing that later gets mistaken for a real one.
 
 ### Creating a link
 
