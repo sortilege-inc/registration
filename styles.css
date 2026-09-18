@@ -1,0 +1,864 @@
+/* Sortilege registration — styling derived from the Sortilege Gamemastering Pamphlet.
+   Shares its chassis with the onboarding form in the landing repo: same tokens,
+   same section/field/chip/tag/wizard components, minus the pieces that form has
+   and this one does not (open-games carousel, availability grid, time-zone combo). */
+
+:root {
+  --paper:      #F0EBDD;
+  --paper-alt:  #f7f2ec;
+  --surround:   #DAD3C4;
+  --ink:        #1F2730;
+  --ink-soft:   #3d4650;
+  --plum:       #58536c;
+  --lilac:      #776ead;
+  --coral:      #e46064;
+  --gold:       #fdd5a5;
+  --teal:       #638690;
+
+  --serif:  'Cormorant Garamond', Georgia, serif;
+  --display:'Cinzel', Georgia, serif;
+  --label:  'Bebas Neue', 'Arial Narrow', sans-serif;
+
+  --rule: 1px solid rgba(31, 39, 48, 0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* An author `display` rule outranks the UA sheet's [hidden], so an element that
+   sets one (.pay, .discord, .chip…) stays visible when hidden is set from JS.
+   Say it once, loudly, rather than remembering it at every call site. */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--surround);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.sheet {
+  max-width: 44rem;
+  margin: 0 auto;
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+/* ---------- Hero ---------- */
+/* The art is black line work on white; multiply drops the white to coral. */
+
+.hero {
+  background: var(--coral);
+  color: var(--paper);
+}
+
+.hero__art {
+  padding: 1.25rem 1rem 0;
+}
+
+.hero__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Event covers come in every shape — a portrait quickstart cover, a square
+     poster, a landscape plate. Cap the height and letterbox rather than crop,
+     so a cover's own title lockup is never cut off and a tall one does not eat
+     the screen before the reader reaches the form. The coral shows through. */
+  max-height: 52vh;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* multiply is the right technique for black line work on white — it drops the
+   white out. A full-colour photograph under it collapses to one coral tone, so
+   an event whose art is a photo can set plainArt in data.js and keep it. */
+.hero__art.is-plain img { mix-blend-mode: normal; }
+
+.hero__body { padding: 0.75rem 1.5rem 2.5rem; }
+
+.hero h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2rem, 8.5vw, 2.9rem);
+  line-height: 1.08;
+  letter-spacing: 0.005em;
+  text-wrap: balance;
+}
+
+.hero p {
+  margin: 1.25rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: rgba(240, 235, 221, 0.95);
+}
+
+.rule-gold {
+  width: 4.5rem;
+  height: 3px;
+  background: var(--gold);
+  margin: 1.35rem 0 0;
+}
+
+/* ---------- Shared type ---------- */
+
+.eyebrow {
+  margin: 0 0 0.7rem;
+  font-family: var(--label);
+  font-size: 0.82rem;
+  letter-spacing: 0.22em;
+  line-height: 1.3;
+  color: var(--lilac);
+}
+
+.sec__head {
+  display: flex;
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(88, 83, 108, 0.4);
+}
+
+h2 {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  font-family: var(--label);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--lilac);
+}
+
+/* Coral marker, top-right of whatever it is attached to. */
+.optional {
+  flex: none;
+  font-family: var(--label);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  line-height: 1.6;
+  color: var(--coral);
+}
+
+.field__label .optional,
+.field > label .optional { float: right; }
+
+.lede {
+  margin: 0 0 1.4rem;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+}
+
+/* ---------- Form scaffold ---------- */
+
+.form { padding: 0 0 3rem; }
+
+.sec {
+  padding: 2rem 1.5rem 2.25rem;
+  border-top: var(--rule);
+}
+
+.sec:nth-of-type(even) { background: var(--paper-alt); }
+
+/* Groups radio sets for assistive tech without drawing a box or notching a rule. */
+fieldset.bare {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+fieldset.bare > legend { padding: 0; }
+
+.field { margin-top: 1.35rem; }
+
+/* Both spellings of a field label: <label> where there is one control to point
+   at, and a <span> where the control is a group. They must look identical —
+   in the landing form the span silently fell back to the body serif. */
+.field > label,
+.field__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: var(--label);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.hint { margin: 0.25rem 0 0.5rem; font-size: 0.92rem; color: var(--ink-soft); font-style: italic; }
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  color: var(--ink);
+  background: #fffdf7;
+  border: 1px solid rgba(31, 39, 48, 0.28);
+  border-radius: 2px;
+}
+
+textarea { min-height: 5.5rem; resize: vertical; }
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--lilac);
+  outline-offset: 1px;
+}
+
+/* ---------- Submit ---------- */
+
+.submit-bar { padding: 2rem 1.5rem 0; border-top: var(--rule); }
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-family: var(--label);
+  font-size: 1.25rem;
+  letter-spacing: 0.14em;
+  color: var(--paper);
+  background: var(--plum);
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover { background: var(--coral); }
+
+.consent { margin: 0.9rem 0 0; font-size: 0.92rem; color: var(--ink-soft); }
+
+/* ---------- Footer ---------- */
+
+.foot {
+  padding: 1.5rem;
+  border-top: 2px solid var(--plum);
+  background: var(--paper-alt);
+}
+
+.foot p { margin: 0 0 0.3rem; }
+
+.foot__who { margin-top: 0.85rem; font-family: var(--label); font-size: 0.85rem; letter-spacing: 0.16em; color: var(--ink-soft); }
+
+.foot__meta { font-size: 0.92rem; color: var(--teal); }
+
+a { color: var(--lilac); text-decoration: none; }
+a:hover { color: var(--coral); }
+
+.tile { width: 3rem; height: auto; display: block; }
+
+@media (min-width: 40rem) {
+  .hero__art { padding: 2rem 2.5rem 0; }
+  .hero__body { padding: 1rem 2.5rem 3rem; }
+  .sec, .submit-bar, .foot { padding-left: 2.5rem; padding-right: 2.5rem; }
+  .sec { padding-top: 2.5rem; padding-bottom: 2.75rem; }
+}
+
+/* Honeypot — off-canvas rather than display:none, which some bots skip. */
+.trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.consent.is-error { color: var(--coral); }
+
+/* ---------- Chips ---------- */
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; }
+.chips--stack { flex-direction: column; align-items: flex-start; }
+
+.chip { display: inline-flex; position: relative; }
+
+.chip input {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  margin: 0; opacity: 0; cursor: pointer;
+}
+
+.chip span {
+  display: inline-block;
+  padding: 0.5rem 0.85rem;
+  font-family: var(--label);
+  font-size: 0.92rem;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+  background: #fffdf7;
+  border: 1px solid rgba(31, 39, 48, 0.28);
+  border-radius: 999px;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.chip input:checked + span {
+  color: var(--paper);
+  background: var(--plum);
+  border-color: var(--plum);
+}
+
+.chip input:focus-visible + span { outline: 2px solid var(--lilac); outline-offset: 2px; }
+
+.write-in { margin-top: 0.6rem; }
+
+/* ---------- Experience slider ---------- */
+
+.slider {
+  width: 100%;
+  margin: 0.35rem 0 0;
+  accent-color: var(--coral);
+  background: transparent;
+}
+
+.slider__text {
+  margin: 0.7rem 0 0;
+  padding-left: 0.8rem;
+  border-left: 3px solid var(--coral);
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  min-height: 2.6em;
+}
+
+/* Validation messages, shared by the name and email fields. */
+.error { margin: 0.9rem 0 0; font-family: var(--label); font-size: 0.95rem; letter-spacing: 0.06em; color: var(--coral); }
+
+/* ---------- Toggle switch ---------- */
+
+.switch {
+  display: grid;
+  grid-template-columns: 3.1rem 1fr;
+  gap: 0.8rem;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.switch input { position: absolute; opacity: 0; width: 3.1rem; height: 1.7rem; margin: 0; cursor: pointer; }
+
+.switch__track {
+  width: 3.1rem; height: 1.7rem;
+  background: rgba(31, 39, 48, 0.2);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.15s;
+}
+
+.switch__track::after {
+  content: '';
+  position: absolute; top: 0.2rem; left: 0.2rem;
+  width: 1.3rem; height: 1.3rem;
+  background: var(--paper);
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+
+.switch input:checked + .switch__track { background: var(--coral); }
+.switch input:checked + .switch__track::after { transform: translateX(1.4rem); }
+.switch input:focus-visible + .switch__track { outline: 2px solid var(--lilac); outline-offset: 2px; }
+
+.switch__text { font-size: 1.02rem; line-height: 1.35; color: var(--ink-soft); }
+
+/* Portrait cards: the art is a band, the body carries the height. */
+
+/* ---------- Discord ---------- */
+
+.discord {
+  display: block;
+  padding: 0.8rem 1rem;
+  font-family: var(--label);
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--paper);
+  background: var(--lilac);
+  border-radius: 2px;
+}
+
+.discord:hover { background: var(--plum); color: var(--paper); }
+
+.sec .switch { margin-top: 1.3rem; }
+
+/* ---------- Tag pickers ---------- */
+
+.tagselect { position: relative; margin-top: 0.15rem; }
+
+.tagselect__box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.45rem 0.5rem;
+  background: #fffdf7;
+  border: 1px solid rgba(31, 39, 48, 0.28);
+  border-radius: 2px;
+  cursor: text;
+}
+
+.tagselect__box:focus-within { outline: 2px solid var(--lilac); outline-offset: 1px; }
+
+.tagselect__tags { display: contents; }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.3rem 0.28rem 0.6rem;
+  font-family: var(--label);
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  color: var(--paper);
+  background: var(--plum);
+  border-radius: 999px;
+}
+
+.tag__x {
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--paper);
+  background: rgba(240, 235, 221, 0.18);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.tag__x:hover { background: var(--coral); }
+
+.tagselect__input {
+  flex: 1;
+  min-width: 9rem;
+  padding: 0.32rem 0.15rem;
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.tagselect__menu {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  max-height: 13rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  background: #fffdf7;
+  border: 1px solid rgba(88, 83, 108, 0.45);
+  border-radius: 2px;
+  box-shadow: 0 6px 18px rgba(31, 39, 48, 0.14);
+}
+
+.tagselect__option {
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.tagselect__option:hover,
+.tagselect__option.is-active { color: var(--paper); background: var(--plum); }
+
+.tagselect__values { display: none; }
+
+/* ---------- Step-through ---------- */
+/* Only present once JS has grouped the sections; without it the page stays
+   a single long form and none of this applies. */
+
+.wizard__progress {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  padding: 0.85rem 1.5rem 0;
+  background: var(--paper);
+  border-bottom: 1px solid rgba(31, 39, 48, 0.14);
+}
+
+.wizard__dots { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.6rem; }
+
+.wizard__dot {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  font-family: var(--label);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid rgba(31, 39, 48, 0.28);
+  border-radius: 50%;
+  cursor: default;
+}
+
+.wizard__dot.is-reachable { cursor: pointer; }
+.wizard__dot.is-done { color: var(--paper); background: var(--lilac); border-color: var(--lilac); }
+.wizard__dot.is-current { color: var(--paper); background: var(--coral); border-color: var(--coral); }
+.wizard__dot:focus-visible { outline: 2px solid var(--lilac); outline-offset: 2px; }
+
+.wizard__meta { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+
+.wizard__title {
+  font-family: var(--label);
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plum);
+}
+
+.wizard__count {
+  font-family: var(--label);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+
+.wizard__bar { height: 3px; margin-top: 0.55rem; background: rgba(31, 39, 48, 0.12); }
+.wizard__bar span { display: block; height: 100%; background: var(--coral); transition: width 0.25s ease; }
+
+.wizard__nav {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 1.5rem 2rem;
+}
+
+.wizard__btn {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  font-family: var(--label);
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.wizard__btn--back { color: var(--plum); background: transparent; border: 1px solid rgba(88, 83, 108, 0.5); }
+.wizard__btn--back:disabled { opacity: 0.3; cursor: default; }
+.wizard__btn--next { flex: 2; color: var(--paper); background: var(--plum); }
+.wizard__btn--next:hover { background: var(--coral); }
+
+/* The first visible step already sits under the sticky bar. */
+.is-wizard .sec { border-top: 0; }
+.is-wizard .sec:nth-of-type(even) { background: transparent; }
+
+@media (min-width: 40rem) {
+  .wizard__progress { padding-left: 2.5rem; padding-right: 2.5rem; }
+  .wizard__nav { padding-left: 2.5rem; padding-right: 2.5rem; }
+}
+
+/* Past the first step the hero collapses; the sticky progress bar is the header. */
+.is-stepping .hero__art { display: none; }
+
+.is-stepping .hero__body { padding-top: 1.1rem; padding-bottom: 1.1rem; }
+
+.is-stepping .hero h1 { font-size: 1.35rem; line-height: 1.1; }
+
+.is-stepping .hero h1 br { display: none; }
+
+.is-stepping .hero p,
+.is-stepping .rule-gold { display: none; }
+
+.is-stepping:not(.is-final-step) .foot { display: none; }
+
+/* ---------- Confirmation ---------- */
+
+.done { padding-bottom: 1rem; }
+
+.done__head { padding: 2rem 1.5rem 0; }
+
+.kicker {
+  margin: 0 0 0.5rem;
+  font-family: var(--label);
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  color: var(--coral);
+}
+
+.done__title {
+  margin: 0;
+  font-family: var(--label);
+  font-weight: 400;
+  font-size: 2.1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--plum);
+}
+
+.done__lede { margin: 0.8rem 0 0; color: var(--ink-soft); }
+
+.done .sec { border-top: 0; }
+.done .sec:nth-of-type(even) { background: transparent; }
+
+/* The single-button first step should not leave a gap where Back was. */
+.wizard__nav.is-single .wizard__btn--next { flex: 1; }
+
+.is-done .hero__art { display: none; }
+.is-done .hero__body { padding-top: 1.1rem; padding-bottom: 1.1rem; }
+.is-done .hero h1 { font-size: 1.35rem; line-height: 1.1; }
+.is-done .hero h1 br,
+.is-done .hero p,
+.is-done .rule-gold { display: none; }
+
+@media (min-width: 40rem) {
+  .done__head { padding-left: 2.5rem; padding-right: 2.5rem; }
+}
+
+/* The wizard's escape hatch: quieter than Back/Next, so it reads as a way out
+   rather than the expected path. */
+.wizard__row { display: flex; gap: 0.75rem; }
+
+.wizard__skip {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  padding: 0.6rem 0.5rem;
+  font-family: var(--label);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgba(31, 39, 48, 0.22);
+  cursor: pointer;
+}
+
+.wizard__skip:hover { color: var(--coral); border-bottom-color: var(--coral); }
+
+.wizard__nav { flex-direction: column; }
+
+/* With the dedicated submit button gone, the send control carries the weight on
+   the final step. */
+.wizard__skip.is-primary {
+  color: var(--paper);
+  background: var(--plum);
+  border-bottom: 0;
+  border-radius: 2px;
+  padding: 0.85rem 1rem;
+  font-size: 1.15rem;
+}
+
+.wizard__skip.is-primary:hover { background: var(--coral); color: var(--paper); }
+.wizard__skip:disabled { opacity: 0.5; cursor: default; }
+
+.intro {
+  margin: 0;
+  padding: 1.6rem 1.5rem 0;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+
+.submit-bar { border-top: 0; padding-top: 1rem; }
+
+@media (min-width: 40rem) {
+  .intro { padding-left: 2.5rem; padding-right: 2.5rem; }
+}
+
+/* ---------- Which event ---------- */
+/* The hero is the event, so it carries the system above the title. */
+
+.hero__system {
+  margin: 0 0 0.55rem;
+  font-family: var(--label);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  line-height: 1.3;
+  color: var(--gold);
+}
+
+/* A restatement of what is being booked, on page one and again on the
+   confirmation, so nobody ever wonders which table they just signed up to. */
+.booking {
+  margin: 0 0 0.4rem;
+  padding: 0.95rem 1.05rem 1rem;
+  background: #fffdf7;
+  border: 1px solid rgba(88, 83, 108, 0.3);
+  border-left: 3px solid var(--coral);
+  border-radius: 2px;
+}
+
+.booking__kicker {
+  margin: 0 0 0.3rem;
+  font-family: var(--label);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--coral);
+}
+
+.booking__title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  color: var(--plum);
+}
+
+.booking__meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.22rem 0.7rem;
+  margin: 0.75rem 0 0;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(31, 39, 48, 0.14);
+}
+
+.booking__meta dt {
+  margin: 0;
+  font-family: var(--label);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  color: var(--lilac);
+}
+
+.booking__meta dd { margin: 0; font-size: 0.9rem; line-height: 1.3; color: var(--ink); }
+
+.booking__swap {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-family: var(--label);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  border-bottom: 1px solid rgba(31, 39, 48, 0.22);
+}
+
+.booking__swap:hover { color: var(--coral); border-bottom-color: var(--coral); }
+
+.booking--done { border-left-color: var(--lilac); }
+
+/* ---------- Table chooser ---------- */
+/* Shown instead of the form when the URL carries no ?event= key. */
+
+.chooser__list { display: flex; flex-direction: column; gap: 0.9rem; }
+
+.pick {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0 0.9rem;
+  align-items: start;
+  padding: 0.75rem;
+  background: #fffdf7;
+  border: 1px solid rgba(88, 83, 108, 0.3);
+  border-radius: 2px;
+  color: inherit;
+}
+
+.pick:hover { border-color: var(--plum); }
+
+/* No thumbnail: the text takes the whole card rather than sitting in the
+   narrow art column. */
+.pick--noart { grid-template-columns: 1fr; }
+
+.pick__art {
+  grid-row: 1 / span 3;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--surround);
+  border-radius: 2px;
+}
+
+.pick__art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.pick__system {
+  margin: 0 0 0.2rem;
+  font-family: var(--label);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  color: var(--coral);
+}
+
+.pick__title {
+  margin: 0 0 0.3rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  line-height: 1.2;
+  color: var(--plum);
+}
+
+.pick__meta { margin: 0; font-size: 0.88rem; line-height: 1.35; color: var(--ink-soft); }
+
+/* ---------- Payment ---------- */
+
+.pay {
+  display: block;
+  margin-top: 1.2rem;
+  padding: 0.85rem 1rem;
+  font-family: var(--label);
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--paper);
+  background: var(--plum);
+  border-radius: 2px;
+}
+
+.pay:hover { background: var(--coral); color: var(--paper); }
+
+/* The reference ties a Stripe payment back to the registration email. */
+.ref {
+  margin: 1.2rem 0 0;
+  font-family: var(--label);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+
+.ref span { color: var(--coral); }
+
+/* ---------- Seats & waitlist ---------- */
+
+.booking__seats {
+  margin: 0.7rem 0 0;
+  font-family: var(--label);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--teal);
+}
+
+.booking__seats.is-full { color: var(--coral); }
+
+/* ---------- Add to calendar ---------- */
+/* Quieter than the pay/book control: useful, but not the next thing to do. */
+
+.calendar {
+  display: block;
+  margin-top: 1.1rem;
+  padding: 0.7rem 1rem;
+  font-family: var(--label);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--plum);
+  background: transparent;
+  border: 1px solid rgba(88, 83, 108, 0.5);
+  border-radius: 2px;
+}
+
+.calendar:hover { color: var(--paper); background: var(--plum); }

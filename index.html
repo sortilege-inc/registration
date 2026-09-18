@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Bump the ?v= on styles.css / data.js / app.js when they change,
+     so returning visitors are not served a cached copy. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sortilege — Take Your Seat</title>
+<meta name="description" content="Register for a Sortilege table.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#e46064">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+<main class="sheet">
+
+  <header class="hero">
+    <div class="hero__art">
+      <img id="hero-art" src="assets/art/sortilege-goliath.png" alt="" width="1600" height="985">
+    </div>
+    <div class="hero__body">
+      <p class="hero__system" id="hero-system" hidden></p>
+      <h1 id="hero-title">Take Your <br>Seat At <br>The Table</h1>
+      <div class="rule-gold"></div>
+      <p id="hero-pitch">Sortilege organizes tabletop roleplaying games in-person and online.</p>
+    </div>
+  </header>
+
+  <!-- Shown when no ?event= key is given, or the key is not one we know.
+       Populated from window.EVENTS by app.js. -->
+  <section class="chooser" id="chooser" hidden>
+    <div class="sec">
+      <div class="sec__head">
+        <h2>Which Table?</h2>
+      </div>
+      <p class="lede" id="chooser-lede">Pick the game you are signing up for.</p>
+      <div class="chooser__list" id="chooser-list"></div>
+    </div>
+  </section>
+
+  <form class="form" id="register" novalidate hidden>
+
+    <p class="intro" id="intro">Fill this in to claim a seat. I read every one myself and reply to confirm.</p>
+
+    <section class="sec" data-step="1" data-step-title="Your seat" data-validate="essentials">
+      <div class="sec__head">
+        <h2>You Are</h2>
+      </div>
+
+      <!-- Which event this registration is for. Filled from ?event= by app.js. -->
+      <div class="booking" id="booking">
+        <p class="booking__kicker">REGISTERING FOR</p>
+        <p class="booking__title" id="booking-title"></p>
+        <dl class="booking__meta" id="booking-meta"></dl>
+        <p class="booking__seats" id="booking-seats" hidden></p>
+        <a class="booking__swap" id="booking-swap" href="?">Not this one? Pick another table</a>
+      </div>
+
+      <div class="field">
+        <label for="name">PREFERRED NAME</label>
+        <input type="text" id="name" name="name" autocomplete="name">
+      </div>
+
+      <div class="field">
+        <label for="email">EMAIL</label>
+        <input type="email" id="email" name="email" autocomplete="email" inputmode="email"
+               placeholder="you@example.com">
+        <p class="hint">I reply here to confirm, and copy you on the registration.</p>
+      </div>
+
+      <p class="error" id="essentials-error" role="alert" hidden></p>
+    </section>
+
+    <!-- The event's own questions are built in here from data.js, as .sec
+         elements with their own data-step, so the wizard picks them up exactly
+         like hand-written ones. -->
+    <div id="event-steps"></div>
+
+    <!-- Honeypot: hidden from people, irresistible to bots. -->
+    <div class="trap" aria-hidden="true">
+      <label for="website">Website</label>
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <!-- Set by app.js: which event, which printed QR, and the email subject. -->
+    <input type="hidden" name="event" id="event-field" value="">
+    <input type="hidden" name="ref" id="ref-field" value="">
+    <input type="hidden" name="kind" id="kind-field" value="">
+    <input type="hidden" name="waitlist" id="waitlist-field" value="">
+    <input type="hidden" name="src" value="">
+
+    <div class="submit-bar">
+      <p class="consent" id="status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <section class="done" id="done" hidden>
+    <div class="done__head">
+      <p class="kicker">SEAT REQUESTED</p>
+      <h2 class="done__title">You're On The List</h2>
+      <p class="done__lede" id="done-lede"></p>
+    </div>
+
+    <section class="sec">
+      <div class="sec__head">
+        <h2 id="pay-heading">Your Seat</h2>
+      </div>
+      <div class="booking booking--done" id="done-booking">
+        <p class="booking__title" id="done-title"></p>
+        <dl class="booking__meta" id="done-meta"></dl>
+      </div>
+      <p class="lede" id="pay-lede"></p>
+      <a class="pay" id="pay-link" href="#" rel="noopener" hidden></a>
+      <p class="hint" id="pay-note"></p>
+      <a class="calendar" id="calendar-link" download hidden>ADD TO CALENDAR</a>
+      <p class="ref">YOUR REFERENCE · <span id="ref-shown"></span></p>
+    </section>
+
+    <section class="sec">
+      <div class="sec__head">
+        <h2>Stay In Touch</h2>
+      </div>
+      <a class="discord" id="discord-link" href="#" rel="noopener">JOIN THE SORTILEGE DISCORD</a>
+      <p class="hint">Where tables are announced, filled, and played.</p>
+    </section>
+  </section>
+
+  <footer class="foot">
+    <img class="tile" src="assets/tiles/s.svg" alt="">
+    <p class="foot__who">JORDAN PEACOCK &amp; COLLABORATORS &middot; WINNIPEG</p>
+    <p class="foot__meta">Sortilege &copy; 2026 &middot; <a href="https://sortilege.online">sortilege.online</a> &middot; <a href="mailto:jordan@sortilege.online">jordan@sortilege.online</a></p>
+  </footer>
+
+</main>
+<script src="data.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
