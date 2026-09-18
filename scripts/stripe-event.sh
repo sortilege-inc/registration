@@ -12,11 +12,19 @@
 # Pass --price price_xxx to reuse a price that already exists and only build the
 # Payment Link — which is what you want after a half-finished run.
 #
+# A campaign seat is a recurring price:
+#   --recurring week --every 2 --nickname "$35 CAD Biweekly Campaign Subscription"
+#
+# Pass --no-link to create the product and price but stop short of the Payment
+# Link. A link is payable the moment it exists, so for anything that should not
+# be sold yet, the safest way to hold it back is for it not to exist.
+#
 # Test mode is the default. --live is deliberately awkward to reach.
 set -euo pipefail
 
 KEY_FILE="${STRIPE_KEY_FILE:-$HOME/.secrets/stripe-claude.key}"
 NAME="" DESCRIPTION="" AMOUNT="" CURRENCY="cad" PRICE_ID="" LIVE=0
+RECURRING="" EVERY="1" NICKNAME="" NO_LINK=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -25,6 +33,10 @@ while [ $# -gt 0 ]; do
     --amount)      AMOUNT="$2"; shift 2 ;;   # in cents: 3500 = $35.00
     --currency)    CURRENCY="$2"; shift 2 ;;
     --price)       PRICE_ID="$2"; shift 2 ;;
+    --recurring)   RECURRING="$2"; shift 2 ;;   # day | week | month | year
+    --every)       EVERY="$2"; shift 2 ;;       # interval_count: 2 = fortnightly
+    --nickname)    NICKNAME="$2"; shift 2 ;;
+    --no-link)     NO_LINK=1; shift ;;
     --live)        LIVE=1; shift ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
@@ -84,11 +96,22 @@ else
     ${DESCRIPTION:+--description "$DESCRIPTION"} | field id)
   echo "product: $product_id"
 
-  price_id=$(stripe prices create \
-    --product "$product_id" \
-    --unit-amount "$AMOUNT" \
-    --currency "$CURRENCY" | field id)
-  echo "price:   $price_id"
+  set -- --product "$product_id" --unit-amount "$AMOUNT" --currency "$CURRENCY"
+  [ -n "$NICKNAME" ] && set -- "$@" -d "nickname=$NICKNAME"
+  if [ -n "$RECURRING" ]; then
+    set -- "$@" -d "recurring[interval]=$RECURRING" -d "recurring[interval_count]=$EVERY"
+  fi
+  price_id=$(stripe prices create "$@" | field id)
+  echo "price:   $price_id${RECURRING:+  (every $EVERY $RECURRING)}"
+fi
+
+if [ "$NO_LINK" = 1 ]; then
+  echo
+  echo "Stopped before the Payment Link, as asked. When the seat should be"
+  echo "sellable, run:"
+  echo
+  echo "  ./scripts/stripe-event.sh --price $price_id${LIVE:+ --live}"
+  exit 0
 fi
 
 link=$(stripe payment_links create \

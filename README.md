@@ -56,6 +56,7 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   starts: '2026-10-06T18:00',       // optional; enables Add to calendar
   ends: '2026-10-06T21:00',
   zone: 'America/Winnipeg',         // set for ONLINE events; see below
+  repeat: 'FREQ=WEEKLY;INTERVAL=2', // recurring campaign; see below
   hidden: true,                     // keep out of the chooser, link still works
   past: true,                       // force "already played"; see below
 
@@ -153,6 +154,11 @@ If you would rather the count were real, that needs somewhere to keep state. See
 An event with `starts` (and ideally `ends`) shows an **Add to calendar** button on the
 confirmation. The `.ics` is built in the browser and handed over as a blob — no server,
 no library.
+
+For a recurring campaign, `starts`/`ends` describe the **first session** and `repeat`
+carries an iCalendar RRULE (`FREQ=WEEKLY;INTERVAL=2` for fortnightly), so the calendar
+entry covers the campaign rather than one evening. `repeat` also stops `isPast()` from
+retiring the whole campaign once session one has been played.
 
 `starts` and `ends` are written as local wall-clock. What happens to them depends on
 whether the event has a `zone`:
@@ -348,6 +354,25 @@ mkdir -p ~/.secrets && chmod 700 ~/.secrets && install -m 600 /dev/null ~/.secre
 
 Paste, Enter, Ctrl-D. Use a **restricted** key (`rk_test_…`) with write on Products,
 Prices and Payment Links and nothing else.
+
+### Campaign subscriptions
+
+A campaign seat is a **recurring** Stripe price — `--recurring week --every 2` for
+fortnightly — nicknamed by cadence so the catalog sorts sensibly. The nickname is the
+only place those cadence labels live: a Stripe Price belongs to exactly one Product, so
+prices cannot be shared between games, and the **Product name is what the customer sees
+at checkout**. Product per game, therefore, never product per cadence.
+
+Two things a subscription will not do for you, both worth holding in mind:
+
+- **Billing starts when someone pays, not on the date the campaign starts.** A link
+  published months early charges people for sessions that have not happened. Create the
+  product and price whenever, and create the *link* when the seat should be sellable —
+  `--no-link` stops the script short for exactly this reason.
+- **It keeps charging until somebody cancels it.** Skipped sessions still bill, and when
+  the campaign ends nothing in Stripe knows. There is no backend and no webhook here, so
+  nothing will remind you. Cancelling every player's subscription is a manual step at the
+  end of a campaign, and forgetting it charges people for a game that is over.
 
 ### Currency
 

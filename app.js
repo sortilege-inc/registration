@@ -100,6 +100,9 @@ function fillMeta(dl, ev) {
  */
 function isPast(ev) {
   if (typeof ev.past === 'boolean') return ev.past;
+  // A repeating table's `ends` is the end of its FIRST session, not of the
+  // campaign — deriving from it would retire the whole thing after session one.
+  if (ev.repeat) return false;
   if (!ev.ends) return false;
   // Same reading as the .ics: a zone makes it a real instant, otherwise the
   // wall-clock is taken as local — which is what an in-person night means.
@@ -944,6 +947,8 @@ function buildIcs(ev, uid) {
     `DTSTART:${stamp(ev.starts)}`,
   ];
   if (ev.ends) lines.push(`DTEND:${stamp(ev.ends)}`);
+  // e.g. FREQ=WEEKLY;INTERVAL=2 for a fortnightly campaign.
+  if (ev.repeat) lines.push(`RRULE:${ev.repeat}`);
   lines.push(`SUMMARY:${icsEscape(ev.title || 'A Sortilege table')}`);
   const where = ev.address || ev.where;
   if (where) lines.push(`LOCATION:${icsEscape(where)}`);

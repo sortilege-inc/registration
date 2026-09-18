@@ -217,12 +217,42 @@ window.EVENTS = {
     taken: 0,
     questions: [],
   },
+  // ---- Paid campaigns at the Belgian Club ---------------------------------
+
+  'terra-antarctica': {
+    title: 'Terra Antarctica',
+    system: 'Arkham Horror: The Roleplaying Game',
+    run: 'not-started',
+    shape: 'multi-session',
+    place: 'winnipeg',
+    when: 'Bi-weekly Tuesdays from 1 December',
+    hours: '6:00–9:00 PM',
+    length: '3 hours',
+    where: 'Belgian Club',
+    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Belgian+Club%2C+407+Provencher+Blvd%2C+Winnipeg',
+    address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
+    price: { amount: '35 CAD', per: 'session, billed every 2 weeks' },
+    // First session; `repeat` makes the .ics cover the whole campaign and keeps
+    // isPast() from retiring it once session one has been played.
+    starts: '2026-12-01T18:00',
+    ends: '2026-12-01T21:00',
+    repeat: 'FREQ=WEEKLY;INTERVAL=2',
+    // Stripe product prod_VHeQF88UAMW2gX, price price_1UH57SPvhIvMp2JYGAaSxJCR
+    // (CA$35.00 every 2 weeks, LIVE). No Payment Link exists yet, deliberately:
+    // a link is payable the moment it is created, and billing starts when
+    // someone pays, not on 1 December. Create the link in late November with
+    //   ./scripts/stripe-event.sh --price price_1UH57SPvhIvMp2JYGAaSxJCR --live
+    // and add its URL here as `payment`. Until then the confirmation correctly
+    // says a payment link is coming.
+    taken: 0,
+    questions: [],
+  },
 };
 
 // Order of the chooser shown when no ?event= key is given. Keys not listed are
 // appended in the order they appear above.
 window.EVENT_ORDER = [
-  'root-hacksaw-dell', 'l5r-kyotei-castle', 'arkham-big-easy',
+  'root-hacksaw-dell', 'l5r-kyotei-castle', 'arkham-big-easy', 'terra-antarctica',
   'sjorseidr', 'winter-city', 'troika-well',
 ];
 
