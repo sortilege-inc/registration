@@ -276,6 +276,54 @@ The form is built into the DOM in full, with nothing hidden, before the step-thr
 stays in the DOM the whole time, so the payload is identical with or without the wizard,
 and an event with no optional questions degrades to a single page with one Send button.
 
+## Stripe
+
+A paid table that is not on StartPlaying gets a **Payment Link** — a plain URL in the
+event's `payment` field. That is the whole integration: **this site holds no Stripe key
+of any kind**, and one should never be added. A publishable key would have no job here
+and a secret key would be a disaster.
+
+`app.js` appends two things to the link when it builds the button:
+
+- `client_reference_id` — the registration's reference (`ROOTHA-B608A`). It shows against
+  the payment in the Stripe dashboard, which is what lets a payment be matched back to
+  the registration email.
+- `prefilled_email` — so nobody types their address twice.
+
+**Nothing tells the site whether payment succeeded.** The registration email arrives when
+the form is submitted, regardless; the payment is reconciled in the Stripe dashboard by
+its reference. That is a deliberate consequence of having no backend, not an oversight.
+
+### Creating a link
+
+`scripts/stripe-event.sh` creates the product, price and Payment Link in one go:
+
+```bash
+./scripts/stripe-event.sh --name "A Table With A Name" --amount 3500 --currency cad
+```
+
+`--amount` is whole cents. **Test mode is the default** — the script reads the key's
+prefix and refuses a live key unless `--live` is also passed, so a live charge cannot
+happen by typo.
+
+The key lives at `~/.secrets/stripe-claude.key` (mode 600, outside every repo) and is
+read into the environment for the duration of the command. It is never an argument,
+never in shell history, and never printed. To place one:
+
+```bash
+mkdir -p ~/.secrets && chmod 700 ~/.secrets && install -m 600 /dev/null ~/.secrets/stripe-claude.key && cat > ~/.secrets/stripe-claude.key
+```
+
+Paste, Enter, Ctrl-D. Use a **restricted** key (`rk_test_…`) with write on Products,
+Prices and Payment Links and nothing else.
+
+### Currency
+
+Standing policy, carried over from the landing site: **CAD for in-person tables, USD for
+online ones.** The Stripe price, the `price.amount` token on the tile and the summary
+line must all agree — the first two are separate systems, so check them against each
+other when creating a link.
+
 ## Counting seats for real
 
 `taken` in `data.js` is a hand-maintained number, which is the only option a static page
