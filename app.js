@@ -99,6 +99,9 @@ function orderedEvents() {
   for (const key of order) {
     if (seen.has(key) || !events[key]) continue;
     seen.add(key);
+    // `hidden` keeps an event out of the chooser while leaving it reachable at
+    // its own ?event= link — drafts, and anything being tested.
+    if (events[key].hidden) continue;
     out.push([key, events[key]]);
   }
   return out;

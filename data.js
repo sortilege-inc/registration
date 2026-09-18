@@ -217,6 +217,32 @@ window.EVENTS = {
     taken: 0,
     questions: [],
   },
+  // ---- Test table ---------------------------------------------------------
+  // `hidden` keeps it out of the chooser; it is reachable only at
+  //   /?event=stripe-test
+  // It carries a TEST-MODE Stripe Payment Link, so the card form takes
+  // 4242 4242 4242 4242 with any future expiry and any CVC, and no money
+  // moves. Delete this entry once the real paid tables exist.
+  'stripe-test': {
+    hidden: true,
+    title: 'Stripe Test Table',
+    system: 'Pipeline Check',
+    pitch: 'Not a real game. This entry exists to exercise the payment path end to end.',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'winnipeg',
+    when: 'Whenever you are testing',
+    hours: '6:00–9:00 PM',
+    length: '3 hours',
+    where: 'Belgian Club',
+    whereUrl: 'https://www.google.com/maps/search/?api=1&query=Belgian+Club%2C+407+Provencher+Blvd%2C+Winnipeg',
+    address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',
+    // In person, so CAD — the side of the currency rule nothing else exercises.
+    price: { amount: '35 CAD', per: 'session' },
+    payment: 'https://buy.stripe.com/test_aFa4gB1prbSsapucPA08g00',
+    taken: 0,
+    questions: [],
+  },
 };
 
 // Order of the chooser shown when no ?event= key is given. Keys not listed are

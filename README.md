@@ -61,7 +61,9 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
 }
 ```
 
-Then add the key to `EVENT_ORDER` to place it in the chooser.
+Then add the key to `EVENT_ORDER` to place it in the chooser. An event with `hidden: true`
+stays out of the chooser entirely while remaining reachable at its own `?event=` link —
+for drafts, and for anything being tested.
 
 ### Filters
 
@@ -297,6 +299,13 @@ and a secret key would be a disaster.
 **Nothing tells the site whether payment succeeded.** The registration email arrives when
 the form is submitted, regardless; the payment is reconciled in the Stripe dashboard by
 its reference. That is a deliberate consequence of having no backend, not an oversight.
+
+### Testing
+
+`?event=stripe-test` is a hidden event wired to a **test-mode** Payment Link. Register
+against it and the confirmation offers a card payment that takes `4242 4242 4242 4242`
+with any future expiry and any CVC; no money moves. Delete the entry once real paid
+tables exist.
 
 ### Creating a link
 
