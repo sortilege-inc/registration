@@ -59,6 +59,8 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   starts: '2026-10-06T18:00',       // optional; enables Add to calendar
   ends: '2026-10-06T21:00',
   zone: 'America/Winnipeg',         // set for ONLINE events; see below
+  discordChannel: '123…',           // voice channel for the Discord event;
+                                    // required for online games, see CLAUDE.md
   repeat: 'FREQ=WEEKLY;INTERVAL=2', // recurring campaign; see below
   hidden: true,                     // keep out of the chooser, link still works
   past: true,                       // force "already played"; see below

@@ -148,6 +148,37 @@ flag: the hero starts with the house treatment and loses it when an event has it
 - **`taken` is maintained by hand** — a static page cannot count submissions. `seats: null`
   for StartPlaying tables, whose listing counts seats; a number copied here goes stale.
 
+## Discord scheduled events
+
+`scripts/discord-events.mjs` publishes the site's games to the Sortilege guild
+(`566707195518124053`). **Dry run is the default**; `--apply` is deliberate, because
+creating an event announces it to everyone in the server. `--channels` lists the voice
+channels and their ids.
+
+The bot token lives at `~/.secrets/discord-bot.token`, mode 600, read into the process
+and never printed. The bot needs `MANAGE_EVENTS` in the guild. **Nothing about Discord
+belongs in this repo or in `data.js` except a `discordChannel` id, which is not secret.**
+
+It pushes one way: `data.js` is the source of truth and the script never writes back.
+
+- **What it publishes**: listed (`!hidden`), dated (`starts`), still to come (`!isPast`).
+  A hidden table is unannounced and a Discord event is an announcement, so hidden stays
+  off. The recurring online tables name a weekday and never a date, so they cannot be
+  scheduled at all.
+- **Where it says the game is**: `discordChannel` makes it a voice event; otherwise
+  `address` (or `where`) makes it external. **An online game with no `discordChannel` is
+  skipped**, never published as an external event located "Online" — that looks finished
+  and tells nobody where to go.
+- **Re-runs**: existing events are matched by name and PATCHed when details differ, so
+  fixing a time in `data.js` and re-running corrects Discord. Renaming a game in
+  `data.js` orphans its Discord event and creates a second one — rename in both, or
+  delete the old one by hand.
+- Events on Discord that the site does not list are **reported and never deleted**; one
+  may have been created in the server on purpose.
+
+Discord has no floating time — an event is an instant — so a wall-clock with no `zone`
+resolves against `America/Winnipeg`, which is right for every in-person night here.
+
 ## Working discipline
 
 - **Assert every string replacement.** Patching these files with `str.replace` and no
