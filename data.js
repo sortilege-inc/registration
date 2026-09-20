@@ -114,6 +114,8 @@ window.EVENTS = {
     hours: '4:00–7:00 PM (Winnipeg)',
     length: '3 hours',
     where: 'Online',
+    // Voice channel for the Discord scheduled event: startplaying / startplaying.games.
+    discordChannel: '1293940159506808842',
     // Online, so the .ics needs a real instant rather than floating local time:
     // `zone` is the zone the wall-clock above is written in, and the builder
     // converts to UTC so a player in another city gets the right hour.
@@ -277,6 +279,8 @@ window.EVENTS = {
     hours: '7:00 PM CDT',
     length: '3–4 hours',
     where: 'Online',
+    // Voice channel for the Discord scheduled event: Doomed / SP.G TEETH.
+    discordChannel: '1550686771812114442',
     price: { amount: '35 USD', per: 'session' },
     startplaying: 'https://startplaying.games/adventure/cmu77i6f10073l704zhphx9ul',
     seats: null,
@@ -302,6 +306,8 @@ window.EVENTS = {
     hours: '7:00 PM CDT',
     length: '3–4 hours',
     where: 'Online',
+    // Voice channel for the Discord scheduled event: Doomed / SP.G TEETH.
+    discordChannel: '1550686771812114442',
     price: { amount: '35 USD', per: 'session' },
     startplaying: 'https://startplaying.games/adventure/cmu77j11r00a2i704rkqo29fq',
     seats: null,
@@ -327,6 +333,8 @@ window.EVENTS = {
     hours: '7:00 PM CDT',
     length: '3–4 hours',
     where: 'Online',
+    // Voice channel for the Discord scheduled event: Doomed / SP.G TEETH.
+    discordChannel: '1550686771812114442',
     price: { amount: '35 USD', per: 'session' },
     startplaying: 'https://startplaying.games/adventure/cmu77jojn000wl5043ztuh5of',
     seats: null,

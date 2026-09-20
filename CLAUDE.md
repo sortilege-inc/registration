@@ -165,10 +165,24 @@ It pushes one way: `data.js` is the source of truth and the script never writes 
   A hidden table is unannounced and a Discord event is an announcement, so hidden stays
   off. The recurring online tables name a weekday and never a date, so they cannot be
   scheduled at all.
+- **What it calls things**: the site prints the system on its own line above the title,
+  so a title there need not repeat it. A Discord event has no such line — the name is all
+  anyone sees — so the name is rebuilt as *short system* + title, trimming the system at
+  its first colon or bracket: "Root: The Roleplaying Game" + "Hacksaw Dell" becomes
+  "Root: Hacksaw Dell". This is also what makes the events already in the guild match
+  instead of duplicating.
 - **Where it says the game is**: `discordChannel` makes it a voice event; otherwise
   `address` (or `where`) makes it external. **An online game with no `discordChannel` is
   skipped**, never published as an external event located "Online" — that looks finished
   and tells nobody where to go.
+- **A voice event needs the bot to see the channel.** Guild-level `VIEW_CHANNEL` is not
+  enough: almost every channel in this guild denies it by overwrite, and a create against
+  one fails `403 Missing Permissions`. Grant the bot's role **View Channel** on the
+  specific channels in use. Listing channels is unaffected — the REST endpoint returns
+  every channel regardless, which is why picking one always works even when using it does
+  not.
+- Per-event failures are reported and the run continues; one refused voice event does not
+  abandon the external ones.
 - **Re-runs**: existing events are matched by name and PATCHed when details differ, so
   fixing a time in `data.js` and re-running corrects Discord. Renaming a game in
   `data.js` orphans its Discord event and creates a second one — rename in both, or

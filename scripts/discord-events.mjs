@@ -97,6 +97,25 @@ function schedulable(events) {
   return Object.entries(events).filter(([, ev]) => ev.starts && !ev.hidden && !isPast(ev));
 }
 
+/**
+ * What the event is called on Discord.
+ *
+ * The site prints the system on its own line above the title, so a title there
+ * need not repeat it — "Hacksaw Dell" under "Root: The Roleplaying Game". A
+ * Discord event has no such line: the name is the whole of what anyone sees in
+ * the events list, so the system goes back in front of it.
+ *
+ * The system is trimmed at the first colon or bracket, turning "Root: The
+ * Roleplaying Game" into "Root" and "Legend of the Five Rings (Edge Studio)"
+ * into "Legend of the Five Rings".
+ */
+function eventName(key, ev) {
+  const title = ev.title || key;
+  const system = (ev.system || '').split(/[:(]/)[0].trim();
+  if (!system || title.toLowerCase().startsWith(system.toLowerCase())) return title.slice(0, 100);
+  return `${system}: ${title}`.slice(0, 100);
+}
+
 function describe(key, ev) {
   const lines = [];
   if (ev.pitch) lines.push(ev.pitch);
@@ -140,7 +159,7 @@ function payload(key, ev) {
   if (place.entity_type === 3 && !end) return { error: 'an external event needs `ends`' };
 
   return {
-    name: (ev.title || key).slice(0, 100),
+    name: eventName(key, ev),
     description: describe(key, ev),
     scheduled_start_time: start,
     scheduled_end_time: end,
@@ -182,7 +201,7 @@ async function main() {
 
   console.log(apply ? 'APPLYING\n' : 'DRY RUN — nothing will change. Pass --apply.\n');
 
-  let created = 0; let updated = 0; let unchanged = 0; let skipped = 0;
+  let created = 0; let updated = 0; let unchanged = 0; let skipped = 0; let failed = 0;
   for (const [key, ev] of wanted) {
     const body = payload(key, ev);
     if (body.error) {
@@ -196,14 +215,29 @@ async function main() {
       ? `voice ${body.channel_id}`
       : body.entity_metadata.location;
 
+    // One refusal must not abandon the rest: a voice event can fail on channel
+    // permissions while every external one is fine.
+    const attempt = async (label, call) => {
+      console.log(`  ${label}  ${body.name}  ${body.scheduled_start_time}  ${where}`);
+      if (!apply) return true;
+      try {
+        await call();
+        return true;
+      } catch (error) {
+        console.log(`          FAILED: ${error.message.replace(/^\S+ \S+ → /, '')}`);
+        failed += 1;
+        return false;
+      }
+    };
+
     if (!match) {
-      console.log(`  CREATE  ${body.name}  ${body.scheduled_start_time}  ${where}`);
-      if (apply) await discord('POST', `/guilds/${GUILD}/scheduled-events`, body);
-      created += 1;
+      if (await attempt('CREATE', () => discord('POST', `/guilds/${GUILD}/scheduled-events`, body))) {
+        created += 1;
+      }
     } else if (differs(match, body)) {
-      console.log(`  UPDATE  ${body.name}  ${body.scheduled_start_time}  ${where}`);
-      if (apply) await discord('PATCH', `/guilds/${GUILD}/scheduled-events/${match.id}`, body);
-      updated += 1;
+      if (await attempt('UPDATE', () => discord('PATCH', `/guilds/${GUILD}/scheduled-events/${match.id}`, body))) {
+        updated += 1;
+      }
     } else {
       console.log(`  ok      ${body.name}`);
       unchanged += 1;
@@ -212,12 +246,14 @@ async function main() {
 
   // Anything on Discord the site no longer lists. Reported, never deleted —
   // an event in the server may have been made there on purpose.
-  const ours = new Set(wanted.map(([key, ev]) => (ev.title || key).slice(0, 100)));
+  const ours = new Set(wanted.map(([key, ev]) => eventName(key, ev)));
   for (const e of existing) {
     if (!ours.has(e.name)) console.log(`  (on Discord but not on the site: ${e.name})`);
   }
 
-  console.log(`\n${created} to create, ${updated} to update, ${unchanged} unchanged, ${skipped} skipped.`);
+  const verb = apply ? ['created', 'updated'] : ['to create', 'to update'];
+  console.log(`\n${created} ${verb[0]}, ${updated} ${verb[1]}, ${unchanged} unchanged, ${skipped} skipped`
+    + (failed ? `, ${failed} FAILED.` : '.'));
   if (!apply && (created || updated)) console.log('Re-run with --apply to make it so.');
 }
 
