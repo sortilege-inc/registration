@@ -38,6 +38,8 @@ Add an entry to `window.EVENTS` in `data.js` and push. Nothing else — no marku
   hours: '7:00-10:00 PM',           // the time, on its own line
   length: '3 hours',                // one sitting
   sessions: '8-12',                 // optional; how many sittings in all
+  duration: 'Short',                // tile tag: Short | Long. A one-shot
+                                    // derives 'Once' and needs no field.
   where: 'Belgian Club',            // short name; use the map link for the rest
   whereUrl: 'https://www.google.com/maps/search/?api=1&query=...',
   address: 'Belgian Club, 407 Provencher Blvd, Winnipeg',  // for the .ics
@@ -238,8 +240,12 @@ hidden input per tag under the same name, so `FormData.getAll` picks up the whol
 
 Each tile carries a short stack of tokens down the top-left of its art, colour-coded by
 category: coral for "act now" (Waitlist), teal for Free, plum for place (`WPG`, `MPLS`,
-`SP.G`), gold for money (the price `amount`). Being full outranks being free — a free
-table nobody can join is not a free table.
+`SP.G`), gold for money (the price `amount`), lilac for how long the run is. Being full
+outranks being free — a free table nobody can join is not a free table.
+
+The run-length tag comes from `duration` (`Short`, `Long`); a `one-shot` derives `Once`
+from its `shape`, so the common case needs no field and a new one-shot is tagged
+correctly the moment it is added.
 
 ## Email backend — SHARED, DO NOT DEPLOY FROM HERE
 

@@ -973,6 +973,7 @@ a:hover { color: var(--coral); }
 .tarot__token.is-full { background: var(--coral); }
 .tarot__token.is-place { background: var(--plum); }
 .tarot__token.is-cost { color: var(--ink); background: var(--gold); }
+.tarot__token.is-length { background: var(--lilac); }
 
 .tarot__body { padding: 0.6rem 0.35rem 0.25rem; }
 

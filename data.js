@@ -46,6 +46,9 @@ window.EVENTS = {
     title: 'Sjórseiðr: A Sea-Faring Covenant',
     run: 'ongoing',
     shape: 'multi-session',
+    // How long the whole run is, shown as a tag on the tile.
+    // A one-shot derives 'Once' and needs no field.
+    duration: 'Long',
     place: 'online',
     system: 'Ars Magica 5th Edition',
     art: 'assets/art/game-sjorseidr.jpg',
@@ -80,12 +83,15 @@ window.EVENTS = {
     title: 'Journey to the Winter City',
     run: 'not-started',
     shape: 'multi-session',
+    // How long the whole run is, shown as a tag on the tile.
+    // A one-shot derives 'Once' and needs no field.
+    duration: 'Short',
     place: 'online',
     system: 'City of Winter',
     art: 'assets/art/game-winter-city.jpg',
     pitch: 'A story-driven exploration game where characters navigate the difficult journey to a new home while deciding which traditions to carry forward from their abandoned homeland.',
     status: 'Not yet started',
-    when: 'Bi-weekly, Wednesdays',
+    when: 'Bi-weekly, Sundays',
     length: '3 hours',
     where: 'Online',
     price: { amount: '35 USD', per: 'session' },
@@ -223,6 +229,11 @@ window.EVENTS = {
     pitch: 'In 1930, the great Miskatonic Expedition to the Antarctic ended in tragedy. Twelve of its members died in the shadows of the largest mountain range ever discovered, and several more suffered deep mental scars from the experience. Two years later, a new team of scientists announced their own expedition. But as they suddenly vanish too, the world is left in shock. Only a team of skilled investigators can be brave enough to return to those mountains of madness. But will they save the lost explorers? Or are they also fated never to return?',
     run: 'not-started',
     shape: 'multi-session',
+    // 8-12 sessions is bounded, so Short rather than Long — and not the
+    // 'Once' that a one-shot derives.
+    // How long the whole run is, shown as a tag on the tile.
+    // A one-shot derives 'Once' and needs no field.
+    duration: 'Short',
     place: 'winnipeg',
     when: 'Bi-weekly Tuesdays from 1 December',
     hours: '6:00–9:00 PM',

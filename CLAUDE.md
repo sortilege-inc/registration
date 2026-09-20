@@ -135,7 +135,8 @@ flag: the hero starts with the house treatment and loses it when an event has it
 ## Dates, `.ics` and seats
 
 - `when` is the date, `hours` is the time on its own line, `length` is one sitting,
-  `sessions` is how many sittings in all.
+  `sessions` is how many sittings in all, `duration` is the tile tag (`Short`/`Long`) —
+  a `one-shot` derives `Once` from its `shape`, so only campaigns need the field.
 - `starts`/`ends` are local wall-clock. **No `zone` means floating time** — correct for an
   in-person night, where 6pm is 6pm for everyone who can get there. **Set `zone` for
   online games**, or a player in another city gets the wrong hour.

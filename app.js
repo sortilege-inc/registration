@@ -296,6 +296,9 @@ function showChooser() {
     if (PLACE_TOKEN[ev.place]) tokens.push([PLACE_TOKEN[ev.place], 'is-place']);
     if (ev.startplaying) tokens.push(['SP.G', 'is-place']);
     if (!ev.free && ev.price?.amount) tokens.push([ev.price.amount, 'is-cost']);
+    // How long the whole run is. A one-shot says so without needing the field.
+    const runs = ev.duration || (ev.shape === 'one-shot' ? 'Once' : '');
+    if (runs) tokens.push([runs, 'is-length']);
 
     if (tokens.length) {
       const strip = document.createElement('span');
