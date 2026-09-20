@@ -229,11 +229,9 @@ window.EVENTS = {
     pitch: 'In 1930, the great Miskatonic Expedition to the Antarctic ended in tragedy. Twelve of its members died in the shadows of the largest mountain range ever discovered, and several more suffered deep mental scars from the experience. Two years later, a new team of scientists announced their own expedition. But as they suddenly vanish too, the world is left in shock. Only a team of skilled investigators can be brave enough to return to those mountains of madness. But will they save the lost explorers? Or are they also fated never to return?',
     run: 'not-started',
     shape: 'multi-session',
-    // 8-12 sessions is bounded, so Short rather than Long — and not the
-    // 'Once' that a one-shot derives.
     // How long the whole run is, shown as a tag on the tile.
     // A one-shot derives 'Once' and needs no field.
-    duration: 'Short',
+    duration: 'Medium',
     place: 'winnipeg',
     when: 'Bi-weekly Tuesdays from 1 December',
     hours: '6:00–9:00 PM',
