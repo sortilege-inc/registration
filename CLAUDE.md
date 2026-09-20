@@ -183,6 +183,14 @@ It pushes one way: `data.js` is the source of truth and the script never writes 
   not.
 - Per-event failures are reported and the run continues; one refused voice event does not
   abandon the external ones.
+- **Cover art** comes from the event's `art` file, sent as the data URI Discord's API
+  requires — it has no field that takes a URL. This is not the base64-in-HTML that is
+  banned elsewhere: the file stays a real file and the encoding lives only in one request
+  body. Art is sent **on create, and on update only when the event has none**, because a
+  cover set by hand in Discord beats anything derived here and an omitted field is left
+  alone by PATCH. `differs()` cannot compare images — Discord returns a hash, not bytes —
+  so only their *absence* counts as a difference, or every run would re-upload every
+  cover.
 - **Re-runs**: existing events are matched by name and PATCHed when details differ, so
   fixing a time in `data.js` and re-running corrects Discord. Renaming a game in
   `data.js` orphans its Discord event and creates a second one — rename in both, or

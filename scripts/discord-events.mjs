@@ -129,6 +129,27 @@ function describe(key, ev) {
 }
 
 /**
+ * The event's cover art, as the data URI the API wants.
+ *
+ * This is not the base64-in-HTML that is banned everywhere else: the file stays
+ * a real file on disk, and the encoding exists only inside one request body
+ * because Discord's API has no field that takes a URL.
+ */
+function cover(ev) {
+  if (!ev.art) return null;
+  const file = join(root, ev.art);
+  const kind = ev.art.endsWith('.png') ? 'image/png'
+    : ev.art.endsWith('.webp') ? 'image/webp'
+    : 'image/jpeg';
+  try {
+    return `data:${kind};base64,${readFileSync(file).toString('base64')}`;
+  } catch {
+    console.log(`          (no art file at ${ev.art})`);
+    return null;
+  }
+}
+
+/**
  * Where Discord thinks the game happens: a voice channel for an online table,
  * the street address for one in a room.
  *
@@ -171,6 +192,10 @@ function payload(key, ev) {
 /** Fields worth comparing, so an unchanged event is left alone. */
 function differs(existing, wanted) {
   const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  // Discord returns an image hash rather than the bytes, so the two cannot be
+  // compared. Only the absence of one counts as a difference — otherwise every
+  // run would re-upload every cover.
+  if (!existing.image && wanted.image) return true;
   return !same(existing.description, wanted.description)
     || !same(existing.scheduled_start_time && new Date(existing.scheduled_start_time).toISOString(),
              wanted.scheduled_start_time)
@@ -211,6 +236,13 @@ async function main() {
     }
 
     const match = byName.get(body.name);
+    // Send art on create, and on update only when the event has none. Cover
+    // images set by hand in Discord are better than anything derived here and
+    // must not be overwritten; an omitted field is left alone by PATCH.
+    if (!match || !match.image) {
+      const image = cover(ev);
+      if (image) body.image = image;
+    }
     const where = body.entity_type === 2
       ? `voice ${body.channel_id}`
       : body.entity_metadata.location;
