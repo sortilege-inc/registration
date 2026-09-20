@@ -415,12 +415,15 @@ function occurrencesIn(ev, year, month) {
   }
 
   const every = Number((/INTERVAL=(\d+)/.exec(ev.repeat) || [])[1]) || 1;
-  const step = every * 7 * 86400000;
   const days = [];
-  // Walk from the first sitting; stop a month past the one on screen.
-  for (let t = first.getTime(); t <= monthEnd.getTime(); t += step) {
-    const when = new Date(t);
-    if (when >= monthStart && when <= monthEnd) days.push(when.getDate());
+  // Walk from the first sitting in whole DAYS, not milliseconds. A fixed
+  // every * 7 * 86400000 is an hour short across the end of DST, so midnight
+  // plus a fortnight lands at 23:00 the previous evening and the sitting shows
+  // up on the day before — a Sunday campaign moving onto Saturdays in November.
+  for (let n = 0; ; n += 1) {
+    const when = new Date(start.y, start.m, start.d + n * every * 7);
+    if (when > monthEnd) break;
+    if (when >= monthStart) days.push(when.getDate());
   }
   return days;
 }
@@ -1102,6 +1105,40 @@ function utcStamp(local, zone) {
   return instant.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
 }
 
+/**
+ * The DST rules a recurring zoned event needs spelled out in the file.
+ *
+ * A UTC DTSTART with an RRULE recurs in UTC: a fortnightly 2pm Winnipeg game
+ * would quietly become 1pm for every sitting after the November fall-back. Only
+ * a TZID and the zone's own transitions keep the wall-clock hour fixed, and
+ * iCalendar has no zone database — the rules travel in the file.
+ *
+ * Winnipeg has followed the US rules since 2007, so these RRULEs hold without a
+ * table of dates. Zones not listed here fall back to a UTC instant, which is
+ * exact for a one-off and only wrong across a recurrence.
+ */
+const VTIMEZONES = {
+  'America/Winnipeg': [
+    'BEGIN:VTIMEZONE',
+    'TZID:America/Winnipeg',
+    'BEGIN:DAYLIGHT',
+    'TZOFFSETFROM:-0600',
+    'TZOFFSETTO:-0500',
+    'TZNAME:CDT',
+    'DTSTART:20070311T020000',
+    'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU',
+    'END:DAYLIGHT',
+    'BEGIN:STANDARD',
+    'TZOFFSETFROM:-0500',
+    'TZOFFSETTO:-0600',
+    'TZNAME:CST',
+    'DTSTART:20071104T020000',
+    'RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU',
+    'END:STANDARD',
+    'END:VTIMEZONE',
+  ],
+};
+
 const icsEscape = (s) => String(s).replace(/\\/g, '\\\\').replace(/[;,]/g, (c) => `\\${c}`).replace(/\n/g, '\\n');
 const icsStamp = (local) => `${local}`.replace(/[-:]/g, '').replace(/\..*$/, '') + '00';
 
@@ -1121,7 +1158,12 @@ function buildIcs(ev, uid) {
   // An event with a `zone` is online: its time must be a real instant, or a
   // player in another city gets the wrong hour. Without one it is in-person and
   // stays floating — 6pm at the Belgian Club is 6pm for everyone who can go.
-  const stamp = (local) => (ev.zone ? utcStamp(local, ev.zone) : icsStamp(local));
+  // A repeating zoned event carries its zone rules and a TZID, so the hour
+  // survives a DST change mid-campaign. Everything else keeps the simpler form.
+  const tzid = ev.repeat && ev.zone && VTIMEZONES[ev.zone] ? ev.zone : null;
+  const dt = (name, local) => (tzid
+    ? `${name};TZID=${tzid}:${icsStamp(local)}`
+    : `${name}:${ev.zone ? utcStamp(local, ev.zone) : icsStamp(local)}`);
 
   const lines = [
     'BEGIN:VCALENDAR',
@@ -1129,12 +1171,13 @@ function buildIcs(ev, uid) {
     'PRODID:-//Sortilege//Registration//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
+    ...(tzid ? VTIMEZONES[tzid] : []),
     'BEGIN:VEVENT',
     `UID:${uid}@rsvp.sortilege.online`,
     `DTSTAMP:${now}`,
-    `DTSTART:${stamp(ev.starts)}`,
+    dt('DTSTART', ev.starts),
   ];
-  if (ev.ends) lines.push(`DTEND:${stamp(ev.ends)}`);
+  if (ev.ends) lines.push(dt('DTEND', ev.ends));
   // e.g. FREQ=WEEKLY;INTERVAL=2 for a fortnightly campaign.
   if (ev.repeat) lines.push(`RRULE:${ev.repeat}`);
   lines.push(`SUMMARY:${icsEscape(ev.title || 'A Sortilege table')}`);

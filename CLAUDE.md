@@ -143,6 +143,15 @@ flag: the hero starts with the house treatment and loses it when an event has it
 - `repeat` carries an RRULE (`FREQ=WEEKLY;INTERVAL=2`). It makes the calendar entry the
   campaign rather than one evening, expands the month view across every sitting, and
   stops `isPast()` retiring a campaign after session one.
+- **A recurrence crossing a DST change breaks twice, both silently.** In the month view,
+  stepping by `every * 7 * 86400000` is an hour short after the November fall-back, so
+  midnight plus a fortnight lands at 23:00 the evening before and a Sunday campaign shows
+  up on Saturdays — `occurrencesIn()` steps in whole days for this reason. In the `.ics`,
+  a UTC `DTSTART` with an `RRULE` recurs *in UTC*, so a 2pm game becomes 1pm for every
+  sitting after the change; a repeating zoned event therefore emits `DTSTART;TZID=` and
+  carries a `VTIMEZONE` from `VTIMEZONES` in `app.js`. **Adding a zone there means adding
+  its transition rules** — iCalendar has no zone database. Unlisted zones fall back to a
+  UTC instant, which is exact for a one-off and only wrong across a recurrence.
 - `where` is the short venue name and `whereUrl` its map link; `address` is the street,
   used only by the `.ics`, because that is what a phone navigates from.
 - **`taken` is maintained by hand** — a static page cannot count submissions. `seats: null`

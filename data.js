@@ -90,10 +90,23 @@ window.EVENTS = {
     system: 'City of Winter',
     art: 'assets/art/game-winter-city.jpg',
     pitch: 'A story-driven exploration game where characters navigate the difficult journey to a new home while deciding which traditions to carry forward from their abandoned homeland.',
-    status: 'Not yet started',
-    when: 'Bi-weekly, Sundays',
+    status: 'Two seats left',
+    when: 'Bi-weekly Sundays from 11 October',
+    hours: '2:00–5:00 PM (Winnipeg)',
     length: '3 hours',
+    sessions: '3–6',
     where: 'Online',
+    // Voice channel for the Discord scheduled event: Refuge.
+    discordChannel: '1547440730161807422',
+    // First session; `repeat` makes the .ics cover the whole campaign and keeps
+    // isPast() from retiring it once session one has been played. Online, so
+    // `zone` names the zone the wall-clock is written in and the builder
+    // converts — including across the 1 November end of DST, which a bare
+    // UTC time would not survive.
+    starts: '2026-10-11T14:00',
+    ends: '2026-10-11T17:00',
+    zone: 'America/Winnipeg',
+    repeat: 'FREQ=WEEKLY;INTERVAL=2',
     price: { amount: '35 USD', per: 'session' },
     startplaying: 'https://startplaying.games/adventure/cmsukcr0l00lplf04l20padwp',
     payment: null,
