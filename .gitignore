@@ -2,3 +2,7 @@
 node_modules/
 .wrangler/
 .dev.vars
+
+# Local verification server config — a static http.server for checking the
+# site at 375px without deploying. Machine-local, not part of the site.
+.claude/
