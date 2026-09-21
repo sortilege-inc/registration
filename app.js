@@ -136,7 +136,7 @@ function orderedEvents() {
     // its own ?event= link — drafts, and anything being tested. A table that
     // has played drops out the same way, but for the opposite reason: its link
     // still works and says so. A past-events view would filter the other way.
-    if (events[key].hidden || isPast(events[key])) continue;
+    if (events[key].hidden || events[key].cancelled || isPast(events[key])) continue;
     out.push([key, events[key]]);
   }
   return out;
@@ -1386,6 +1386,22 @@ function showPast() {
   document.body.classList.add('is-handoff');
 }
 
+/* ---------- Cancelled ---------- */
+// A called-off table is not a played one. Saying "this one has run" to someone
+// standing in front of the poster it was printed on would be a plain lie, and
+// they are the likeliest reader of this page.
+
+function showCancelled() {
+  document.getElementById('cancelled-event').textContent = event.title || eventKey;
+  fillMeta(document.getElementById('cancelled-meta'), event);
+  document.getElementById('cancelled-lede').textContent = event.when
+    ? `This one was called off and will not run on ${event.when}. I run these often — here is what is open now.`
+    : 'This one was called off and will not run. I run these often — here is what is open now.';
+  document.getElementById('cancelled-browse').href = src ? `?src=${encodeURIComponent(src)}` : '?';
+  document.getElementById('cancelled').hidden = false;
+  document.body.classList.add('is-handoff');
+}
+
 /* ---------- Handoff ---------- */
 // A StartPlaying table is sold and scheduled there, so asking for a name and an
 // email here would collect something nobody acts on and put a second, pointless
@@ -1427,8 +1443,13 @@ function fillHero() {
 
 if (!event) {
   showChooser();
+} else if (event.cancelled) {
+  // Ahead of `past`: a table called off before its date would otherwise still
+  // read as upcoming, and one called off after its date would claim it ran.
+  fillHero();
+  showCancelled();
 } else if (isPast(event)) {
-  // Checked before everything else: a table that has played neither takes
+  // Checked before the rest: a table that has played neither takes
   // registrations nor sends anyone to a listing that has closed.
   fillHero();
   showPast();

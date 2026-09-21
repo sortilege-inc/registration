@@ -92,9 +92,10 @@ function isPast(ev) {
   return Number.isFinite(began) && began < Date.now();
 }
 
-/** Listed, dated, and still to come. */
+/** Listed, dated, not called off, and still to come. */
 function schedulable(events) {
-  return Object.entries(events).filter(([, ev]) => ev.starts && !ev.hidden && !isPast(ev));
+  return Object.entries(events)
+    .filter(([, ev]) => ev.starts && !ev.hidden && !ev.cancelled && !isPast(ev));
 }
 
 /**

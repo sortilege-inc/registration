@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=34">
+<link rel="stylesheet" href="styles.css?v=35">
 </head>
 <body>
 <main class="sheet">
@@ -95,6 +95,25 @@
       <p class="lede" id="past-lede"></p>
 
       <a class="pay" id="past-browse" href="?">SEE WHAT'S ON NOW →</a>
+    </div>
+  </section>
+
+  <!-- A table that was called off. Its QR still works and says what happened
+       rather than claiming the night ran. -->
+  <section class="notice" id="cancelled" hidden>
+    <div class="sec">
+      <p class="kicker">CALLED OFF</p>
+      <h2 class="notice__title">This One Was Cancelled</h2>
+
+      <div class="booking">
+        <p class="booking__kicker">THE TABLE</p>
+        <p class="booking__title" id="cancelled-event"></p>
+        <dl class="booking__meta" id="cancelled-meta"></dl>
+      </div>
+
+      <p class="lede" id="cancelled-lede"></p>
+
+      <a class="pay" id="cancelled-browse" href="?">SEE WHAT'S ON NOW →</a>
     </div>
   </section>
 
@@ -218,7 +237,7 @@
   </footer>
 
 </main>
-<script src="data.js?v=34"></script>
-<script src="app.js?v=34"></script>
+<script src="data.js?v=35"></script>
+<script src="app.js?v=35"></script>
 </body>
 </html>

@@ -150,6 +150,10 @@ window.EVENTS = {
 
   'root-hacksaw-dell': {
     title: 'Hacksaw Dell',
+    // Called off. Kept in full, like every finished table: the poster and its
+    // QR outlive the night, and the link now says the game will not run rather
+    // than offering a form for it.
+    cancelled: true,
     run: 'not-started',
     shape: 'one-shot',
     place: 'winnipeg',

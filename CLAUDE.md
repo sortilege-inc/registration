@@ -56,9 +56,9 @@ Routing in `app.js` runs: no event → chooser, **`isPast` → the played notice
 `startplaying` → handoff, otherwise the form. So a table that has run never takes
 registrations and never points at a listing that has closed, whatever else it carries.
 
-## `hidden` vs `past`
+## `hidden` vs `past` vs `cancelled`
 
-Both drop an event from the tiles *and* the month view. They mean opposite things:
+All three drop an event from the tiles *and* the month view. They mean different things:
 
 - **`hidden: true`** — not announced yet. The `?event=` link still serves everything:
   art, details, form, payment button, calendar file. A table can be sellable by direct
@@ -70,6 +70,16 @@ Both drop an event from the tiles *and* the month view. They mean opposite thing
   scanned at ten past six should say so rather than offer a form. Set the flag explicitly
   to retire a table early (`true`) or keep one listed past its date (`false`). A page left
   open across a start time keeps what it showed on load; the next load is right.
+- **`cancelled: true`** — it was called off and will not run. The link lands on "this one
+  was cancelled" and takes nothing. Checked **before** `past`, so a table called off ahead
+  of its date does not still read as upcoming and one called off after its date does not
+  claim it ran. It is also dropped from `scripts/discord-events.mjs`, which will neither
+  publish nor update it — an event already on Discord must be cancelled or deleted there
+  by hand, since the script never deletes.
+
+`past` and `cancelled` are not interchangeable. A cancelled table's likeliest reader is
+someone standing in front of the poster it was printed on, and "This One Has Run" would be
+a plain lie to them.
 
 **Never delete a finished event.** Every printed QR outlives the night it advertised. A
 deleted key lands on a generic "that link did not match a table I have open"; a kept one
