@@ -83,13 +83,13 @@ function instant(wall, zone) {
   return new Date(guess - zoneOffset(zone, new Date(guess)) * 60000).toISOString();
 }
 
-/** Same rule as isPast() in app.js. */
+/** Same rule as isPast() in app.js: the cutoff is the START, not the end. */
 function isPast(ev) {
   if (typeof ev.past === 'boolean') return ev.past;
   if (ev.repeat) return false;
-  if (!ev.ends) return false;
-  const ended = Date.parse(instant(ev.ends, ev.zone || HOME_ZONE));
-  return Number.isFinite(ended) && ended < Date.now();
+  if (!ev.starts) return false;
+  const began = Date.parse(instant(ev.starts, ev.zone || HOME_ZONE));
+  return Number.isFinite(began) && began < Date.now();
 }
 
 /** Listed, dated, and still to come. */

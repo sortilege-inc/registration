@@ -92,24 +92,33 @@ function fillMeta(dl, ev) {
  * Has this table already played?
  *
  * An explicit `past` in data.js always wins, so a game can be retired early or
- * kept listed after its date. Otherwise it is derived from `ends`, because a
+ * kept listed after its date. Otherwise it is derived from `starts`, because a
  * flag that has to be set by hand the morning after every session is a flag
  * that gets forgotten — and every printed QR outlives its event.
  *
- * Events with no `ends` (the recurring tables) are never past on their own.
+ * The cutoff is the START, not the end: once a table has begun, nobody can
+ * still take a seat at it, so a registration arriving mid-session is no more
+ * useful than one arriving the next day. Scanning the poster at ten past six
+ * should say the night has started, not offer a form.
+ *
+ * Read against the viewing client's own clock, once, as the page loads. A page
+ * left open across a start time keeps showing what it showed on load; the next
+ * load is correct.
+ *
+ * Events with no `starts` (the recurring tables) are never past on their own.
  */
 function isPast(ev) {
   if (typeof ev.past === 'boolean') return ev.past;
-  // A repeating table's `ends` is the end of its FIRST session, not of the
-  // campaign — deriving from it would retire the whole thing after session one.
+  // A repeating table's `starts` is its FIRST session, not the campaign —
+  // deriving from it would retire the whole thing the moment session one began.
   if (ev.repeat) return false;
-  if (!ev.ends) return false;
+  if (!ev.starts) return false;
   // Same reading as the .ics: a zone makes it a real instant, otherwise the
   // wall-clock is taken as local — which is what an in-person night means.
-  const ended = ev.zone
-    ? Date.parse(`${ev.ends}:00Z`) - zoneOffset(ev.zone, new Date(`${ev.ends}:00Z`)) * 60000
-    : Date.parse(ev.ends);
-  return Number.isFinite(ended) && ended < Date.now();
+  const began = ev.zone
+    ? Date.parse(`${ev.starts}:00Z`) - zoneOffset(ev.zone, new Date(`${ev.starts}:00Z`)) * 60000
+    : Date.parse(ev.starts);
+  return Number.isFinite(began) && began < Date.now();
 }
 
 /** Short markers shown on a tile, in the same vocabulary as the filters. */

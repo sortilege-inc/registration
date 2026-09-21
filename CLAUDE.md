@@ -64,8 +64,12 @@ Both drop an event from the tiles *and* the month view. They mean opposite thing
   art, details, form, payment button, calendar file. A table can be sellable by direct
   link while staying off the public roster.
 - **`past: true`** — it has run. The link lands on "this one has run" and takes nothing.
-  Usually unnecessary: an event is past automatically once `ends` has gone by. Set it
-  explicitly to retire a table early (`true`) or keep one listed past its date (`false`).
+  Usually unnecessary: an event goes past automatically once **`starts`** has gone by,
+  read against the viewing client's clock as the page loads. The cutoff is the start and
+  not the end because nobody can take a seat at a table that has already begun — a poster
+  scanned at ten past six should say so rather than offer a form. Set the flag explicitly
+  to retire a table early (`true`) or keep one listed past its date (`false`). A page left
+  open across a start time keeps what it showed on load; the next load is right.
 
 **Never delete a finished event.** Every printed QR outlives the night it advertised. A
 deleted key lands on a generic "that link did not match a table I have open"; a kept one
@@ -137,7 +141,8 @@ flag: the hero starts with the house treatment and loses it when an event has it
 - `when` is the date, `hours` is the time on its own line, `length` is one sitting,
   `sessions` is how many sittings in all, `duration` is the tile tag (`Short`/`Medium`/`Long`) —
   a `one-shot` derives `Once` from its `shape`, so only campaigns need the field.
-- `starts`/`ends` are local wall-clock. **No `zone` means floating time** — correct for an
+- `starts` is what retires a table (see `hidden` vs `past`); `ends` feeds the `.ics` and
+  the month view only. `starts`/`ends` are local wall-clock. **No `zone` means floating time** — correct for an
   in-person night, where 6pm is 6pm for everyone who can get there. **Set `zone` for
   online games**, or a player in another city gets the wrong hour.
 - `repeat` carries an RRULE (`FREQ=WEEKLY;INTERVAL=2`). It makes the calendar entry the
