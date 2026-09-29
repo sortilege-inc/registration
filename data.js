@@ -53,7 +53,10 @@ window.EVENTS = {
     system: 'Ars Magica 5th Edition',
     art: 'assets/art/game-sjorseidr.jpg',
     pitch: 'A group of mages have established an independent floating covenant in the North Atlantic, operating from their ships while investigating the mysterious disappearance of their founding magus.',
-    status: 'One seat left',
+    status: 'Full',
+    // No seats left. StartPlaying counts the seats, not this site, so being
+    // full has to be said outright rather than derived from `taken`.
+    full: true,
     when: 'Bi-weekly, Sundays',
     length: '3–4 hours',
     where: 'Online',

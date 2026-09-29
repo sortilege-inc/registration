@@ -299,7 +299,9 @@ function showChooser() {
     // not a free table, and hiding that behind "Free" is the wrong way round.
     const seats = seatState(ev);
     const tokens = [];
-    if (seats.full) tokens.push(['Waitlist', 'is-full']);
+    // "Waitlist" only where there is a waitlist to join. A StartPlaying table
+    // takes nothing here, so a full one is just full.
+    if (seats.full) tokens.push([ev.startplaying ? 'Full' : 'Waitlist', 'is-full']);
     else if (ev.free) tokens.push(['Free', 'is-free']);
     else if (seats.cap) tokens.push([`${seats.left} seats`, '']);
     if (PLACE_TOKEN[ev.place]) tokens.push([PLACE_TOKEN[ev.place], 'is-place']);
@@ -891,10 +893,13 @@ function createTagSelect(root) {
 // that they are joining a waitlist.
 
 function seatState(ev) {
+  // `full: true` says so outright, for a table this site cannot count: a
+  // StartPlaying listing keeps its own seat tally, and a number copied here
+  // goes stale. It stands in for a count rather than overriding one.
   const cap = ev.seats === null ? null : (ev.seats ?? window.DEFAULT_SEATS ?? null);
-  if (!cap) return { cap: null, taken: 0, left: null, full: false };
+  if (!cap) return { cap: null, taken: 0, left: null, full: ev.full === true };
   const taken = Math.max(0, Number(ev.taken) || 0);
-  return { cap, taken, left: Math.max(0, cap - taken), full: taken >= cap };
+  return { cap, taken, left: Math.max(0, cap - taken), full: ev.full === true || taken >= cap };
 }
 
 /* ---------- Payload ---------- */
@@ -1411,6 +1416,15 @@ function showHandoff() {
   const handoff = document.getElementById('handoff');
   document.getElementById('handoff-event').textContent = event.title || eventKey;
   fillMeta(document.getElementById('handoff-meta'), event);
+  // A full table must not be told it can claim a seat. The listing is still
+  // worth sending them to — it is the only place a change would show — but the
+  // page says what it can honestly say.
+  if (seatState(event).full) {
+    document.getElementById('handoff-lede').textContent =
+      'This one is full. Seats are sold and scheduled through StartPlaying.games, '
+      + 'so the listing is where any change to that would show.';
+    document.getElementById('handoff-link').textContent = 'SEE THE LISTING →';
+  }
   document.getElementById('handoff-link').href = event.startplaying;
   document.getElementById('handoff-swap').href = src ? `?src=${encodeURIComponent(src)}` : '?';
   handoff.hidden = false;

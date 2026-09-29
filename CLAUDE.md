@@ -171,6 +171,13 @@ flag: the hero starts with the house treatment and loses it when an event has it
   used only by the `.ics`, because that is what a phone navigates from.
 - **`taken` is maintained by hand** — a static page cannot count submissions. `seats: null`
   for StartPlaying tables, whose listing counts seats; a number copied here goes stale.
+- **`full: true`** says a table has no seats left, for one this site cannot count — a
+  StartPlaying listing keeps its own tally. It stands in for a count rather than
+  overriding one, so a table with real `seats`/`taken` never needs it. Three things follow
+  from it: the tile shows a coral token, and the handoff stops offering a seat it does not
+  have (its copy and its button change). The token reads **`Waitlist`** where this site
+  takes registrations and **`Full`** on a StartPlaying table, which takes none — there is
+  no waitlist here to join. Set `status` to match; it is free text and moves separately.
 
 ## Discord scheduled events
 
