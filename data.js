@@ -119,6 +119,9 @@ window.EVENTS = {
 
   'troika-well': {
     title: "So You've Been Thrown Down a Well",
+    // Shut to signups. The night still runs; `closed` is checked before
+    // `startplaying`, so the page stops sending anyone to the listing too.
+    closed: true,
     run: 'not-started',
     shape: 'one-shot',
     place: 'online',
@@ -185,6 +188,9 @@ window.EVENTS = {
 
   'l5r-kyotei-castle': {
     title: 'Wedding at Kyotei Castle',
+    // Shut to signups on the day. The night still runs; the link says so and
+    // offers no form.
+    closed: true,
     run: 'not-started',
     shape: 'one-shot',
     place: 'winnipeg',

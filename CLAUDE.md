@@ -56,9 +56,9 @@ Routing in `app.js` runs: no event → chooser, **`isPast` → the played notice
 `startplaying` → handoff, otherwise the form. So a table that has run never takes
 registrations and never points at a listing that has closed, whatever else it carries.
 
-## `hidden` vs `past` vs `cancelled`
+## `hidden` vs `past` vs `cancelled` vs `closed`
 
-All three drop an event from the tiles *and* the month view. They mean different things:
+All four drop an event from the tiles *and* the month view. They mean different things:
 
 - **`hidden: true`** — not announced yet. The `?event=` link still serves everything:
   art, details, form, payment button, calendar file. A table can be sellable by direct
@@ -77,9 +77,19 @@ All three drop an event from the tiles *and* the month view. They mean different
   publish nor update it — an event already on Discord must be cancelled or deleted there
   by hand, since the script never deletes.
 
-`past` and `cancelled` are not interchangeable. A cancelled table's likeliest reader is
+- **`closed: true`** — **the night still runs**; it has simply stopped taking people. The
+  link lands on "registration closed" and offers nothing: no form, no payment button, and
+  **no StartPlaying handoff either**, because it is checked *before* `startplaying`. That
+  ordering is the whole point — `hidden` alone would leave the form and the listing button
+  working for anyone with the QR, which is exactly the signup you were trying to stop.
+  Ranked *after* `past`, so a closed table that has since run says it ran.
+  Unlike `cancelled`, it does **not** touch `scripts/discord-events.mjs`: the game is still
+  happening, so its Discord event stays and keeps being kept accurate.
+
+`past`, `cancelled` and `closed` are not interchangeable. A cancelled table's likeliest reader is
 someone standing in front of the poster it was printed on, and "This One Has Run" would be
-a plain lie to them.
+a plain lie to them. The same goes for a closed table: it is going ahead, and saying
+otherwise would turn away people who already have a seat.
 
 **Never delete a finished event.** Every printed QR outlives the night it advertised. A
 deleted key lands on a generic "that link did not match a table I have open"; a kept one

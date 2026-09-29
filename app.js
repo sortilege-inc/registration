@@ -136,7 +136,8 @@ function orderedEvents() {
     // its own ?event= link — drafts, and anything being tested. A table that
     // has played drops out the same way, but for the opposite reason: its link
     // still works and says so. A past-events view would filter the other way.
-    if (events[key].hidden || events[key].cancelled || isPast(events[key])) continue;
+    if (events[key].hidden || events[key].cancelled || events[key].closed) continue;
+    if (isPast(events[key])) continue;
     out.push([key, events[key]]);
   }
   return out;
@@ -1407,6 +1408,22 @@ function showCancelled() {
   document.body.classList.add('is-handoff');
 }
 
+/* ---------- Closed ---------- */
+// Different from every other stop: this table is still going ahead. It has
+// simply stopped taking people, so the page must not offer a form, a payment
+// button or a listing to book on — and must not imply the night is off either.
+
+function showClosed() {
+  document.getElementById('closed-event').textContent = event.title || eventKey;
+  fillMeta(document.getElementById('closed-meta'), event);
+  document.getElementById('closed-lede').textContent = event.when
+    ? `This one still runs on ${event.when}, but it is no longer taking signups. I run these often — here is what is open now.`
+    : 'This one still runs, but it is no longer taking signups. I run these often — here is what is open now.';
+  document.getElementById('closed-browse').href = src ? `?src=${encodeURIComponent(src)}` : '?';
+  document.getElementById('closed').hidden = false;
+  document.body.classList.add('is-handoff');
+}
+
 /* ---------- Handoff ---------- */
 // A StartPlaying table is sold and scheduled there, so asking for a name and an
 // email here would collect something nobody acts on and put a second, pointless
@@ -1467,6 +1484,12 @@ if (!event) {
   // registrations nor sends anyone to a listing that has closed.
   fillHero();
   showPast();
+} else if (event.closed) {
+  // After `past`, which outranks it: a table that has run says so rather than
+  // saying it stopped taking people. Before `startplaying`, because closed
+  // means closed — no form here, and no handoff to book on elsewhere either.
+  fillHero();
+  showClosed();
 } else if (event.startplaying) {
   fillHero();
   showHandoff();
