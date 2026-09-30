@@ -155,7 +155,6 @@ window.EVENTS = {
   // together those two route the page to the "no seats" notice rather than a
   // form nobody would act on.
   //
-  // TODO(jordan): no pitch on any of the three. Add `pitch` when you have one.
 
   'gibbous-moon': {
     title: 'A Gibbous Moon over Constantinople',
@@ -164,6 +163,7 @@ window.EVENTS = {
     place: 'online',
     system: 'Historica Arcanum',
     art: 'assets/art/game-gibbous-moon.webp',
+    pitch: 'Beneath the domes and minarets of the Ottoman capital, magic survives in secret — hunted above, harbored below, in the lamplit caverns of the Undercity.',
     status: 'Full',
     when: 'Bi-weekly, Sundays',
     where: 'Online',
@@ -181,6 +181,7 @@ window.EVENTS = {
     place: 'online',
     system: 'Daggerheart',
     art: 'assets/art/game-caul.webp',
+    pitch: 'The gods have hatched and gone, the sky keeps its permanent shroud, and the Sacred Pyres that held back the miasma are guttering out one by one.',
     status: 'Full',
     when: 'Bi-weekly, Thursdays',
     where: 'Online',
@@ -200,6 +201,7 @@ window.EVENTS = {
     // A mon rather than a cover, so it is fitted inside the frame whole.
     art: 'assets/art/game-portents.svg',
     fit: 'contain',
+    pitch: 'A Dragon Clan monk was born under a prophecy that the volcano would not wake again in his lifetime; the mountain has been silent since that night, and it is beginning to stir.',
     status: 'Full',
     when: 'Weekly, Wednesdays',
     where: 'Online',
