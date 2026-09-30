@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- The archive. Deliberately unlinked from the roster: you reach it by
+     knowing the address. Bump the ?v= alongside the ones in ../index.html. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Relative paths in data.js ("assets/art/…") and on the tiles ("?event=…")
+     are written for the site root, so the root is what they resolve against. -->
+<base href="/">
+<title>Sortilege — Tables That Have Run</title>
+<meta name="description" content="A record of Sortilege tables that have already played.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#e46064">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=41">
+</head>
+<body>
+<main class="sheet">
+
+  <header class="hero">
+    <div class="hero__art is-house">
+      <img id="hero-art" src="assets/art/the-filth.png" alt="" width="1600" height="822">
+    </div>
+    <div class="hero__body">
+      <h1>Tables <br>That Have <br>Run</h1>
+      <div class="rule-gold"></div>
+      <p>Every night Sortilege has played, most recent first. Nothing here takes registrations.</p>
+    </div>
+  </header>
+
+  <section class="chooser">
+    <div class="sec sec--chooser">
+      <!-- Filled by past.js: one block per year, newest first. -->
+      <div id="archive"></div>
+
+      <p class="chooser__empty" id="archive-empty" hidden>
+        Nothing has run yet.
+      </p>
+
+      <a class="booking__swap" href="?">See what's on now</a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <img class="tile" src="assets/tiles/s.svg" alt="">
+    <p class="foot__who">JORDAN PEACOCK &amp; COLLABORATORS &middot; WINNIPEG</p>
+    <p class="foot__meta">Sortilege &copy; 2026 &middot; <a href="https://sortilege.online">sortilege.online</a> &middot; <a href="mailto:jordan@sortilege.online">jordan@sortilege.online</a></p>
+  </footer>
+
+</main>
+<script src="data.js?v=41"></script>
+<script src="shared.js?v=41"></script>
+<script src="past.js?v=41"></script>
+</body>
+</html>

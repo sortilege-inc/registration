@@ -255,6 +255,27 @@ It pushes one way: `data.js` is the source of truth and the script never writes 
 Discord has no floating time — an event is an instant — so a wall-clock with no `zone`
 resolves against `America/Winnipeg`, which is right for every in-person night here.
 
+## The archive at `/past/`
+
+A second page — `past/index.html` + `past.js` — reached only by typing the address. **It is
+deliberately not linked from the roster**, and carries `noindex, nofollow`. Keep it that way
+unless asked.
+
+- **`shared.js` is loaded by both pages and holds what they must agree on**: `isPast()`,
+  `seatState()`, `takesNothing()`, `costLine()`, `PLACE_TOKEN`, and `eventTile()`, the tile
+  builder. The archive is *defined* as the complement of the roster, so a second copy of
+  "has this run?" would let the two drift and a table could show in both or neither. It
+  touches nothing on load, so either page can include it. **Load it before `app.js` and
+  before `past.js`** — classic scripts, no modules, order matters.
+- The page sets **`<base href="/">`**, because `data.js` writes art paths (`assets/art/…`)
+  and tiles write links (`?event=…`) for the site root. Without it every one of them would
+  resolve under `/past/` and 404.
+- **What it lists**: `isPast()`, minus `hidden` (never announced — running is not an
+  announcement) and minus `cancelled` (it never played, so it belongs in no record of
+  nights that did). Grouped by year, newest first; a table retired by hand with no `starts`
+  falls under `Undated` at the end.
+- Its `?v=` moves with `index.html`'s. Bump all of them together.
+
 ## Working discipline
 
 - **Assert every string replacement.** Patching these files with `str.replace` and no
