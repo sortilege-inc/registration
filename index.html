@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=37">
+<link rel="stylesheet" href="styles.css?v=39">
 </head>
 <body>
 <main class="sheet">
@@ -61,6 +61,13 @@
       </div>
 
       <div class="tarots" id="chooser-list"></div>
+
+      <!-- Tables with no seats left, kept below the ones you can still join.
+           Built by the same code from the same filtered set. -->
+      <div class="chooser__full" id="chooser-full" hidden>
+        <h3 class="chooser__fullhead">RUNNING, NO SEATS</h3>
+        <div class="tarots" id="chooser-full-list"></div>
+      </div>
 
       <!-- Month view. Built from the same filtered set as the tiles. -->
       <section class="calendar" id="calendar" hidden aria-label="Games by month">
@@ -255,7 +262,7 @@
   </footer>
 
 </main>
-<script src="data.js?v=37"></script>
-<script src="app.js?v=37"></script>
+<script src="data.js?v=39"></script>
+<script src="app.js?v=39"></script>
 </body>
 </html>

@@ -56,7 +56,8 @@ function costLine(ev) {
 function bookingRows(ev) {
   return [['System', ev.system], ['When', ev.when], ['Time', ev.hours],
           ['Length', ev.length], ['Sessions', ev.sessions],
-          ['Where', ev.where], ['Cost', costLine(ev)], ['Status', ev.status]]
+          ['Where', ev.where], ['Booked through', ev.bookedBy],
+          ['Cost', costLine(ev)], ['Status', ev.status]]
     .filter(([, value]) => value);
 }
 
@@ -66,10 +67,13 @@ function fillMeta(dl, ev) {
     const dt = document.createElement('dt');
     dt.textContent = term;
     const dd = document.createElement('dd');
-    // A venue with a map link is worth one tap rather than a copied address.
-    if (term === 'Where' && ev.whereUrl) {
+    // A venue with a map link is worth one tap rather than a copied address,
+    // and the same for whoever sells the seat.
+    const href = (term === 'Where' && ev.whereUrl)
+      || (term === 'Booked through' && ev.bookedByUrl);
+    if (href) {
       const link = document.createElement('a');
-      link.href = ev.whereUrl;
+      link.href = href;
       link.target = '_blank';
       link.rel = 'noopener';
       link.textContent = value;
@@ -155,6 +159,8 @@ function liveFilters(all) {
 function showChooser() {
   const chooser = document.getElementById('chooser');
   const list = document.getElementById('chooser-list');
+  const fullSection = document.getElementById('chooser-full');
+  const fullList = document.getElementById('chooser-full-list');
   const bar = document.getElementById('filters');
   const empty = document.getElementById('chooser-empty');
 
@@ -300,9 +306,11 @@ function showChooser() {
     // not a free table, and hiding that behind "Free" is the wrong way round.
     const seats = seatState(ev);
     const tokens = [];
-    // "Waitlist" only where there is a waitlist to join. A StartPlaying table
-    // takes nothing here, so a full one is just full.
-    if (seats.full) tokens.push([ev.startplaying ? 'Full' : 'Waitlist', 'is-full']);
+    // "Waitlist" only where this page would actually take one — a table we
+    // roster ourselves, whose form switches to waitlist mode when it fills.
+    // Anything booked elsewhere takes nothing here, so it is simply full.
+    const waitlisted = !takesNothing(ev) && !ev.startplaying;
+    if (seats.full) tokens.push([waitlisted ? 'Waitlist' : 'Full', 'is-full']);
     else if (ev.free) tokens.push(['Free', 'is-free']);
     else if (seats.cap) tokens.push([`${seats.left} seats`, '']);
     if (PLACE_TOKEN[ev.place]) tokens.push([PLACE_TOKEN[ev.place], 'is-place']);
@@ -370,8 +378,19 @@ function showChooser() {
 
   function render() {
     const shown = shownEvents();
+    // Full tables sit in their own section underneath. They are still worth
+    // showing — they say what is running — but they are not what someone
+    // scanning this page is looking for, so they do not sit among the ones
+    // with seats.
+    const open = shown.filter(([, ev]) => !seatState(ev).full);
+    const full = shown.filter(([, ev]) => seatState(ev).full);
+
     list.textContent = '';
-    for (const [key, ev] of shown) list.append(tile(key, ev));
+    for (const [key, ev] of open) list.append(tile(key, ev));
+
+    fullList.textContent = '';
+    for (const [key, ev] of full) fullList.append(tile(key, ev));
+    fullSection.hidden = full.length === 0;
 
     empty.hidden = shown.length > 0;
     if (calendarOpen) calendar.render();
@@ -1408,6 +1427,19 @@ function showCancelled() {
   document.body.classList.add('is-handoff');
 }
 
+/**
+ * Is there anything this page can actually do for someone?
+ *
+ * A full table whose seats this site does not count (`seats: null`) and which
+ * has no listing or payment link to send them to has nothing to offer: no seat,
+ * no waitlist worth keeping, nowhere to go. Showing the form would collect an
+ * address nobody acts on. A waitlist still makes sense where we run the roster,
+ * so this turns on `seats: null` and not on `full` alone.
+ */
+function takesNothing(ev) {
+  return seatState(ev).full && ev.seats === null && !ev.startplaying && !ev.payment;
+}
+
 /* ---------- Closed ---------- */
 // Different from every other stop: this table is still going ahead. It has
 // simply stopped taking people, so the page must not offer a form, a payment
@@ -1416,9 +1448,12 @@ function showCancelled() {
 function showClosed() {
   document.getElementById('closed-event').textContent = event.title || eventKey;
   fillMeta(document.getElementById('closed-meta'), event);
+  // Dashes rather than "runs on", because `when` is a date on a one-shot
+  // ("Tuesday 29 September") and a cadence on a campaign ("Bi-weekly,
+  // Sundays") — and "runs on Bi-weekly, Sundays" is not a sentence.
   document.getElementById('closed-lede').textContent = event.when
-    ? `This one still runs on ${event.when}, but it is no longer taking signups. I run these often — here is what is open now.`
-    : 'This one still runs, but it is no longer taking signups. I run these often — here is what is open now.';
+    ? `This one still runs — ${event.when} — but it is no longer taking signups. I run these often, so here is what is open now.`
+    : 'This one still runs, but it is no longer taking signups. I run these often, so here is what is open now.';
   document.getElementById('closed-browse').href = src ? `?src=${encodeURIComponent(src)}` : '?';
   document.getElementById('closed').hidden = false;
   document.body.classList.add('is-handoff');
@@ -1484,7 +1519,7 @@ if (!event) {
   // registrations nor sends anyone to a listing that has closed.
   fillHero();
   showPast();
-} else if (event.closed) {
+} else if (event.closed || takesNothing(event)) {
   // After `past`, which outranks it: a table that has run says so rather than
   // saying it stopped taking people. Before `startplaying`, because closed
   // means closed — no form here, and no handoff to book on elsewhere either.

@@ -182,12 +182,25 @@ flag: the hero starts with the house treatment and loses it when an event has it
 - **`taken` is maintained by hand** — a static page cannot count submissions. `seats: null`
   for StartPlaying tables, whose listing counts seats; a number copied here goes stale.
 - **`full: true`** says a table has no seats left, for one this site cannot count — a
-  StartPlaying listing keeps its own tally. It stands in for a count rather than
-  overriding one, so a table with real `seats`/`taken` never needs it. Three things follow
-  from it: the tile shows a coral token, and the handoff stops offering a seat it does not
-  have (its copy and its button change). The token reads **`Waitlist`** where this site
-  takes registrations and **`Full`** on a StartPlaying table, which takes none — there is
-  no waitlist here to join. Set `status` to match; it is free text and moves separately.
+  StartPlaying listing or another outfit keeps its own tally. It stands in for a count
+  rather than overriding one, so a table with real `seats`/`taken` never needs it. Set
+  `status` to match; it is free text and moves separately. Being full does three things:
+  - **It moves the tile below the fold**, into the `RUNNING, NO SEATS` section under the
+    ones you can still join. Same code, same tiles, same filtered set — just partitioned.
+  - **It changes the token.** `Waitlist` only where this page would actually take one —
+    a table we roster ourselves, whose form switches to waitlist mode when it fills.
+    Anything booked elsewhere reads `Full`, because there is no waitlist here to join.
+  - **It can close the page.** `takesNothing()` — full, `seats: null`, and no
+    `startplaying` or `payment` — means there is no seat, no waitlist worth keeping and
+    nowhere to send anyone, so the page shows the "no seats" notice instead of a form that
+    would collect an address nobody acts on. A full table we *do* roster still shows its
+    waitlist form; a full StartPlaying one still hands off, with its copy and button
+    changed to stop promising a seat.
+- **`bookedBy`** names who sells the seat for a game run through someone else
+  (`'Wyldwolf Games'`), and shows as a `Booked through` row; **`bookedByUrl`** makes that
+  row a link, the way `whereUrl` does for the venue. Neither is a booking route —
+  `startplaying` and `payment` are still the only two fields `takesNothing()` counts, so a
+  full table with a `bookedByUrl` still shows the "no seats" notice rather than a form.
 
 ## Discord scheduled events
 

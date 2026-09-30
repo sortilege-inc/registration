@@ -148,6 +148,67 @@ window.EVENTS = {
     questions: [],
   },
 
+  // ---- Full campaigns, run elsewhere ---------------------------------------
+  // Listed so the roster says what is actually running, not to sell a seat:
+  // all three are full and none of them books through this site. `seats: null`
+  // because their own outfit keeps the roster, and `full` says so outright —
+  // together those two route the page to the "no seats" notice rather than a
+  // form nobody would act on.
+  //
+  // TODO(jordan): no pitch on any of the three. Add `pitch` when you have one.
+
+  'gibbous-moon': {
+    title: 'A Gibbous Moon over Constantinople',
+    run: 'ongoing',
+    shape: 'multi-session',
+    place: 'online',
+    system: 'Historica Arcanum',
+    art: 'assets/art/game-gibbous-moon.webp',
+    status: 'Full',
+    when: 'Bi-weekly, Sundays',
+    where: 'Online',
+    bookedBy: 'Wyldwolf Games',
+    bookedByUrl: 'https://wyldwolfgames.com/choose-your-location/',
+    full: true,
+    seats: null,
+    questions: [],
+  },
+
+  'caul': {
+    title: 'Caul',
+    run: 'ongoing',
+    shape: 'multi-session',
+    place: 'online',
+    system: 'Daggerheart',
+    art: 'assets/art/game-caul.webp',
+    status: 'Full',
+    when: 'Bi-weekly, Thursdays',
+    where: 'Online',
+    bookedBy: 'Wyldwolf Games',
+    bookedByUrl: 'https://wyldwolfgames.com/choose-your-location/',
+    full: true,
+    seats: null,
+    questions: [],
+  },
+
+  'portents-and-fortunes': {
+    title: 'Portents & Fortunes',
+    run: 'ongoing',
+    shape: 'multi-session',
+    place: 'online',
+    system: 'Legend of the Five Rings',
+    // A mon rather than a cover, so it is fitted inside the frame whole.
+    art: 'assets/art/game-portents.svg',
+    fit: 'contain',
+    status: 'Full',
+    when: 'Weekly, Wednesdays',
+    where: 'Online',
+    bookedBy: 'StartPlaying.games',
+    full: true,
+    seats: null,
+    questions: [],
+  },
+
   // ---- Free in-person one-shots at the Belgian Club -------------------------
   // Beginner-friendly introductions, no charge. These carry neither a
   // StartPlaying listing nor a Stripe link: `free` is what tells the
@@ -405,6 +466,7 @@ window.EVENTS = {
 window.EVENT_ORDER = [
   'root-hacksaw-dell', 'l5r-kyotei-castle', 'arkham-big-easy', 'motherload', 'terra-antarctica',
   'sjorseidr', 'winter-city', 'troika-well',
+  'gibbous-moon', 'caul', 'portents-and-fortunes',
   'hogmen', 'stranger-and-stranger', 'blood-cotillion',
 ];
 

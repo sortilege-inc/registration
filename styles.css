@@ -902,6 +902,23 @@ a:hover { color: var(--coral); }
   gap: 0.85rem;
 }
 
+/* Tables with no seats left, set below the ones that have them. The heading is
+   the one section-heading style the sheet uses everywhere else. */
+.chooser__full { margin-top: 2rem; }
+
+.chooser__fullhead {
+  margin: 0 0 1rem;
+  padding-bottom: 0.9rem;
+  font-family: var(--label);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--lilac);
+  border-bottom: 1px solid rgba(88, 83, 108, 0.4);
+}
+
 .tarot {
   display: flex;
   flex-direction: column;
