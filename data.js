@@ -199,10 +199,10 @@ window.EVENTS = {
     duration: 'Short',
     place: 'online',
     system: 'Daggerheart',
-    // A title card rather than a cover: drawn here as geometry, so it needs no
-    // font to load and is fitted inside the frame whole.
+    // A title card drawn here as geometry, so it needs no font to load. Built
+    // at 3:4 — the tile frame's own aspect — so it fills the card edge to edge
+    // and `cover` crops nothing off the wordmark.
     art: 'assets/art/game-kill-fee.svg',
-    fit: 'contain',
     // The campaign's own public tagline and the wording of its Night City
     // page. The GM notes read the title three more ways; those are marked GM
     // only there and stay off a page anyone can open.
