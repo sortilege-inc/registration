@@ -192,6 +192,32 @@ window.EVENTS = {
     questions: [],
   },
 
+  'kill-fee': {
+    title: 'Kill Fee',
+    run: 'ongoing',
+    shape: 'multi-session',
+    duration: 'Short',
+    place: 'online',
+    system: 'Daggerheart',
+    // A title card rather than a cover: drawn here as geometry, so it needs no
+    // font to load and is fitted inside the frame whole.
+    art: 'assets/art/game-kill-fee.svg',
+    fit: 'contain',
+    // The campaign's own public tagline and the wording of its Night City
+    // page. The GM notes read the title three more ways; those are marked GM
+    // only there and stay off a page anyone can open.
+    pitch: 'Street-level edgerunners in Night City, where the corps own the centre and the sky — and even a cancelled job has a price.',
+    status: 'Full',
+    when: 'Bi-weekly, Thursdays',
+    sessions: '3–5',
+    where: 'Online',
+    bookedBy: 'Wyldwolf Games',
+    bookedByUrl: 'https://wyldwolfgames.com/choose-your-location/',
+    full: true,
+    seats: null,
+    questions: [],
+  },
+
   'portents-and-fortunes': {
     title: 'Portents & Fortunes',
     run: 'ongoing',
@@ -468,7 +494,7 @@ window.EVENTS = {
 window.EVENT_ORDER = [
   'root-hacksaw-dell', 'l5r-kyotei-castle', 'arkham-big-easy', 'motherload', 'terra-antarctica',
   'sjorseidr', 'winter-city', 'troika-well',
-  'gibbous-moon', 'caul', 'portents-and-fortunes',
+  'gibbous-moon', 'caul', 'kill-fee', 'portents-and-fortunes',
   'hogmen', 'stranger-and-stranger', 'blood-cotillion',
 ];
 

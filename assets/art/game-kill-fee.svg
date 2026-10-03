@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" role="img" aria-label="Kill Fee">
+<title>Kill Fee</title>
+<defs>
+  <!-- Hazard stripes: the campaign site's own warning-light motif. -->
+  <pattern id="hazard" width="56" height="56" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+    <rect width="56" height="56" fill="#0d0d0f"/>
+    <rect width="28" height="56" fill="#f5e003"/>
+  </pattern>
+  <!-- Cut corners, as the theme's clip-path does in CSS. -->
+  <clipPath id="cut">
+    <polygon points="0,56 56,0 1144,0 1200,56 1200,844 1144,900 56,900 0,844"/>
+  </clipPath>
+</defs>
+
+<g clip-path="url(#cut)">
+  <rect width="1200" height="900" fill="#0d0d0f"/>
+
+  <rect x="0" y="92" width="1200" height="44" fill="url(#hazard)"/>
+  <rect x="0" y="764" width="1200" height="44" fill="url(#hazard)"/>
+
+  <!-- Glitch: the wordmark knocked back and offset, then struck over in full. -->
+  <g fill="#6b6305"><rect x="379.0" y="259.0" width="34.0" height="180.0"/><line x1="411.0" y1="349.0" x2="497.0" y2="259.0" stroke="#6b6305" stroke-width="34"/><line x1="411.0" y1="349.0" x2="497.0" y2="439.0" stroke="#6b6305" stroke-width="34"/><rect x="379.0" y="332.0" width="54.4" height="34.0"/><rect x="534.0" y="259.0" width="34.0" height="180.0"/><rect x="605.0" y="259.0" width="34.0" height="180.0"/><rect x="605.0" y="405.0" width="104.0" height="34.0"/><rect x="737.0" y="259.0" width="34.0" height="180.0"/><rect x="737.0" y="405.0" width="104.0" height="34.0"/></g><g fill="#6b6305"><rect x="426.0" y="489.0" width="34.0" height="180.0"/><rect x="426.0" y="489.0" width="104.0" height="34.0"/><rect x="426.0" y="562.0" width="83.2" height="34.0"/><rect x="558.0" y="489.0" width="34.0" height="180.0"/><rect x="558.0" y="489.0" width="104.0" height="34.0"/><rect x="558.0" y="562.0" width="83.2" height="34.0"/><rect x="558.0" y="635.0" width="104.0" height="34.0"/><rect x="690.0" y="489.0" width="34.0" height="180.0"/><rect x="690.0" y="489.0" width="104.0" height="34.0"/><rect x="690.0" y="562.0" width="83.2" height="34.0"/><rect x="690.0" y="635.0" width="104.0" height="34.0"/></g>
+  <g fill="#f5e003"><rect x="369.0" y="250.0" width="34.0" height="180.0"/><line x1="401.0" y1="340.0" x2="487.0" y2="250.0" stroke="#f5e003" stroke-width="34"/><line x1="401.0" y1="340.0" x2="487.0" y2="430.0" stroke="#f5e003" stroke-width="34"/><rect x="369.0" y="323.0" width="54.4" height="34.0"/><rect x="524.0" y="250.0" width="34.0" height="180.0"/><rect x="595.0" y="250.0" width="34.0" height="180.0"/><rect x="595.0" y="396.0" width="104.0" height="34.0"/><rect x="727.0" y="250.0" width="34.0" height="180.0"/><rect x="727.0" y="396.0" width="104.0" height="34.0"/></g><g fill="#f5e003"><rect x="416.0" y="480.0" width="34.0" height="180.0"/><rect x="416.0" y="480.0" width="104.0" height="34.0"/><rect x="416.0" y="553.0" width="83.2" height="34.0"/><rect x="548.0" y="480.0" width="34.0" height="180.0"/><rect x="548.0" y="480.0" width="104.0" height="34.0"/><rect x="548.0" y="553.0" width="83.2" height="34.0"/><rect x="548.0" y="626.0" width="104.0" height="34.0"/><rect x="680.0" y="480.0" width="34.0" height="180.0"/><rect x="680.0" y="480.0" width="104.0" height="34.0"/><rect x="680.0" y="553.0" width="83.2" height="34.0"/><rect x="680.0" y="626.0" width="104.0" height="34.0"/></g>
+
+  <rect x="430" y="712" width="340" height="5" fill="#f5e003"/>
+</g>
+<rect x="3" y="3" width="1194" height="894" fill="none" stroke="#f5e003" stroke-width="6" clip-path="url(#cut)"/>
+</svg>
