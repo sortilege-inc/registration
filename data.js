@@ -308,6 +308,10 @@ window.EVENTS = {
 
   'arkham-big-easy': {
     title: 'Three Days to the Big Easy',
+    // Called off. Kept in full, like every finished table: the poster and its
+    // QR outlive the night, and the link now says the game will not run rather
+    // than offering a form for it.
+    cancelled: true,
     run: 'not-started',
     shape: 'one-shot',
     place: 'winnipeg',
@@ -407,6 +411,9 @@ window.EVENTS = {
 
   'stranger-and-stranger': {
     title: 'Stranger & Stranger',
+    // Called off. Kept in full, like every finished table: the link now says
+    // the game will not run rather than handing anyone to the listing.
+    cancelled: true,
     system: 'TEETH',
     // TEETH house ornament, an apple and worms.
     art: 'assets/art/event-stranger-and-stranger.jpg',
