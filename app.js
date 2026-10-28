@@ -1291,6 +1291,39 @@ function showCancelled() {
 }
 
 /**
+/**
+ * Ours to run, somebody else's to seat.
+ *
+ * A convention allots its own seats: it takes the sign-ups, it fills the table,
+ * and it can hand us a full one. There is nothing for this page to collect, so
+ * it lists the game in full and says where the seat actually comes from rather
+ * than asking for a name and an email nobody will act on.
+ *
+ * `startplaying` and `payment` are real booking routes and win over this;
+ * `free` means we seat it ourselves at the door.
+ */
+function bookedElsewhere(ev) {
+  return Boolean(ev.bookedBy) && !ev.startplaying && !ev.payment && !ev.free;
+}
+
+function showElsewhere() {
+  document.getElementById('elsewhere-event').textContent = event.title || eventKey;
+  fillMeta(document.getElementById('elsewhere-meta'), event);
+  document.getElementById('elsewhere-lede').textContent =
+    `Seats for this one are handed out by ${event.bookedBy}, not here — there is nothing to fill in on this page. `
+    + 'Sign up with them and come find the table.';
+  const link = document.getElementById('elsewhere-link');
+  if (event.bookedByUrl) {
+    link.href = event.bookedByUrl;
+    link.textContent = `BOOK WITH ${String(event.bookedBy).toUpperCase()} →`;
+    link.hidden = false;
+    document.getElementById('elsewhere-hint').hidden = false;
+  }
+  document.getElementById('elsewhere-swap').href = src ? `?src=${encodeURIComponent(src)}` : '?';
+  document.getElementById('elsewhere').hidden = false;
+  document.body.classList.add('is-handoff');
+}
+
 /* ---------- Closed ---------- */
 // Different from every other stop: this table is still going ahead. It has
 // simply stopped taking people, so the page must not offer a form, a payment
@@ -1356,6 +1389,16 @@ function fillHero() {
   // The house art is the only thing that should multiply onto the coral; an
   // event with its own art renders it as supplied.
   document.querySelector('.hero__art').classList.toggle('is-house', !event.art);
+  // Attribution, where the art's licence makes it a condition rather than a
+  // courtesy. Text only — no link, because the credit has to survive the page
+  // being printed onto a QR card and read on paper.
+  const credit = document.getElementById('hero-credit');
+  if (event.art && event.artCredit) {
+    credit.textContent = event.artCredit;
+    credit.hidden = false;
+  } else {
+    credit.hidden = true;
+  }
 }
 
 if (!event) {
@@ -1376,6 +1419,11 @@ if (!event) {
   // means closed — no form here, and no handoff to book on elsewhere either.
   fillHero();
   showClosed();
+} else if (bookedElsewhere(event)) {
+  // After the stops that say a table is off or shut, before the form: the game
+  // is on, it simply is not seated from here.
+  fillHero();
+  showElsewhere();
 } else if (event.startplaying) {
   fillHero();
   showHandoff();

@@ -494,6 +494,134 @@ window.EVENTS = {
     taken: 0,
     questions: [],
   },
+
+  // ---- Twin Cities Con 2026, Coon Rapids MN ---------------------------------
+  // Run by us, seated by the convention: `bookedBy` with no booking route here
+  // routes the page to the "seats come from elsewhere" notice instead of a form.
+  // `zone` is Central, NOT Winnipeg — from 2026-11-01 Manitoba is permanently
+  // UTC-5 and no longer matches Central, so these would be an hour out if they
+  // inherited the house zone. Times are the con's own slot times.
+  //
+  // Art provenance for the four is recorded at each entry. Everything here is
+  // either licence-clean for this use or already in the repo; none of it is
+  // publisher art lifted without a licence that allows it.
+  //
+  // TODO(jordan): no `bookedByUrl` — add the con's event-registration link and
+  // they each gain a BOOK WITH button.
+
+  'tcc-hogmen': {
+    title: 'Night of the Hogmen',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'minneapolis',
+    system: 'TEETH',
+    // Same scenario as the online `hogmen` listing, so it carries the same
+    // TEETH house ornament, a pointing hand. An ornament, not a cover: show it
+    // whole, on its own white.
+    art: 'assets/art/event-hogmen.jpg',
+    fit: 'contain',
+    pitch: '“Hogmen!” screams the coachman, fumbling to load a flintlock pistol. “The Hogmen are abroad!” Eighteenth-century England has gone wrong.',
+    status: 'One-shot · 18+',
+    when: 'Friday 20 November',
+    hours: '2:30–4:00 PM (Central)',
+    length: '90 minutes',
+    where: 'Twin Cities Con',
+    address: 'Twin Cities Con, Coon Rapids, MN',
+    bookedBy: 'Twin Cities Con',
+    starts: '2026-11-20T14:30',
+    ends: '2026-11-20T16:00',
+    zone: 'America/Chicago',
+    seats: null,
+    questions: [],
+  },
+
+  'tcc-speed-run': {
+    title: 'Speed Run',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'minneapolis',
+    system: 'Cy_Borg',
+    // Asher Brown Durand, "Banknote vignette showing two men working in a
+    // mine", ca. 1824–37. The Met, object 393926, Open Access / CC0 — free of
+    // restrictions. Sourced to ~/Downloads/Unsorted Sortilege/sp.g/sp.g_listings
+    // /sources/cyborg/ for the StartPlaying banner work; provenance is in that
+    // folder's sources.md. Cropped to the left figure and run as a two-plate
+    // duotone (acid yellow field, magenta plate offset nine pixels under the
+    // black) so the engraving reads as misregistered risograph. No Stockholm
+    // Kartell art is used — only the register, which is the right call twice
+    // over: the scenario is Jordan's own writing, not a published Cy_Borg
+    // adventure, so there is no publisher cover it could or should borrow.
+    art: 'assets/art/event-speed-run.jpg',
+    status: 'One-shot',
+    when: 'Friday 20 November',
+    hours: '4:30–6:00 PM (Central)',
+    length: '90 minutes',
+    where: 'Twin Cities Con',
+    address: 'Twin Cities Con, Coon Rapids, MN',
+    bookedBy: 'Twin Cities Con',
+    starts: '2026-11-20T16:30',
+    ends: '2026-11-20T18:00',
+    zone: 'America/Chicago',
+    seats: null,
+    questions: [],
+  },
+
+  'tcc-glory': {
+    title: 'Glory',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'minneapolis',
+    system: 'Eclipse Phase',
+    // The scenario's own title-page illustration, cropped clear of the
+    // wordmark. Eclipse Phase 1e and its supplements are published by Posthuman
+    // Studios under Creative Commons Attribution-Noncommercial-Share Alike 3.0
+    // Unported — the licence covers the artwork, not just the text, and the
+    // licence block is on the credits page of "Eclipse Phase: Glory" (2010).
+    // The conditions are noncommercial use, attribution to Posthuman Studios,
+    // and share-alike. `artCredit` below is the attribution; it prints under
+    // the art, which is why the field exists at all.
+    art: 'assets/art/event-glory.jpg',
+    artCredit: 'Art from “Eclipse Phase: Glory” © Posthuman Studios, CC BY-NC-SA 3.0',
+    status: 'One-shot',
+    when: 'Sunday 22 November',
+    hours: '10:00 AM – 1:00 PM (Central)',
+    length: '3 hours',
+    where: 'Twin Cities Con',
+    address: 'Twin Cities Con, Coon Rapids, MN',
+    bookedBy: 'Twin Cities Con',
+    starts: '2026-11-22T10:00',
+    ends: '2026-11-22T13:00',
+    zone: 'America/Chicago',
+    seats: null,
+    questions: [],
+  },
+
+  'tcc-one-with-the-earth': {
+    title: 'One With the Earth',
+    run: 'not-started',
+    shape: 'one-shot',
+    place: 'minneapolis',
+    system: 'The Things We Become',
+    // Ernst Haeckel, "Lichenes", plate 83 of Kunstformen der Natur, 1904.
+    // Public domain (Haeckel d. 1919); fetched from Wikimedia Commons, File:
+    // Haeckel_Lichenes.jpg, which records it as PD. Cropped to 3:4 and
+    // otherwise untouched. A page of specimens of growth reads as a taxonomy
+    // of what the shroud turns you into, which is the game's whole subject.
+    art: 'assets/art/event-one-with-the-earth.jpg',
+    status: 'One-shot',
+    when: 'Sunday 22 November',
+    hours: '2:00–3:30 PM (Central)',
+    length: '90 minutes',
+    where: 'Twin Cities Con',
+    address: 'Twin Cities Con, Coon Rapids, MN',
+    bookedBy: 'Twin Cities Con',
+    starts: '2026-11-22T14:00',
+    ends: '2026-11-22T15:30',
+    zone: 'America/Chicago',
+    seats: null,
+    questions: [],
+  },
+
 };
 
 // Order of the chooser shown when no ?event= key is given. Keys not listed are
@@ -503,6 +631,7 @@ window.EVENT_ORDER = [
   'sjorseidr', 'winter-city', 'troika-well',
   'gibbous-moon', 'caul', 'kill-fee', 'portents-and-fortunes',
   'hogmen', 'stranger-and-stranger', 'blood-cotillion',
+  'tcc-hogmen', 'tcc-speed-run', 'tcc-glory', 'tcc-one-with-the-earth',
 ];
 
 window.DISCORD_INVITE = 'https://discord.gg/KNcPMrQuSW';

@@ -156,6 +156,33 @@ flag: the hero starts with the house treatment and loses it when an event has it
 - A missing `art` is not fatal: the hero falls back to the house art and the tile drops
   its thumbnail, both with a console warning.
 
+**Every cover needs a licence that covers this use, written down at the entry.** The site
+is public and the art is the part a rights holder notices. Record the creator, the work,
+the licence and where the file came from in a comment above `art` — that comment is the
+only record there is. What the set is built from, in order of preference:
+
+- **Art already in the repo**, when two listings are the same scenario. `tcc-hogmen` and
+  `hogmen` share the TEETH ornament.
+- **Public domain.** The Met's Open Access (CC0), Wikimedia Commons PD, NASA. A sourcing
+  run for the StartPlaying banners left plates on disk under
+  `~/Downloads/Unsorted Sortilege/sp.g/sp.g_listings/sources/<system>/`, each folder with
+  a `sources.md` giving creator, date, object id and licence evidence. Look there first.
+- **Publisher art under a licence that permits it.** Eclipse Phase 1e is CC BY-NC-SA 3.0
+  over text *and* artwork, which is why `tcc-glory` can use the scenario's own cover.
+  Most publishers are not this; check the book's credits page rather than assuming.
+
+`artCredit` overlays an attribution line on the hero art, revealed on hover, and is hidden
+when unset. It exists for licences that make naming a condition — set it whenever one
+does, and leave it off otherwise rather than captioning the whole set. It is text, not a
+link, because the page gets printed onto QR cards and read on paper. **The line is
+`tabindex="0"` on purpose:** hover does not exist on a phone, and phones are what scans
+this site, so a tap or a Tab has to be able to bring it up. Don't remove that attribute to
+tidy the markup — it is the only way the credit is reachable on touch.
+
+A system's look can be reproduced without its art: `tcc-speed-run` is a Met CC0 banknote
+engraving run as an acid-yellow/magenta misregistered duotone, which reads as Cy_Borg
+without a pixel of Stockholm Kartell's. Borrow the register, not the file.
+
 ## Dates, `.ics` and seats
 
 - `when` is the date, `hours` is the time on its own line, `length` is one sitting,
@@ -207,6 +234,12 @@ flag: the hero starts with the house treatment and loses it when an event has it
   row a link, the way `whereUrl` does for the venue. Neither is a booking route —
   `startplaying` and `payment` are still the only two fields `takesNothing()` counts, so a
   full table with a `bookedByUrl` still shows the "no seats" notice rather than a form.
+  **`bookedBy` with no booking route of its own** — no `startplaying`, no `payment`, not
+  `free` — is its own state: `bookedElsewhere()` routes the page to "seats come from
+  elsewhere", which lists the game in full and takes nothing, because a convention allots
+  its own seats and can hand us a full table. It ranks *after* `closed`/`takesNothing`
+  (a full table says full first) and *before* the form. `bookedByUrl` adds a BOOK WITH
+  button; without one the page still names who to ask.
 
 ## Discord scheduled events
 
@@ -257,9 +290,19 @@ It pushes one way: `data.js` is the source of truth and the script never writes 
   delete the old one by hand.
 - Events on Discord that the site does not list are **reported and never deleted**; one
   may have been created in the server on purpose.
+- **A repeating campaign publishes its NEXT sitting, not its first.** `starts` on a
+  campaign is session one and `isPast()` deliberately never retires it, so once its guild
+  event ages out a plain re-run would try to recreate it at a date already gone and
+  Discord would refuse. `nextSitting()` walks the recurrence forward — in whole days, not
+  milliseconds, for the same DST reason the month view does.
 
 Discord has no floating time — an event is an instant — so a wall-clock with no `zone`
-resolves against `America/Winnipeg`, which is right for every in-person night here.
+resolves against `America/Winnipeg`, which is right for every in-person night **here**.
+**A game somewhere else needs its own `zone`.** Twin Cities Con is `America/Chicago`:
+since 2026-11-01 Manitoba is permanently UTC-5 while Central still changes clocks, so the
+two are an hour apart all winter and a Minnesota con left on the house zone publishes an
+hour early. The Winnipeg pin in `zoneOffset()` is keyed by zone name, so other zones still
+go through `Intl`, which is correct for them.
 
 ## The archive at `/past/`
 

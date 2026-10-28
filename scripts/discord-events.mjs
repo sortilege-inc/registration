@@ -185,10 +185,46 @@ function venue(key, ev) {
   return { entity_type: 3, channel_id: null, entity_metadata: { location: location.slice(0, 100) } };
 }
 
+/** A wall-clock string moved by whole days, leaving the time of day alone. */
+function addDays(wall, days) {
+  const [date, time] = String(wall).split('T');
+  const [y, mo, d] = date.split('-').map(Number);
+  const moved = new Date(Date.UTC(y, mo - 1, d + days));
+  const p2 = (n) => String(n).padStart(2, '0');
+  return `${moved.getUTCFullYear()}-${p2(moved.getUTCMonth() + 1)}-${p2(moved.getUTCDate())}T${time}`;
+}
+
+/**
+ * Which sitting of a campaign to publish.
+ *
+ * `starts` on a repeating table is session ONE, and isPast() deliberately never
+ * retires a campaign — so once its Discord event ages out of the guild, a plain
+ * re-run would try to recreate it at a date in the past and Discord would
+ * refuse. Walk the recurrence forward to the next sitting instead.
+ *
+ * Stepping in whole days rather than milliseconds, for the same reason the
+ * month view does: a fixed week of milliseconds is an hour short across a DST
+ * change and slides the sitting onto the day before.
+ */
+function nextSitting(ev) {
+  const zone = ev.zone || HOME_ZONE;
+  if (!ev.repeat || !/FREQ=WEEKLY/.test(ev.repeat)) return { starts: ev.starts, ends: ev.ends };
+  const every = Number((/INTERVAL=(\d+)/.exec(ev.repeat) || [])[1]) || 1;
+  let { starts, ends } = ev;
+  for (let n = 0; n < 520; n += 1) {   // ten years of fortnights, then give up
+    const at = Date.parse(instant(starts, zone));
+    if (!Number.isFinite(at) || at >= Date.now()) break;
+    starts = addDays(starts, every * 7);
+    if (ends) ends = addDays(ends, every * 7);
+  }
+  return { starts, ends };
+}
+
 function payload(key, ev) {
   const zone = ev.zone || HOME_ZONE;
-  const start = instant(ev.starts, zone);
-  const end = ev.ends ? instant(ev.ends, zone) : null;
+  const sitting = nextSitting(ev);
+  const start = instant(sitting.starts, zone);
+  const end = sitting.ends ? instant(sitting.ends, zone) : null;
   if (!start) return { error: `unreadable starts: ${ev.starts}` };
   // Discord requires an end time for an external event.
   const place = venue(key, ev);
