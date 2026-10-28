@@ -1021,6 +1021,9 @@ a:hover { color: var(--coral); }
 
 .tarot__token.is-free { background: var(--teal); }
 .tarot__token.is-full { background: var(--coral); }
+/* A shade darker than the city token below it, so the pair reads as venue then
+   place rather than as one repeated marker. */
+.tarot__token.is-venue { background: var(--ink-soft); }
 .tarot__token.is-place { background: var(--plum); }
 .tarot__token.is-cost { color: var(--ink); background: var(--gold); }
 .tarot__token.is-length { background: var(--lilac); }

@@ -107,6 +107,18 @@ function takesNothing(ev) {
 const PLACE_TOKEN = { winnipeg: 'WPG', minneapolis: 'MPLS' };
 
 /**
+ * The venue a table runs at, keyed by `bookedBy`, for the cases where the city
+ * alone does not say enough — four games in Coon Rapids are four games at a
+ * convention, and the convention is the thing a reader recognises.
+ *
+ * Keyed rather than derived because these are abbreviations, not truncations:
+ * only a name with an entry here gets a token, so a `bookedBy` that is a
+ * storefront rather than a place (Wyldwolf Games, startplaying.games) stays off
+ * the art until somebody decides what it should read as.
+ */
+const VENUE_TOKEN = { 'Twin Cities Con': 'TC CON' };
+
+/**
  * One tarot tile. `src` is the printed-QR attribution to carry through, if any.
  * Used by the roster and by the archive at /past/, so the two always look and
  * link alike.
@@ -154,6 +166,9 @@ function eventTile(key, ev, src) {
   if (seats.full) tokens.push([waitlisted ? 'Waitlist' : 'Full', 'is-full']);
   else if (ev.free) tokens.push(['Free', 'is-free']);
   else if (seats.cap) tokens.push([`${seats.left} seats`, '']);
+  // Venue above city: the convention is the specific fact, the city the
+  // general one, and the strip reads top to bottom.
+  if (VENUE_TOKEN[ev.bookedBy]) tokens.push([VENUE_TOKEN[ev.bookedBy], 'is-venue']);
   if (PLACE_TOKEN[ev.place]) tokens.push([PLACE_TOKEN[ev.place], 'is-place']);
   if (ev.startplaying) tokens.push(['SP.G', 'is-place']);
   if (!ev.free && ev.price?.amount) tokens.push([ev.price.amount, 'is-cost']);
