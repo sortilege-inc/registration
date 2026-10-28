@@ -1001,9 +1001,12 @@ function utcStamp(local, zone) {
  * a TZID and the zone's own transitions keep the wall-clock hour fixed, and
  * iCalendar has no zone database — the rules travel in the file.
  *
- * Winnipeg has followed the US rules since 2007, so these RRULEs hold without a
- * table of dates. Zones not listed here fall back to a UTC instant, which is
- * exact for a one-off and only wrong across a recurrence.
+ * Winnipeg followed the US rules from 2007 until Manitoba stopped changing its
+ * clocks: the last spring-forward was 2026-03-08, and from 02:00 CDT on
+ * 2026-11-01 it stays at UTC-5 for good (tz 2026e). So the yearly rules end
+ * with an UNTIL and a final STANDARD block holds -0500 from then on; its TZNAME
+ * is the one tzdata 2026e gives. Zones not listed here fall back to a UTC
+ * instant, which is exact for a one-off and only wrong across a recurrence.
  */
 const VTIMEZONES = {
   'America/Winnipeg': [
@@ -1014,14 +1017,20 @@ const VTIMEZONES = {
     'TZOFFSETTO:-0500',
     'TZNAME:CDT',
     'DTSTART:20070311T020000',
-    'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU',
+    'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU;UNTIL=20260308T080000Z',
     'END:DAYLIGHT',
     'BEGIN:STANDARD',
     'TZOFFSETFROM:-0500',
     'TZOFFSETTO:-0600',
     'TZNAME:CST',
     'DTSTART:20071104T020000',
-    'RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU',
+    'RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU;UNTIL=20251102T070000Z',
+    'END:STANDARD',
+    'BEGIN:STANDARD',
+    'TZOFFSETFROM:-0500',
+    'TZOFFSETTO:-0500',
+    'TZNAME:EST',
+    'DTSTART:20261101T020000',
     'END:STANDARD',
     'END:VTIMEZONE',
   ],

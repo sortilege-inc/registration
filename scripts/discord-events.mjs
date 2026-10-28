@@ -65,8 +65,23 @@ function loadEvents() {
   return window;
 }
 
+/**
+ * Zone rules newer than Node's bundled ICU — the same pin as shared.js.
+ *
+ * Manitoba stopped changing its clocks on 2026-11-01 (tz 2026e): Winnipeg stays
+ * at UTC-5 from 02:00 CDT that morning, for good. Node 22 ships tz 2026a
+ * (`node -p process.versions.tz`), whose Intl still falls back to UTC-6, so
+ * every Discord event after that date would start an hour late. Before `from`,
+ * old and new data agree and Intl is trusted.
+ */
+const PINNED_ZONES = {
+  'America/Winnipeg': { from: Date.UTC(2026, 10, 1, 7), offset: -300 },
+};
+
 /** Minutes a zone is offset from UTC at a given instant. */
 function zoneOffset(timeZone, date) {
+  const pin = PINNED_ZONES[timeZone];
+  if (pin && date.getTime() >= pin.from) return pin.offset;
   const at = new Date(Math.floor(date.getTime() / 60000) * 60000);
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
     timeZone, hour12: false, year: 'numeric', month: '2-digit', day: '2-digit',

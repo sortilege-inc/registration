@@ -9,8 +9,23 @@
  * so either page can load it safely.
  */
 
+/**
+ * Zone rules newer than the zone data a runtime may carry.
+ *
+ * Manitoba stopped changing its clocks on 2026-11-01 (tz 2026e): Winnipeg stays
+ * at UTC-5 from 02:00 CDT that morning, for good. A browser or Node whose
+ * bundled zone data predates 2026e still falls back to UTC-6 and puts every
+ * later Winnipeg time an hour out, so the new rule is pinned here rather than
+ * left to Intl. Before `from`, old and new data agree and Intl is trusted.
+ */
+const PINNED_ZONES = {
+  'America/Winnipeg': { from: Date.UTC(2026, 10, 1, 7), offset: -300 },
+};
+
 /** Minutes a zone is offset from UTC at a given instant. */
 function zoneOffset(timeZone, date) {
+  const pin = PINNED_ZONES[timeZone];
+  if (pin && date.getTime() >= pin.from) return pin.offset;
   // Floor to a whole minute first: Date.UTC below has no seconds field, so any
   // seconds on the input would come back as a spurious minute of offset.
   const at = new Date(Math.floor(date.getTime() / 60000) * 60000);
