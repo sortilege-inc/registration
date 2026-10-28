@@ -541,17 +541,16 @@ window.EVENTS = {
     shape: 'one-shot',
     place: 'minneapolis',
     system: 'Cy_Borg',
-    // Asher Brown Durand, "Banknote vignette showing two men working in a
-    // mine", ca. 1824–37. The Met, object 393926, Open Access / CC0 — free of
-    // restrictions. Sourced to ~/Downloads/Unsorted Sortilege/sp.g/sp.g_listings
-    // /sources/cyborg/ for the StartPlaying banner work; provenance is in that
-    // folder's sources.md. Cropped to the left figure and run as a two-plate
-    // duotone (acid yellow field, magenta plate offset nine pixels under the
-    // black) so the engraving reads as misregistered risograph. No Stockholm
-    // Kartell art is used — only the register, which is the right call twice
-    // over: the scenario is Jordan's own writing, not a published Cy_Borg
-    // adventure, so there is no publisher cover it could or should borrow.
-    art: 'assets/art/event-speed-run.jpg',
+    // The zine's own cover, from https://sortilegeinc.itch.io/speed-run —
+    // Sortilege's own publication, so the art is ours and needs no `artCredit`.
+    // Taken at the itch original, 751x1063, and only re-encoded to webp.
+    // Shorter than 3:4, so the tile takes a little off the top and bottom, and
+    // the state chips sit over the first letter of the lockup. Left on `cover`
+    // anyway: the tile prints the title underneath, and `contain` would put a
+    // full-bleed poster in white letterboxing. A built stand-in briefly stood
+    // here before the real cover turned up — if another listing ever needs
+    // one, look for a published cover before building anything.
+    art: 'assets/art/event-speed-run.webp',
     status: 'One-shot',
     when: 'Friday 20 November',
     hours: '4:30–6:00 PM (Central)',

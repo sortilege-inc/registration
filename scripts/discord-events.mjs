@@ -247,6 +247,8 @@ function differs(existing, wanted) {
   // Discord returns an image hash rather than the bytes, so the two cannot be
   // compared. Only the absence of one counts as a difference — otherwise every
   // run would re-upload every cover.
+  // `--force-art` is handled by the caller for the same reason: a re-sent cover
+  // is invisible here, so this would report the event unchanged.
   if (!existing.image && wanted.image) return true;
   return !same(existing.description, wanted.description)
     || !same(existing.scheduled_start_time && new Date(existing.scheduled_start_time).toISOString(),
@@ -267,6 +269,12 @@ async function listChannels() {
     console.log(`  ${c.id}  ${c.name}${c.type === 13 ? '  (stage)' : ''}`);
   }
 }
+
+/** Event keys whose cover should be re-sent even though Discord has one. */
+const forceArt = new Set(
+  (process.argv.find((a) => a.startsWith('--force-art=')) || '')
+    .split('=').slice(1).join('=').split(',').map((s) => s.trim()).filter(Boolean),
+);
 
 async function main() {
   if (process.argv.includes('--channels')) return listChannels();
@@ -291,7 +299,12 @@ async function main() {
     // Send art on create, and on update only when the event has none. Cover
     // images set by hand in Discord are better than anything derived here and
     // must not be overwritten; an omitted field is left alone by PATCH.
-    if (!match || !match.image) {
+    //
+    // `--force-art=key,key` is the way past that, and it takes keys rather than
+    // applying to everything precisely because the default protects hand-set
+    // covers. Use it when an event's art file has changed: Discord hands back a
+    // hash instead of the bytes, so nothing here can notice that on its own.
+    if (!match || !match.image || forceArt.has(key)) {
       const image = cover(ev);
       if (image) body.image = image;
     }
@@ -318,7 +331,7 @@ async function main() {
       if (await attempt('CREATE', () => discord('POST', `/guilds/${GUILD}/scheduled-events`, body))) {
         created += 1;
       }
-    } else if (differs(match, body)) {
+    } else if (forceArt.has(key) || differs(match, body)) {
       if (await attempt('UPDATE', () => discord('PATCH', `/guilds/${GUILD}/scheduled-events/${match.id}`, body))) {
         updated += 1;
       }

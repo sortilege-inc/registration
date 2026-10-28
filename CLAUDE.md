@@ -161,6 +161,9 @@ is public and the art is the part a rights holder notices. Record the creator, t
 the licence and where the file came from in a comment above `art` — that comment is the
 only record there is. What the set is built from, in order of preference:
 
+- **A cover Sortilege already published.** `tcc-speed-run` is Jordan's own zine, so its
+  cover is on itch and needed no invention. **Ask before building art for anything with
+  our name on it** — a stand-in got built for this one before the real cover turned up.
 - **Art already in the repo**, when two listings are the same scenario. `tcc-hogmen` and
   `hogmen` share the TEETH ornament.
 - **Public domain.** The Met's Open Access (CC0), Wikimedia Commons PD, NASA. A sourcing
@@ -283,7 +286,10 @@ It pushes one way: `data.js` is the source of truth and the script never writes 
   cover set by hand in Discord beats anything derived here and an omitted field is left
   alone by PATCH. `differs()` cannot compare images — Discord returns a hash, not bytes —
   so only their *absence* counts as a difference, or every run would re-upload every
-  cover.
+  cover. **Changing an `art` file therefore does not reach Discord** — nothing can notice.
+  Pass `--force-art=key,key` to re-send those events' covers. It takes keys rather than
+  applying to everything precisely because the default is there to protect hand-set
+  covers.
 - **Re-runs**: existing events are matched by name and PATCHed when details differ, so
   fixing a time in `data.js` and re-running corrects Discord. Renaming a game in
   `data.js` orphans its Discord event and creates a second one — rename in both, or
