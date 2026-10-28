@@ -177,6 +177,12 @@ flag: the hero starts with the house treatment and loses it when an event has it
   carries a `VTIMEZONE` from `VTIMEZONES` in `app.js`. **Adding a zone there means adding
   its transition rules** — iCalendar has no zone database. Unlisted zones fall back to a
   UTC instant, which is exact for a one-off and only wrong across a recurrence.
+- **Winnipeg has no DST from 2026-11-01** — Manitoba stays at UTC-5 for good (tz 2026e).
+  Node 22's ICU (tz 2026a) and most browsers at the time still fall back to UTC-6, so
+  `zoneOffset()` in `shared.js` *and* `scripts/discord-events.mjs` pins `-300` for
+  `America/Winnipeg` from `2026-11-01T07:00Z` instead of asking `Intl`. Keep both pins,
+  and the `UNTIL`-capped `VTIMEZONE` in `app.js`; check `node -p process.versions.tz`
+  before trusting `Intl` for any zone whose rules changed recently.
 - `where` is the short venue name and `whereUrl` its map link; `address` is the street,
   used only by the `.ics`, because that is what a phone navigates from.
 - **`taken` is maintained by hand** — a static page cannot count submissions. `seats: null`
