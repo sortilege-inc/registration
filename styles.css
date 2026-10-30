@@ -47,6 +47,50 @@ body {
   min-height: 100vh;
 }
 
+/* ---------- Site switch ---------- */
+/* Two front doors: this site takes a booking for a table somebody has already
+   picked, landing.sortilege.online asks what they want and matches them to
+   one. Sits above the hero on both pages here and on its opposite number, so
+   crossing over feels like one switch rather than two separate links. */
+
+.siteswitch {
+  display: flex;
+  margin: 0.9rem 1.1rem 0;
+  border: 1px solid rgba(31, 39, 48, 0.22);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--label);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.siteswitch > * {
+  flex: 1;
+  padding: 0.55rem 0.4rem;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+}
+
+.siteswitch__on {
+  color: var(--paper);
+  background: var(--coral);
+}
+
+.siteswitch__off {
+  color: var(--ink-soft);
+  background: var(--paper);
+}
+
+.siteswitch__off:hover { color: var(--ink); background: var(--surround); }
+
+/* Links are not in the global focus ring, so this one says it itself. */
+.siteswitch__off:focus-visible {
+  outline: 2px solid var(--lilac);
+  outline-offset: -2px;
+}
+
 /* ---------- Hero ---------- */
 /* The art is black line work on white; multiply drops the white to coral. */
 

@@ -14,10 +14,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=50">
+<link rel="stylesheet" href="styles.css?v=51">
 </head>
 <body>
 <main class="sheet">
+
+  <!-- Sortilege has two front doors and a reader arrives at whichever the QR
+       code pointed at, so each names the other. The half you are on is a span
+       and not a link, because there is nowhere for it to go. Keep the two
+       labels and the order identical on landing.sortilege.online, or the pair
+       stops reading as one control when somebody crosses between them. -->
+  <nav class="siteswitch" aria-label="Sortilege sites">
+    <span class="siteswitch__on" aria-current="page">Take a Seat</span>
+    <a class="siteswitch__off" href="https://landing.sortilege.online/">Find a Table</a>
+  </nav>
 
   <header class="hero">
     <!-- Starts as the house art, which is the one thing that multiplies onto
@@ -289,8 +299,8 @@
   </footer>
 
 </main>
-<script src="data.js?v=50"></script>
-<script src="shared.js?v=50"></script>
-<script src="app.js?v=50"></script>
+<script src="data.js?v=51"></script>
+<script src="shared.js?v=51"></script>
+<script src="app.js?v=51"></script>
 </body>
 </html>
