@@ -51,14 +51,15 @@ body {
 /* Two front doors: this site takes a booking for a table somebody has already
    picked, landing.sortilege.online asks what they want and matches them to
    one. Sits above the hero on both pages here and on its opposite number, so
-   crossing over feels like one switch rather than two separate links. */
+   crossing over feels like one switch rather than two separate links.
+
+   Square and full-bleed, with no margin under it: the coral half runs straight
+   into the coral hero below, which is what makes the bar read as part of the
+   page you are on rather than a control floating above it. Inset it, round it
+   or give it a bottom border and a pale line appears between the two corals. */
 
 .siteswitch {
   display: flex;
-  margin: 0.9rem 1.1rem 0;
-  border: 1px solid rgba(31, 39, 48, 0.22);
-  border-radius: 999px;
-  overflow: hidden;
   font-family: var(--label);
   font-size: 0.74rem;
   letter-spacing: 0.12em;
@@ -67,7 +68,7 @@ body {
 
 .siteswitch > * {
   flex: 1;
-  padding: 0.55rem 0.4rem;
+  padding: 0.62rem 0.4rem;
   line-height: 1;
   text-align: center;
   text-decoration: none;
@@ -78,12 +79,14 @@ body {
   background: var(--coral);
 }
 
+/* Ink rather than a pale tone: the page background outside the sheet is
+   --surround, so anything near it loses the half's edge at desktop widths. */
 .siteswitch__off {
-  color: var(--ink-soft);
-  background: var(--paper);
+  color: var(--paper);
+  background: var(--ink);
 }
 
-.siteswitch__off:hover { color: var(--ink); background: var(--surround); }
+.siteswitch__off:hover { background: var(--ink-soft); }
 
 /* Links are not in the global focus ring, so this one says it itself. */
 .siteswitch__off:focus-visible {
