@@ -14,40 +14,21 @@ const events = window.EVENTS || {};
 const src = new URLSearchParams(location.search).get('src');
 
 /**
- * When a table ran, as a sortable number.
+ * The year a table ran, or null when it carries no date at all.
  *
- * `starts` is a local wall-clock, and the archive only ever compares these
- * against each other, so parsing it as local time is right — a zone would only
- * matter for showing an hour, which this page does not do.
+ * `ended` before `starts`, to match `ranAt()` in shared.js — a campaign that
+ * began in 2025 and finished in 2026 belongs under the year it finished, or it
+ * would sort among 2026's tables beneath a 2025 heading.
  */
-function ranAt(ev) {
-  const when = Date.parse(ev.starts || '');
-  return Number.isFinite(when) ? when : 0;
-}
-
-/**
- * Everything that has played, newest first.
- *
- * `hidden` stays hidden — it means a table was never announced, and running is
- * not an announcement. A cancelled table is left out too: it never played, so
- * it belongs in no record of nights that did.
- */
-function archive() {
-  return Object.entries(events)
-    .filter(([, ev]) => !ev.hidden && !ev.cancelled && isPast(ev))
-    .sort((a, b) => ranAt(b[1]) - ranAt(a[1]));
-}
-
-/** The year a table ran, or null when it carries no date at all. */
 function yearOf(ev) {
-  const m = /^(\d{4})/.exec(ev.starts || '');
+  const m = /^(\d{4})/.exec(ev.ended || ev.starts || '');
   return m ? m[1] : null;
 }
 
 function render() {
   const root = document.getElementById('archive');
   const empty = document.getElementById('archive-empty');
-  const played = archive();
+  const played = archive(events);
 
   empty.hidden = played.length > 0;
   root.textContent = '';

@@ -117,6 +117,9 @@ function showChooser() {
   const list = document.getElementById('chooser-list');
   const fullSection = document.getElementById('chooser-full');
   const fullList = document.getElementById('chooser-full-list');
+  const pastSection = document.getElementById('chooser-past');
+  const pastList = document.getElementById('chooser-past-list');
+  const pastMore = document.getElementById('chooser-past-more');
   const bar = document.getElementById('filters');
   const empty = document.getElementById('chooser-empty');
 
@@ -269,9 +272,43 @@ function showChooser() {
     for (const [key, ev] of full) fullList.append(tile(key, ev));
     fullSection.hidden = full.length === 0;
 
+    // The archive strip obeys the filter chips like everything else on the
+    // page — one set of controls, or the bottom of the page stops answering
+    // to the top of it. It is NOT part of `shown`: the empty state means "no
+    // table you can join", and nights that have run do not answer that.
+    const played = archive(events).filter(([, ev]) => matches(ev));
+    pastList.textContent = '';
+    for (const [key, ev] of played) pastList.append(tile(key, ev));
+    showPast(played.length);
+    pastSection.hidden = played.length === 0;
+
     empty.hidden = shown.length > 0;
     if (calendarOpen) calendar.render();
   }
+
+  // How many of the archive strip are on show. Three is the roster's business
+  // — enough to prove the lights are on — and the button reveals the rest in
+  // place rather than sending anyone to /past/, which stays unlinked.
+  const PAST_SHOWN = 3;
+  let pastOpen = false;
+
+  function showPast(total) {
+    const tiles = [...pastList.children];
+    const limit = pastOpen ? tiles.length : PAST_SHOWN;
+    tiles.forEach((el, i) => { el.hidden = i >= limit; });
+    const rest = total - PAST_SHOWN;
+    pastMore.hidden = rest <= 0;
+    pastMore.textContent = pastOpen ? 'SHOW FEWER' : `SHOW ${rest} MORE`;
+    pastMore.setAttribute('aria-expanded', String(pastOpen));
+  }
+
+  pastMore.addEventListener('click', () => {
+    pastOpen = !pastOpen;
+    showPast(pastList.children.length);
+    // Collapsing from the bottom of a long list would otherwise leave the
+    // reader somewhere above the page they were just looking at.
+    if (!pastOpen) pastMore.scrollIntoView({ block: 'nearest' });
+  });
 
   render();
   syncToggle();

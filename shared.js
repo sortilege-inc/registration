@@ -103,6 +103,40 @@ function takesNothing(ev) {
   return seatState(ev).full && ev.seats === null && !ev.startplaying && !ev.payment;
 }
 
+/**
+ * When a table ran, as a sortable number, newest-last.
+ *
+ * `ended` first: a campaign's `starts` is session ONE, so sorting a finished
+ * campaign by it files a year of play under the month it began. `ended` is the
+ * last sitting, which is what "most recent" means for a record of nights that
+ * have happened. One-shots carry no `ended` and fall back to `starts`.
+ *
+ * Both are local wall-clocks and these are only ever compared against each
+ * other, so parsing as local time is right — a zone would only matter for
+ * showing an hour, which no archive view does.
+ */
+function ranAt(ev) {
+  const when = Date.parse(ev.ended || ev.starts || '');
+  return Number.isFinite(when) ? when : 0;
+}
+
+/**
+ * Everything that has played, newest first — the exact complement of the
+ * roster, so a table leaves one as it enters the other.
+ *
+ * `hidden` stays hidden: it means a table was never announced, and running is
+ * not an announcement. `cancelled` is left out too, because it never played
+ * and belongs in no record of nights that did.
+ *
+ * Both the strip on the roster and the archive at /past/ read this, which is
+ * the point of it living here — two copies could disagree about what has run.
+ */
+function archive(all) {
+  return Object.entries(all || {})
+    .filter(([, ev]) => !ev.hidden && !ev.cancelled && isPast(ev))
+    .sort((a, b) => ranAt(b[1]) - ranAt(a[1]));
+}
+
 /** Short markers shown on a tile, in the same vocabulary as the filters. */
 const PLACE_TOKEN = { winnipeg: 'WPG', minneapolis: 'MPLS' };
 

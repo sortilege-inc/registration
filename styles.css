@@ -47,6 +47,24 @@ body {
   min-height: 100vh;
 }
 
+/* The archive strip's reveal. A plain row rather than a pill: it sits at the
+   bottom of a grid of tiles and should not compete with them. */
+.chooser__more {
+  display: block;
+  width: 100%;
+  margin-top: 0.9rem;
+  padding: 0.6rem;
+  border: var(--rule);
+  background: none;
+  color: var(--ink-soft);
+  font-family: var(--label);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+.chooser__more:hover { color: var(--paper); background: var(--ink-soft); }
+
 /* ---------- Site switch ---------- */
 /* Two front doors: this site takes a booking for a table somebody has already
    picked, landing.sortilege.online asks what they want and matches them to

@@ -195,6 +195,13 @@ without a pixel of Stockholm Kartell's. Borrow the register, not the file.
   the month view only. `starts`/`ends` are local wall-clock. **No `zone` means floating time** — correct for an
   in-person night, where 6pm is 6pm for everyone who can get there. **Set `zone` for
   online games**, or a player in another city gets the wrong hour.
+- **`ended`** is the last sitting, and the only thing that orders a finished
+  **campaign** correctly. `starts` is session *one*, so sorting the archive by it files a
+  year of play under the month it began — Caul ran June 2025 to October 2026 and would
+  have sat below a one-shot from last autumn. `ranAt()` in `shared.js` reads `ended` first
+  and falls back to `starts`, and `yearOf()` in `past.js` matches it, so a campaign files
+  under the year it finished. One-shots need none of this: they start and end the same
+  night. `ended` sorts and groups and does nothing else — it is not what retires a table.
 - `repeat` carries an RRULE (`FREQ=WEEKLY;INTERVAL=2`). It makes the calendar entry the
   campaign rather than one evening, expands the month view across every sitting, and
   stops `isPast()` retiring a campaign after session one.
@@ -310,25 +317,40 @@ two are an hour apart all winter and a Minnesota con left on the house zone publ
 hour early. The Winnipeg pin in `zoneOffset()` is keyed by zone name, so other zones still
 go through `Intl`, which is correct for them.
 
-## The archive at `/past/`
+## The archive: a strip on the roster, the whole thing at `/past/`
 
-A second page — `past/index.html` + `past.js` — reached only by typing the address. **It is
-deliberately not linked from the roster**, and carries `noindex, nofollow`. Keep it that way
-unless asked.
+`archive(events)` in `shared.js` is the one definition of what has played — `isPast()`,
+minus `hidden` (never announced; running is not an announcement) and minus `cancelled` (it
+never played, so it belongs in no record of nights that did) — sorted newest first by
+`ranAt()`. **Both views read it.** Two copies of "has this run?" would let the roster and
+the archive drift until a table showed in both or neither.
+
+The roster ends with a **PAST EVENTS** strip: the same list, filtered by the same chips as
+everything above it, capped at `PAST_SHOWN = 3` with a button revealing the rest in place.
+The cap is because a record grows without limit and this page is a shopfront first; three
+is enough to show the lights are on. **The button does not link `/past/`** — that page
+stays unlinked (below), so the rest opens here.
+
+The strip is **not part of `shown`**, which drives the empty state. "No table you can join"
+is what that state means, and nights that have already run do not answer it.
+
+`/past/` is still a second page — `past/index.html` + `past.js` — reached only by typing
+the address. **It is deliberately not linked from the roster**, and carries
+`noindex, nofollow`. Keep it that way unless asked. It differs from the strip in showing
+everything, grouped by year, with no filters and no calendar.
 
 - **`shared.js` is loaded by both pages and holds what they must agree on**: `isPast()`,
-  `seatState()`, `takesNothing()`, `costLine()`, `PLACE_TOKEN`, and `eventTile()`, the tile
-  builder. The archive is *defined* as the complement of the roster, so a second copy of
-  "has this run?" would let the two drift and a table could show in both or neither. It
+  `seatState()`, `takesNothing()`, `costLine()`, `ranAt()`, `archive()`, `PLACE_TOKEN`,
+  and `eventTile()`, the tile builder. It
   touches nothing on load, so either page can include it. **Load it before `app.js` and
   before `past.js`** — classic scripts, no modules, order matters.
 - The page sets **`<base href="/">`**, because `data.js` writes art paths (`assets/art/…`)
   and tiles write links (`?event=…`) for the site root. Without it every one of them would
   resolve under `/past/` and 404.
-- **What it lists**: `isPast()`, minus `hidden` (never announced — running is not an
-  announcement) and minus `cancelled` (it never played, so it belongs in no record of
-  nights that did). Grouped by year, newest first; a table retired by hand with no `starts`
-  falls under `Undated` at the end.
+- **What it lists**: `archive()`, grouped by year, newest first. A table retired by hand
+  with neither `ended` nor `starts` falls under `Undated` at the end — which is the reason
+  a finished campaign wants an `ended`, since campaigns are exactly the entries with no
+  `starts` worth sorting on.
 - Its `?v=` moves with `index.html`'s. Bump all of them together.
 
 ## Working discipline
