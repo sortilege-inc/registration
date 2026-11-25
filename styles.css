@@ -1404,3 +1404,7 @@ a:hover { color: var(--coral); }
   .calendar__event { font-size: 0.68rem; padding: 0.18rem 0.3rem; }
   .calendar__weekday { font-size: 0.76rem; }
 }
+
+/* Three halves now (Indicate Interest, Available Games, Vote): where two ink
+   halves sit side by side, a hairline keeps them apart. */
+.siteswitch__off + .siteswitch__off { border-left: 1px solid rgba(240, 235, 221, 0.25); }
