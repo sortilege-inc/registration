@@ -1408,3 +1408,88 @@ a:hover { color: var(--coral); }
 /* Three halves now (Indicate Interest, Available Games, Vote): where two ink
    halves sit side by side, a hairline keeps them apart. */
 .siteswitch__off + .siteswitch__off { border-left: 1px solid rgba(240, 235, 221, 0.25); }
+
+/* ---------- QR code ---------- */
+/* Built by qr.js; the same block is in landing, rsvp and vote. A round ink
+   button in the top corner of the hero opens a scannable code for the site:
+   the whole screen on a phone, a card over a dimmed page on anything wider.
+   Any tap closes it. */
+
+.hero { position: relative; }
+
+.qrbtn {
+  position: absolute;
+  z-index: 5;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  color: var(--paper);
+  background: var(--ink);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(31, 39, 48, 0.3);
+  cursor: pointer;
+}
+
+.qrbtn svg { width: 1.35rem; height: 1.35rem; fill: currentColor; }
+.qrbtn:hover { background: var(--plum); }
+.qrbtn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.qrsheet {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.qrsheet[hidden] { display: none; }
+.qrsheet:focus { outline: none; }
+
+.qrsheet__card { width: 100%; max-width: 30rem; text-align: center; }
+
+.qrsheet__code {
+  display: block;
+  width: min(100%, 75vh);
+  height: auto;
+  margin: 0 auto;
+  image-rendering: pixelated;
+}
+
+.qrsheet__url {
+  margin: 1rem 0 0;
+  font-family: var(--label);
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.qrsheet__hint {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* The page under a full-screen code should not scroll along with a stray swipe. */
+body.has-qr { overflow: hidden; }
+
+@media (min-width: 40rem) {
+  .qrsheet { background: rgba(31, 39, 48, 0.72); }
+  .qrsheet__card {
+    max-width: 24rem;
+    padding: 1.75rem;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  }
+  .qrsheet__code { width: 100%; }
+}
